@@ -11,9 +11,9 @@ import { Color } from 'skeletor/const';
 import { _Label, _Error, _Wrapper } from 'skeletor/components';
 import { InputConfig } from 'skeletor/config';
 
-export interface InputProps extends TextInputProps {
+export type InputProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onUpdate: (prop: unknown, text: string, validate?: boolean) => void;
+  onUpdate: (prop: any, text: string, validate?: boolean) => void;
   prop: string;
   value: string;
   nextInput?: React.MutableRefObject<TextInput | null>;
@@ -21,9 +21,13 @@ export interface InputProps extends TextInputProps {
   label?: string | JSX.Element;
   isValid: boolean | undefined;
   error?: string | JSX.Element;
-}
+};
 
-type Props = InputProps & SpacingProps & SizeProps & AlignmentProps;
+type Props = TextInputProps &
+  InputProps &
+  SpacingProps &
+  SizeProps &
+  AlignmentProps;
 
 // eslint-disable-next-line react/display-name
 export const _Input = React.forwardRef<TextInput, Props>(
