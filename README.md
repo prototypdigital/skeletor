@@ -4,10 +4,10 @@
 
 ### Initialization
 
-1. Navigate your terminal to the "skeletor" folder
-2. Type in `yarn install`
-3. Navigate your terminal to the "ios" folder
-4. Type in `pod install`
+1. Open the root of your react-native project in the terminal.
+2. Type in `cd src && git submodule add git@github.com:prototypdigital/skeletor.git`
+3. Type in `cd skeletor && yarn init`
+4. You are good to go!
 
 ---
 

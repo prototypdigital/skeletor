@@ -1,5 +1,8 @@
 {
   "name": "skeletor",
+  "scripts": {
+    "init": "yarn install && cd ../../ios && pod install && cd ../"
+  },
   "dependencies": {
     "react-native-fast-image": "8.3.4"
   },
