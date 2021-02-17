@@ -13,7 +13,7 @@ import { InputConfig } from 'skeletor/config';
 
 export type InputProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onUpdate: (prop: any, value: string | number, validate?: boolean) => void;
+  onUpdate: (prop: any, value: any, validate?: boolean) => void;
   prop: string;
   value: string | number;
   nextInput?: React.MutableRefObject<TextInput | null>;
