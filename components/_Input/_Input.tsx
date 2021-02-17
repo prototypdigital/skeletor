@@ -13,9 +13,9 @@ import { InputConfig } from 'skeletor/config';
 
 export type InputProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onUpdate: (prop: any, text: string, validate?: boolean) => void;
+  onUpdate: (prop: any, value: string | number, validate?: boolean) => void;
   prop: string;
-  value: string;
+  value: string | number;
   nextInput?: React.MutableRefObject<TextInput | null>;
   validateOnChange?: boolean;
   label?: string | JSX.Element;
@@ -23,13 +23,14 @@ export type InputProps = {
   error?: string | JSX.Element;
 };
 
-type Props = TextInputProps &
+type Props = Omit<TextInputProps, 'value'> &
   InputProps &
   SpacingProps &
   SizeProps &
   AlignmentProps;
 
 // eslint-disable-next-line react/display-name
+/** This is an input field prepared for use with the useForm hook. It only supports a numeric and string value. For other value types, create a custom component */
 export const _Input = React.forwardRef<TextInput, Props>(
   (
     {
@@ -48,19 +49,21 @@ export const _Input = React.forwardRef<TextInput, Props>(
       label,
       isValid,
       error,
+      value,
       ...rest
     },
     ref,
   ) => {
     const [focused, setFocused] = useState(false);
+    const isNumeric = typeof value === 'number';
 
     function onChangeText(text: string) {
-      onUpdate(prop, text, validateOnChange);
+      onUpdate(prop, isNumeric ? Number(text) : text, validateOnChange);
     }
 
     function onDone(event: NativeSyntheticEvent<TextInputEndEditingEventData>) {
       const { text } = event.nativeEvent;
-      onUpdate(prop, text, true);
+      onUpdate(prop, isNumeric ? Number(text) : text, true);
     }
 
     function toggleFocus() {
@@ -92,6 +95,7 @@ export const _Input = React.forwardRef<TextInput, Props>(
         )}
         <TextInput
           {...rest}
+          value={String(value)}
           multiline={multiline}
           editable={editable}
           autoCapitalize={autoCapitalize || 'none'}
