@@ -1,5 +1,6 @@
 import React from 'react';
 import { Color } from 'skeletor/const';
+
 import { _Text } from '..';
 
 type Colors = {

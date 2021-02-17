@@ -1,5 +1,5 @@
 import React from 'react';
-import { ViewProps, ScrollView } from 'react-native';
+import { ScrollView, ViewProps } from 'react-native';
 import { AlignmentProps, SizeProps, SpacingProps } from 'skeletor/models';
 
 import { _Wrapper } from '../_Wrapper';

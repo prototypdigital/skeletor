@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import {
-  TextInputProps,
-  TextInput,
   NativeSyntheticEvent,
+  TextInput,
   TextInputEndEditingEventData,
+  TextInputProps,
 } from 'react-native';
-
-import { AlignmentProps, SizeProps, SpacingProps } from 'skeletor/models';
-import { Color } from 'skeletor/const';
-import { _Label, _Error, _Wrapper } from 'skeletor/components';
+import { _Error, _Label, _Wrapper } from 'skeletor/components';
 import { InputConfig } from 'skeletor/config';
+import { Color } from 'skeletor/const';
+import { AlignmentProps, SizeProps, SpacingProps } from 'skeletor/models';
 
 export type InputProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -29,8 +28,8 @@ type Props = Omit<TextInputProps, 'value'> &
   SizeProps &
   AlignmentProps;
 
-// eslint-disable-next-line react/display-name
 /** This is an input field prepared for use with the useForm hook. It only supports a numeric and string value. For other value types, create a custom component */
+// eslint-disable-next-line react/display-name
 export const _Input = React.forwardRef<TextInput, Props>(
   (
     {

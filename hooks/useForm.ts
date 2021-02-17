@@ -6,8 +6,11 @@ type Values<T> = {
   [K in keyof T]: T[K];
 };
 
-function useFormState<T>(values: Values<T>) {
-  const initialValues = useRef(values).current;
+function useFormState<T>(
+  values: Values<T>,
+  onNewInitialValue: (key: keyof T, value: T[keyof T]) => void,
+) {
+  const [initialValues, setInitialValues] = useState(values);
   const [state, setState] = useState(values);
 
   function compareValues(key: keyof T) {
@@ -27,29 +30,35 @@ function useFormState<T>(values: Values<T>) {
     return values[key] !== initialValues[key];
   }
 
-  const hasChanged = Object.keys(values).filter((key) =>
+  const valuesChanged = Object.keys(values).filter((key) =>
     compareValues(key as keyof T),
   );
 
   function updateFromNewValues() {
-    if (!hasChanged.length) {
+    if (!valuesChanged.length) {
       return;
     }
 
     const update = { ...state };
+
     for (const key in values) {
       if (initialValues[key] !== values[key]) {
         update[key] = values[key];
-        initialValues[key] = values[key];
+        setInitialValues((s) => ({ ...s, [key]: values[key] }));
+        onNewInitialValue(key, values[key]);
       }
     }
 
     setState(update);
   }
 
-  useEffect(updateFromNewValues, [hasChanged]);
+  useEffect(updateFromNewValues);
 
-  return { state, initialValues, setState };
+  return {
+    state,
+    initialValues,
+    setState,
+  };
 }
 
 export function useForm<T>(
@@ -61,23 +70,28 @@ export function useForm<T>(
     optional?: Array<keyof T>;
   },
 ) {
-  const { state, setState, initialValues } = useFormState(values);
   const [validation, setValidation] = useState<Validation<T>>({});
+  const { state, setState, initialValues } = useFormState(
+    values,
+    (key, value) =>
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      setValidation((s) => ({ ...s, [key]: localValidation(key, value) })),
+  );
 
-  function updateValidationByKey(key: keyof T, isValid: boolean | undefined) {
-    setValidation((v) => ({ ...v, [key]: isValid }));
-  }
-
-  function validateByRule(key: keyof T, value?: T[keyof T]) {
-    if (!config || !config.rules || config.rules[key] === undefined) {
-      return value ? Boolean(value) : undefined;
+  function validateByRule(key: keyof T, value: T[keyof T] | undefined) {
+    if (!value) {
+      return undefined;
     }
 
-    const isValid = config.rules[key]?.(value || values[key]);
+    if (!config || !config.rules || config.rules[key] === undefined) {
+      return Boolean(value);
+    }
+
+    const isValid = config.rules[key]?.(value);
     return isValid;
   }
 
-  function localValidation(key: keyof T, value: T[keyof T]) {
+  function localValidation(key: keyof T, value: T[keyof T] | undefined) {
     let isValid = validateByRule(key, value);
     const isOptional = config?.optional?.includes(key);
 
@@ -96,10 +110,10 @@ export function useForm<T>(
    * Best used in conjunction with the prebuilt _Input field, but can be used generally. */
   function onUpdate(key: keyof T, value: T[keyof T], validate?: boolean) {
     setState((s) => ({ ...s, [key]: value }));
-    updateValidationByKey(
-      key,
-      validate ? localValidation(key, value) : undefined,
-    );
+    setValidation((s) => ({
+      ...s,
+      [key]: validate ? localValidation(key, value) : undefined,
+    }));
   }
 
   /** Boolean value of whether the form is valid (ie can be submitted). Use this to disable/enable form submission. */
@@ -126,7 +140,7 @@ export function useForm<T>(
   /** Resets validation to initial state.
    * Generally you would not be using this unless for something completely custom, at which point maybe you should not be using this hook at all.
    * */
-  function clearValidation() {
+  function resetValidation() {
     const validity: Validation<T> = {};
     for (const key in values) {
       const isValid = localValidation(key, values[key]);
@@ -139,22 +153,11 @@ export function useForm<T>(
   /** Resets entire form, state and validation included */
   function clearForm() {
     clearState();
-    clearValidation();
+    resetValidation();
   }
 
-  function onMount() {
-    const validity: Validation<T> = {};
-
-    for (const key in values) {
-      const isValid = localValidation(key, values[key]);
-      validity[key] = isValid;
-    }
-
-    setValidation(validity);
-  }
-
-  useEffect(onMount, []);
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(resetValidation, []);
   return {
     state,
     validation,
@@ -163,6 +166,6 @@ export function useForm<T>(
     isFormValid,
     clearForm,
     clearState,
-    clearValidation,
+    resetValidation,
   };
 }

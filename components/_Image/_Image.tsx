@@ -1,10 +1,10 @@
 import React from 'react';
+import { Image, ImageProps } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import { ImageProps, Image } from 'react-native';
+import { getUsableStylesFromProps } from 'skeletor/helpers';
 import { AlignmentProps, SpacingProps } from 'skeletor/models';
 
 import { _Wrapper } from '../_Wrapper';
-import { getUsableStylesFromProps } from 'skeletor/helpers';
 
 interface OwnProps extends ImageProps {
   radius?: number;

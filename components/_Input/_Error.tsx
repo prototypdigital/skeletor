@@ -1,5 +1,6 @@
-import { Spacing } from 'skeletor/const';
 import React from 'react';
+import { Spacing } from 'skeletor/const';
+
 import { _Text } from '..';
 
 interface Props {

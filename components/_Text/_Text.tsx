@@ -6,7 +6,6 @@ import {
   TextTransformStyles,
 } from 'skeletor/config';
 import { DefaultFont, FontFamily } from 'skeletor/const';
-
 import { getUsableStylesFromProps } from 'skeletor/helpers';
 import { SpacingProps } from 'skeletor/models';
 
@@ -42,8 +41,8 @@ export const _Text: React.FC<Props> = ({
       getUsableStylesFromProps({
         color,
         opacity,
-        margins,
-        paddings,
+        ...margins,
+        ...paddings,
         fontFamily: font,
       }),
       style,
