@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type Validation<T> = { [K in keyof Partial<T>]?: boolean };
 type Rules<T> = { [K in keyof T]?: (value: T[K]) => boolean | undefined };
