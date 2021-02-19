@@ -34,11 +34,10 @@ export const _Wrapper: React.FC<Props> = ({
     minWidth,
     height,
     width,
-    style,
   });
 
   return (
-    <View style={parsedStyle} {...rest}>
+    <View style={[parsedStyle, style]} {...rest}>
       {children}
     </View>
   );
