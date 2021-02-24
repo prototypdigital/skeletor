@@ -8,6 +8,8 @@ import { _Wrapper } from '../_Wrapper';
 
 interface OwnProps extends ImageProps {
   radius?: number;
+  height: number  | undefined;
+  width: number | undefined;
 }
 
 type Props = OwnProps & SpacingProps & AlignmentProps;
