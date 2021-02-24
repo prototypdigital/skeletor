@@ -5,8 +5,8 @@
 ### Initialization
 
 1. Open the root of your react-native project in the terminal.
-2. Type in `cd src && git submodule add git@github.com:prototypdigital/skeletor.git`
-3. Type in `cd skeletor && yarn init`
+2. Type in `cd src && git submodule add git@github.com:prototypdigital/skeletor.git && cd ..`
+3. Type in `yarn add ./src/skeletor`
 4. You are good to go!
 
 ---
