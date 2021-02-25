@@ -2,17 +2,33 @@ import React from 'react';
 import {
   _Container,
   _Image,
+  _Input,
   _Screen,
   _Text,
   _Wrapper,
 } from 'skeletor/components';
 import { TextSizeStyles } from 'skeletor/config';
-import { Color, Spacing } from 'skeletor/const';
+import { Color, Spacing, Validators } from 'skeletor/const';
+import { useForm } from 'skeletor/hooks';
 
 /**
  * This is a showcase of Skeletor components
  */
 export const SkeletorDemo: React.FC = () => {
+  const { state, validation, onUpdate } = useForm(
+    {
+      email: '',
+      password: '',
+    },
+    {
+      rules: {
+        email: Validators.email,
+        password: Validators.password,
+      },
+    },
+  );
+  const { email, password } = state;
+
   function renderText(size: keyof typeof TextSizeStyles) {
     return <_Text size={size}>{size}</_Text>;
   }
@@ -94,7 +110,27 @@ export const SkeletorDemo: React.FC = () => {
         </_Wrapper>
 
         <_Wrapper margins={{ margin: Spacing.Sml }}>
-          <_Text size="lrg">Inputs:</_Text>
+          <_Input
+            label="Email input"
+            placeholder="Email validation"
+            style={{ borderWidth: 1 }}
+            isValid={validation.email}
+            onUpdate={onUpdate}
+            prop="email"
+            value={email}
+            error="Not an email address"
+          />
+          <_Input
+            secureTextEntry
+            label="Password input"
+            placeholder="Password validation"
+            style={{ borderWidth: 1 }}
+            isValid={validation.password}
+            onUpdate={onUpdate}
+            prop="password"
+            value={password}
+            error="6 characters needed"
+          />
         </_Wrapper>
 
         <_Wrapper>
