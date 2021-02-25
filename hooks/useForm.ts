@@ -1,9 +1,19 @@
 import { useEffect, useState } from 'react';
 
 type Validation<T> = { [K in keyof Partial<T>]?: boolean };
-type Rules<T> = { [K in keyof T]?: (value: T[K]) => boolean | undefined };
+type Rules<T> = {
+  [K in keyof T]?: ((value: T[K]) => boolean | undefined) | undefined;
+};
+
 type Values<T> = {
   [K in keyof T]: T[K];
+};
+
+type Config<T> = {
+  /** List of optional properties. Optional properties will be marked as valid if left empty. */
+  optional?: Array<keyof T>;
+  /** Validation rules by specified property name. If you define a validation rule function here, the field will be validated against it. If no rule is set, a crude value check will be used instead (Boolean(value)) */
+  rules?: Rules<T>;
 };
 
 function useFormState<T>(
@@ -61,14 +71,18 @@ function useFormState<T>(
   };
 }
 
-export function useForm<T>(
+/** One-fits-all solution to manage state changes, field validation and optional entries within a form.
+ * @example <caption>Simple use case:</caption>
+ *  const { state, validation, onUpdate } = useForm({ email: '', password: '', });
+ *
+ *
+ * @example <caption>For more complex form states (ie one field can be of multiple types), you should pass the form's type:</caption>
+ * const { state, validation, onUpdate } = useForm<{ numericOrUndefined: number | undefined }>({ numericOrUndefined: undefined }, { rules: { numericOrUndefined: (value: number | undefined): boolean | undefined => ... }});
+ *
+ */
+export function useForm<T, R extends T = T>(
   values: Values<T>,
-  config?: {
-    /** Validation rules by specified property name. If you define a validation rule function here, the field will be validated against it. If no rule is set, a crude value check will be used instead (Boolean(value)) */
-    rules?: Rules<T>;
-    /** List of optional properties. Optional properties will be marked as valid if left empty. */
-    optional?: Array<keyof T>;
-  },
+  config?: Config<R>,
 ) {
   const [validation, setValidation] = useState<Validation<T>>({});
   const { state, setState, initialValues } = useFormState(
@@ -87,7 +101,7 @@ export function useForm<T>(
       return Boolean(value);
     }
 
-    const isValid = config.rules[key]?.(value);
+    const isValid = config.rules[key]?.(value as R[keyof T]);
     return isValid;
   }
 
