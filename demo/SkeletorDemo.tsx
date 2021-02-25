@@ -17,12 +17,14 @@ import { useForm } from 'skeletor/hooks';
 export const SkeletorDemo: React.FC = () => {
   const { state, validation, onUpdate } = useForm(
     {
+      text: '',
+      number: 0,
       email: '',
       password: '',
     },
-    { rules: { email: Validators.email } },
+    { rules: { email: Validators.email, password: Validators.password } },
   );
-  const { email, password } = state;
+  const { text, number, email, password } = state;
 
   function renderText(size: keyof typeof TextSizeStyles) {
     return <_Text size={size}>{size}</_Text>;
@@ -105,6 +107,31 @@ export const SkeletorDemo: React.FC = () => {
         </_Wrapper>
 
         <_Wrapper margins={{ margin: Spacing.Sml }}>
+          {/* Basic text input */}
+          <_Input
+            label="Text input"
+            placeholder="Text validation"
+            style={{ borderWidth: 1 }}
+            isValid={validation.text}
+            onUpdate={onUpdate}
+            prop="text"
+            value={text}
+          />
+
+          {/* Use keyboardType="number-pad" for numeric keyboard  */}
+          <_Input
+            keyboardType="number-pad"
+            label="Number input"
+            placeholder="Number validation"
+            style={{ borderWidth: 1 }}
+            isValid={validation.number}
+            onUpdate={onUpdate}
+            prop="number"
+            value={number}
+            error="NaN"
+          />
+
+          {/* Use Validation.email as rule in useForm hook for email validation */}
           <_Input
             label="Email input"
             placeholder="Email validation"
@@ -115,6 +142,11 @@ export const SkeletorDemo: React.FC = () => {
             value={email}
             error="Not an email address"
           />
+
+          {/* 
+            Use Validation.password as rule in useForm hook for basic password validation
+            secureTextEntry for hidding characters
+          */}
           <_Input
             secureTextEntry
             label="Password input"
