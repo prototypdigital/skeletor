@@ -121,7 +121,13 @@ export function useForm<T, R extends T = T>(
   }
 
   /** This function updates the specific property with a new value and validates it if it needs to do so.
-   * Best used in conjunction with the prebuilt _Input field, but can be used generally. */
+   * Best used in conjunction with the prebuilt _Input field because it handles blur and change events, but can be used with the default input as well.
+   * @example <caption>Usage with _Input:</caption>
+   * <_Input ... prop="nameOfProp" onUpdate={onUpdate} />
+   *
+   * @example <caption>Usage with other components:</caption>
+   * <TextInput ... onChange={(event) => onUpdate("nameOfProp", event.nativeEvent.text, false)} onBlur={(event) => onUpdate("nameOfProp", event.nativeEvent.text, true)}
+   *  */
   function onUpdate(key: keyof T, value: T[keyof T], validate?: boolean) {
     setState((s) => ({ ...s, [key]: value }));
     setValidation((s) => ({
@@ -172,6 +178,7 @@ export function useForm<T, R extends T = T>(
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(resetValidation, []);
+
   return {
     state,
     validation,
