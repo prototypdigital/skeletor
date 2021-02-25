@@ -6,7 +6,7 @@ interface Config {
   onBackground?: () => void;
 }
 
-export const useAppState = ({ onForeground, onBackground }: Config) => {
+export function useAppState({ onForeground, onBackground }: Config) {
   const handleAppStateChange = useCallback(
     (state: AppStateStatus) => {
       if (state.match(/background|inactive/) && onBackground) {
@@ -27,4 +27,4 @@ export const useAppState = ({ onForeground, onBackground }: Config) => {
       AppState.removeEventListener('change', handleAppStateChange);
     };
   }, [handleAppStateChange]);
-};
+}

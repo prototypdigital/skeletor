@@ -100,34 +100,45 @@ function createAnimation(animations: AnimType[], ref: Animated.Value) {
 /** Hook used to get animations and animation value objects for use with useAnimTimeline hook and animated components. 
  * Does not handle starting or stopping animations, use the useAnimTimeline hook for that. * 
  * @example
- * const [header, heading, content] = useAnims(
-    { anims: ['fadeIn', 'slideIn'] },
-    { anims: ['fadeIn', 'slideIn'] },
-    { anims: ['fadeIn', 'slideIn'] },
-  );
-  ...
-  useAnimTimeline({
-    stagger: { set: [header, heading, content], stagger: 300, start: true },
+ * const { container, wrapper, content } = useAnims({
+    container: { anims: ['fadeIn'] },
+    wrapper: { anims: ['fadeIn'] },
+    content: { anims: ['fadeIn'] },
   });
   ...
-  <Animated.View style={{opacity: header.animations.items[0]}} />
+  useAnimTimeline({
+    sequence: { set: [container, wrapper, content], start: true },
+  });
+  ...
+  <Animated.View style={{opacity: content.animations.items[0]}} />
  */
-export function useAnims(...definition: AnimConfiguration[]): AnimationSet[] {
-  const refs = useRef(definition.map(() => new Animated.Value(0))).current;
-  const anims = definition.map((d) => d.anims);
+export function useAnims<T>(
+  definition: { [K in keyof T]: AnimConfiguration },
+): { [K in keyof T]: AnimationSet } {
+  const refs = useRef(Object.keys(definition).map(() => new Animated.Value(0)))
+    .current;
+  const anims = Object.keys(definition).map(
+    (key) => definition[key as keyof T].anims,
+  );
 
   const animations = anims.map((anim, index) =>
     createAnimation(anim, refs[index]),
   );
 
-  return refs.map((ref, index) => {
-    const duration = definition[index].config?.duration || 500;
-    const loop = definition[index].config?.loop || false;
-    return {
+  const set: Partial<{ [K in keyof T]: AnimationSet }> = {};
+
+  Object.keys(definition).map((key, index) => {
+    const ref = refs[index];
+    const animation = definition[key as keyof T];
+    const { duration = 500, loop = false } = animation.config || {};
+
+    set[key as keyof T] = {
       animations: { items: animations[index], config: { duration, loop } },
       ref,
     };
   });
+
+  return set as { [K in keyof T]: AnimationSet };
 }
 
 function getBaseAnimations(
