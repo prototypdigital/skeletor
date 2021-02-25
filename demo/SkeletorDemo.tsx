@@ -20,12 +20,7 @@ export const SkeletorDemo: React.FC = () => {
       email: '',
       password: '',
     },
-    {
-      rules: {
-        email: Validators.email,
-        password: Validators.password,
-      },
-    },
+    { rules: { email: Validators.email } },
   );
   const { email, password } = state;
 
