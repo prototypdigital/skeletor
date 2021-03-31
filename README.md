@@ -15,28 +15,39 @@
 
 Since this is supposed to be as configurable as possible while still maintaining some form and structure with how things should be done, you'll have to set up a couple things first.
 
-### 1. Configure global constants (skeletor/const)
+### Initialize Skeletor
 
-#### Color.ts
+1. Add the SkeletorProvider component as the (or one of) top wrapper of your application. Example:
 
-This contains all the project colors. Since some components rely on what has already been entered, feel free to extend the enumerable with whatever you require and change any value you need, but do not change the names already provided.
+```
+/// index.js
+const App = () => {
+  return (
+    <SkeletorProvider>
+      <StoreProvider>
+        <RootNavigator />
+      </StoreProvider>
+    </SkeletorProvider>
+  );
+};
+```
 
-#### FontFamily.ts
+2. Configure the SkeletorProvider properties with whatever you desire. There are some defaults set, but the properties are as configurable as they need to be (you can add as many text sizes with whatever naming convention you want, for instance). In example, if you want to set the default font, you would add the `defaultFont` prop to the SkeletorProvider component like so:
 
-When you have added custom fonts to the application, make sure you list the exact name of the under the `type FontFamily = ...` line. You can remove the undefined preset.
-Example: `type FontFamily = "Montserrat-Light" | "Montserrat-Bold";`
+```
+<SkeletorProvider defaultFont="Arial">...</SkeletorProvider>
+```
 
-Once you have set your custom fonts up, make sure to select the default one to be used in the app under the `export const DefaultFont...` line from the list above. You can also remove the undefined value.
-Example: `export const DefaultFont: FontFamily = "Montserrat-Light";`
+## Usage
 
-#### Spacing.ts
+1. To get access to the skeletor styles in other components, you can use the provided `useSkeletor` hook that will return the entire Skeletor configuration object. For instance:
 
-This contains a list of app-specific dimensions used for margins and paddings. It would be best to use the predefined names, but you can modify it to include as many increments as possible. This should be used thruoghout the entire app - AVOID using custom values such as `paddingLeft = 29`, always aim to use `paddingLeft = Spacing.Lrg` instead, for example.
+```
+const skeletor = useSkeletor();
 
-#### Validators.ts
+return <SomeComponent style={{fontFamily: skeletor.defaultFont }} />
+```
 
-This contains the default validation rules you can use in tandem with the _useForm_ hook validation rules. Can be extended, unused, whatever. It's just to make your life easier with the two default values you will definitely need to validate in every project.
+2. Feel free to use all the Skeletor components at your disposal. Those include `_Image`, `_Text`, `_Screen`, `_Wrapper`, `_Container` and `_Input`. They will make your life easier when creating screens or components, trust me.
 
-### 2. Configure component styles
-
-_\_Input_ and _\_Text_ have their own style structure which is defined in the _InputConfig.ts_ and _TextConfig.ts_ files respectively. Set up your application's default theme for those two components within the config files, but try not to modify the existing structure if at all avoidable.
+3. There are hooks at your disposal, which are sort of documented. Most notably, you can use `useForm` together with `_Input` components for much easier form validation and handling. For animations, you can use `useAnims` to make animation handling a little bit easier. Each one of those is documented enough, so have a crack at it.
