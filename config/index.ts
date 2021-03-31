@@ -1,2 +1,2 @@
-export * from './InputConfig';
 export * from './TextConfig';
+export * from './SkeletorDefaults';

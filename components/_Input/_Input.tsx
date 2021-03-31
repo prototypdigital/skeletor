@@ -1,25 +1,31 @@
 import React, { useState } from 'react';
 import {
   NativeSyntheticEvent,
+  StyleProp,
   TextInput,
   TextInputEndEditingEventData,
   TextInputProps,
+  TextStyle,
+  ViewStyle,
 } from 'react-native';
-import { _Error, _Label, _Wrapper } from 'skeletor/components';
-import { InputConfig } from 'skeletor/config';
-import { Color } from 'skeletor/const';
+import { _Wrapper } from 'skeletor/components';
+import { useSkeletor } from 'skeletor/hooks';
 import { AlignmentProps, SizeProps, SpacingProps } from 'skeletor/models';
+import { _SkeletorContext } from '../_SkeletorProvider';
 
 export type InputProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onUpdate: (prop: any, value: any, validate?: boolean) => void;
+  onFocusChange?: (focused: boolean) => void;
   prop: string;
   value: string | number;
   nextInput?: React.MutableRefObject<TextInput | null>;
   validateOnChange?: boolean;
-  label?: string | JSX.Element;
   isValid: boolean | undefined;
-  error?: string | JSX.Element;
+  containerStyle?: StyleProp<ViewStyle>;
+  errorStyle?: StyleProp<TextStyle>;
+  focusStyle?: StyleProp<TextStyle>;
+  disabledStyle?: StyleProp<TextStyle>;
 };
 
 type Props = Omit<TextInputProps, 'value'> &
@@ -38,21 +44,24 @@ export const _Input = React.forwardRef<TextInput, Props>(
       paddings,
       nextInput,
       prop,
-      returnKeyType,
       editable,
+      returnKeyType,
       autoCapitalize,
       style,
-      placeholder,
       multiline,
       validateOnChange,
-      label,
+      onFocusChange,
       isValid,
-      error,
       value,
+      containerStyle,
+      disabledStyle,
+      focusStyle,
+      errorStyle,
       ...rest
     },
     ref,
   ) => {
+    const skeletor = useSkeletor();
     const [focused, setFocused] = useState(false);
     const isNumeric = typeof value === 'number';
 
@@ -66,6 +75,7 @@ export const _Input = React.forwardRef<TextInput, Props>(
     }
 
     function toggleFocus() {
+      onFocusChange?.(!focused);
       setFocused(!focused);
     }
 
@@ -79,19 +89,10 @@ export const _Input = React.forwardRef<TextInput, Props>(
 
     return (
       <_Wrapper
-        style={InputConfig.container}
+        style={containerStyle || skeletor.inputContainerStyle}
         margins={margins}
         paddings={paddings}
       >
-        {Boolean(label) && (
-          <_Label
-            status={
-              focused ? 'focused' : isValid === false ? 'errored' : 'default'
-            }
-          >
-            {label}
-          </_Label>
-        )}
         <TextInput
           {...rest}
           value={String(value)}
@@ -100,22 +101,23 @@ export const _Input = React.forwardRef<TextInput, Props>(
           autoCapitalize={autoCapitalize || 'none'}
           allowFontScaling={false}
           returnKeyType={returnKeyType || nextInput ? 'next' : 'done'}
-          placeholder={placeholder}
           onChangeText={onChangeText}
           onEndEditing={onDone}
           onFocus={toggleFocus}
           onBlur={toggleFocus}
           onSubmitEditing={focusNextInput}
           style={[
-            multiline ? InputConfig.textarea : InputConfig.input,
+            multiline
+              ? skeletor.inputMultilineStyle
+              : skeletor.inputDefaultStyle,
             style,
-            editable === false && InputConfig.disabled,
-            focused && InputConfig.focused,
-            isValid === false && InputConfig.errored,
+            editable === false &&
+              (disabledStyle || skeletor.inputDisabledStyle),
+            focused && (focusStyle || skeletor.inputFocusStyle),
+            isValid === false && (errorStyle || skeletor.inputErrorStyle),
           ]}
           ref={ref}
         />
-        {isValid === false && <_Error color={Color.Danger}>{error}</_Error>}
       </_Wrapper>
     );
   },

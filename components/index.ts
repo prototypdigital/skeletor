@@ -4,3 +4,4 @@ export * from './_Image';
 export * from './_Input';
 export * from './_Wrapper';
 export * from './_Container';
+export * from './_SkeletorProvider';
