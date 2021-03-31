@@ -19,22 +19,22 @@ Since this is supposed to be as configurable as possible while still maintaining
 
 1. Add the SkeletorProvider component as the (or one of) top wrapper of your application. Example:
 
-```
+```javascript
 /// index.js
 const App = () => {
-  return (
-    <SkeletorProvider>
-      <StoreProvider>
-        <RootNavigator />
-      </StoreProvider>
-    </SkeletorProvider>
-  );
+    return (
+        <SkeletorProvider>
+            <StoreProvider>
+                <RootNavigator />
+            </StoreProvider>
+        </SkeletorProvider>
+    );
 };
 ```
 
 2. Configure the SkeletorProvider properties with whatever you desire. There are some defaults set, but the properties are as configurable as they need to be (you can add as many text sizes with whatever naming convention you want, for instance). In example, if you want to set the default font, you would add the `defaultFont` prop to the SkeletorProvider component like so:
 
-```
+```javascript
 <SkeletorProvider defaultFont="Arial">...</SkeletorProvider>
 ```
 
@@ -42,10 +42,10 @@ const App = () => {
 
 1. To get access to the skeletor styles in other components, you can use the provided `useSkeletor` hook that will return the entire Skeletor configuration object. For instance:
 
-```
+```javascript
 const skeletor = useSkeletor();
 
-return <SomeComponent style={{fontFamily: skeletor.defaultFont }} />
+return <SomeComponent style={{ fontFamily: skeletor.defaultFont }} />;
 ```
 
 2. Feel free to use all the Skeletor components at your disposal. Those include `_Image`, `_Text`, `_Screen`, `_Wrapper`, `_Container` and `_Input`. They will make your life easier when creating screens or components, trust me.
