@@ -20,6 +20,7 @@ export type SkeletorConfig<Sizes = DefaultSizes> = {
   defaultTextSize: keyof Sizes;
   defaultColor: string;
   defaultFont: string;
+  defaultStatusBarType: 'dark-content' | 'light-content' | 'default';
   inputContainerStyle: StyleProp<ViewStyle>;
   inputErrorStyle: StyleProp<TextStyle>;
   inputFocusStyle: StyleProp<TextStyle>;

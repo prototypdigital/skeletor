@@ -12,6 +12,7 @@ export const SkeletorDefaults: SkeletorConfig = {
     huge: { fontSize: 61, lineHeight: 72 },
   },
   defaultColor: 'black',
+  defaultStatusBarType: 'dark-content',
   defaultTextSize: 'small',
   defaultFont: Platform.OS === 'ios' ? 'Avenir' : 'monospace',
   inputContainerStyle: { marginVertical: 8 },

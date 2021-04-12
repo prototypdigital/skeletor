@@ -8,6 +8,7 @@ import {
   StatusBar,
   Platform,
 } from 'react-native';
+import { useSkeletor } from 'skeletor/hooks';
 
 import { _Wrapper } from '../_Wrapper';
 
@@ -38,10 +39,11 @@ export const _Screen: React.FC<Props> = ({
   topSafeAreaColor,
   header,
   style,
-  statusBarType = 'default',
+  statusBarType,
   isLandscape,
   ...rest
 }) => {
+  const skeletor = useSkeletor();
   function isAndroidBackButtonDisabled() {
     return Boolean(disableAndroidBack);
   }
@@ -76,7 +78,7 @@ export const _Screen: React.FC<Props> = ({
       <StatusBar
         translucent
         backgroundColor="transparent"
-        barStyle={statusBarType}
+        barStyle={statusBarType || skeletor.defaultStatusBarType}
       />
 
       <_Wrapper
