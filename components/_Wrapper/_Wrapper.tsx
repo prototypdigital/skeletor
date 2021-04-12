@@ -4,7 +4,11 @@ import { View, ViewProps } from 'react-native';
 import { SpacingProps, AlignmentProps, SizeProps } from 'skeletor/models';
 import { getUsableStylesFromProps } from 'skeletor/helpers';
 
-type Props = AlignmentProps & SpacingProps & SizeProps & ViewProps;
+interface OwnProps {
+  background?: string;
+}
+
+type Props = OwnProps & AlignmentProps & SpacingProps & SizeProps & ViewProps;
 
 export const _Wrapper: React.FC<Props> = ({
   children,
@@ -20,24 +24,30 @@ export const _Wrapper: React.FC<Props> = ({
   minHeight,
   minWidth,
   style,
+  background,
   ...rest
 }) => {
-  const parsedStyle = getUsableStylesFromProps({
-    ...margins,
-    ...paddings,
-    alignItems: align,
-    justifyContent: justify,
-    flex,
-    maxHeight,
-    maxWidth,
-    minHeight,
-    minWidth,
-    height,
-    width,
-  });
-
   return (
-    <View style={[parsedStyle, style]} {...rest}>
+    <View
+      style={[
+        getUsableStylesFromProps({
+          ...margins,
+          ...paddings,
+          alignItems: align,
+          justifyContent: justify,
+          backgroundColor: background,
+          flex,
+          maxHeight,
+          maxWidth,
+          minHeight,
+          minWidth,
+          height,
+          width,
+        }),
+        style,
+      ]}
+      {...rest}
+    >
       {children}
     </View>
   );
