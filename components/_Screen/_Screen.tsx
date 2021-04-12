@@ -8,7 +8,6 @@ import {
   StatusBar,
   Platform,
 } from 'react-native';
-import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 
 import { _Wrapper } from '../_Wrapper';
 
@@ -24,8 +23,6 @@ interface OwnProps {
   topSafeAreaColor?: string;
   statusBarType?: 'default' | 'light-content' | 'dark-content';
   isLandscape?: boolean;
-  onFocusIn?: () => void;
-  onFocusOut?: () => void;
 }
 
 type Props = OwnProps & ViewProps;
@@ -43,32 +40,25 @@ export const _Screen: React.FC<Props> = ({
   style,
   statusBarType = 'default',
   isLandscape,
-  onFocusIn,
-  onFocusOut,
   ...rest
 }) => {
-  const isFocused = useIsFocused();
-
-  function onFocusChange() {
-    if (onFocusIn && isFocused) {
-      onFocusIn();
-    }
-
-    if (onFocusOut && !isFocused) {
-      onFocusOut();
-    }
+  function isAndroidBackButtonDisabled() {
+    return Boolean(disableAndroidBack);
   }
 
-  /** On focus change callbacks */
-  useEffect(onFocusChange, [isFocused]);
+  /** Disable android back button if need be */
+  useEffect(() => {
+    BackHandler.addEventListener(
+      'hardwareBackPress',
+      isAndroidBackButtonDisabled,
+    );
 
-  // On focus change, disable android back button (or not)
-  useFocusEffect(() => {
-    const callback = () => Boolean(disableAndroidBack);
-    BackHandler.addEventListener('hardwareBackPress', callback);
-
-    return () => BackHandler.removeEventListener('hardwareBackPress', callback);
-  });
+    return () =>
+      BackHandler.removeEventListener(
+        'hardwareBackPress',
+        isAndroidBackButtonDisabled,
+      );
+  }, [disableAndroidBack]);
 
   return (
     <>
