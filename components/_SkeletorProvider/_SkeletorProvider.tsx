@@ -8,7 +8,14 @@ export const SkeletorProvider: React.FC<Partial<SkeletorConfig>> = ({
   ...config
 }) => {
   return (
-    <_SkeletorContext.Provider value={{ ...SkeletorDefaults, ...config }}>
+    <_SkeletorContext.Provider
+      value={{
+        general: { ...SkeletorDefaults.general, ...config.general },
+        _Text: { ...SkeletorDefaults._Text, ...config._Text },
+        _Button: { ...SkeletorDefaults._Button, ...config._Button },
+        _Input: { ...SkeletorDefaults._Input, ...config._Input },
+      }}
+    >
       {children}
     </_SkeletorContext.Provider>
   );

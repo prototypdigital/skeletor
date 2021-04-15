@@ -5,3 +5,4 @@ export * from './_Input';
 export * from './_Wrapper';
 export * from './_Container';
 export * from './_SkeletorProvider';
+export * from './_Button';

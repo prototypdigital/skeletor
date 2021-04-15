@@ -3,5 +3,6 @@
   "version": "1.0.0",
   "devDependencies": {
     "typescript": "4.2.2"
-  }
+  },
+  "types": "./types"
 }

@@ -1,30 +1,32 @@
 import { StyleProp, TextStyle, ViewStyle } from 'react-native';
 
-interface TextSizeProps {
-  lineHeight: number;
-  fontSize: number;
-}
-
-interface DefaultSizes {
-  micro: TextSizeProps;
-  tiny: TextSizeProps;
-  small: TextSizeProps;
-  medium: TextSizeProps;
-  large: TextSizeProps;
-  larger: TextSizeProps;
-  huge: TextSizeProps;
-}
-
-export type SkeletorConfig<Sizes = DefaultSizes> = {
-  textSizes: { [K in keyof Sizes]: { fontSize: number; lineHeight: number } };
-  defaultTextSize: keyof Sizes;
-  defaultColor: string;
-  defaultFont: string;
-  defaultStatusBarType: 'dark-content' | 'light-content' | 'default';
-  inputContainerStyle: StyleProp<ViewStyle>;
-  inputErrorStyle: StyleProp<TextStyle>;
-  inputFocusStyle: StyleProp<TextStyle>;
-  inputDisabledStyle: StyleProp<TextStyle>;
-  inputMultilineStyle: StyleProp<TextStyle>;
-  inputDefaultStyle: StyleProp<TextStyle>;
+export type SkeletorConfig = {
+  general: {
+    defaultFont?: string;
+    defaultStatusBarType: 'dark-content' | 'light-content' | 'default';
+  };
+  _Text: {
+    sizes: _TextSizes;
+    defaultSize: _TextSize;
+    defaultColor: string;
+  };
+  _Input: {
+    containerStyle: StyleProp<ViewStyle>;
+    errorStyle: StyleProp<TextStyle>;
+    focusStyle: StyleProp<TextStyle>;
+    disabledStyle: StyleProp<TextStyle>;
+    multilineStyle: StyleProp<TextStyle>;
+    defaultStyle: StyleProp<TextStyle>;
+  };
+  _Button: {
+    height: number;
+    paddings: _Spacing['paddings'];
+    margins: _Spacing['margins'];
+    minWidth: number;
+    baseStyle: StyleProp<ViewStyle>;
+    pressedStyle: StyleProp<ViewStyle>;
+    disabledOpacity: number;
+    textStyle: _TextProps;
+    loadingColor: string;
+  };
 };

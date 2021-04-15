@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import { _Wrapper } from 'skeletor/components';
 import { useSkeletor } from 'skeletor/hooks';
-import { AlignmentProps, SizeProps, SpacingProps } from 'skeletor/models';
 import { _SkeletorContext } from '../_SkeletorProvider';
 
 export type InputProps = {
@@ -30,9 +29,9 @@ export type InputProps = {
 
 type Props = Omit<TextInputProps, 'value'> &
   InputProps &
-  SpacingProps &
-  SizeProps &
-  AlignmentProps;
+  _Spacing &
+  _Size &
+  _Alignment;
 
 /** This is an input field prepared for use with the useForm hook. It only supports a numeric and string value. For other value types, create a custom component */
 // eslint-disable-next-line react/display-name
@@ -61,7 +60,7 @@ export const _Input = React.forwardRef<TextInput, Props>(
     },
     ref,
   ) => {
-    const skeletor = useSkeletor();
+    const { _Input: styles } = useSkeletor();
     const [focused, setFocused] = useState(false);
     const isNumeric = typeof value === 'number';
 
@@ -89,7 +88,7 @@ export const _Input = React.forwardRef<TextInput, Props>(
 
     return (
       <_Wrapper
-        style={containerStyle || skeletor.inputContainerStyle}
+        style={containerStyle || styles.containerStyle}
         margins={margins}
         paddings={paddings}
       >
@@ -107,14 +106,11 @@ export const _Input = React.forwardRef<TextInput, Props>(
           onBlur={toggleFocus}
           onSubmitEditing={focusNextInput}
           style={[
-            multiline
-              ? skeletor.inputMultilineStyle
-              : skeletor.inputDefaultStyle,
+            multiline ? styles.multilineStyle : styles.defaultStyle,
             style,
-            editable === false &&
-              (disabledStyle || skeletor.inputDisabledStyle),
-            focused && (focusStyle || skeletor.inputFocusStyle),
-            isValid === false && (errorStyle || skeletor.inputErrorStyle),
+            editable === false && (disabledStyle || styles.disabledStyle),
+            focused && (focusStyle || styles.focusStyle),
+            isValid === false && (errorStyle || styles.errorStyle),
           ]}
           ref={ref}
         />

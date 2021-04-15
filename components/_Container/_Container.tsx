@@ -1,16 +1,9 @@
 import React from 'react';
 import { ScrollView, ViewProps } from 'react-native';
-import { AlignmentProps, SizeProps } from 'skeletor/models';
 
 import { _Wrapper } from '../_Wrapper';
 
-type Props = AlignmentProps &
-  SizeProps &
-  ViewProps & {
-    scrollable?: boolean;
-    showsVerticalScrollIndicator?: boolean;
-    bounces?: boolean;
-  };
+type Props = _Alignment & _Size & _ContainerProps & ViewProps;
 
 /** Basically just a full height/width _Wrapper component (flex 1)
  * To be used as the main container within a _Screen component

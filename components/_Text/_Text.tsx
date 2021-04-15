@@ -2,18 +2,8 @@ import React from 'react';
 import { Text, TextProps } from 'react-native';
 import { getUsableStylesFromProps } from 'skeletor/helpers';
 import { useSkeletor } from 'skeletor/hooks';
-import { SpacingProps } from 'skeletor/models';
 
-interface OwnProps extends TextProps {
-  size?: { fontSize: number; lineHeight: number };
-  font?: string;
-  textTransform?: 'uppercase' | 'lowercase' | 'capitalize';
-  color?: string;
-  textAlign?: 'left' | 'right' | 'center';
-  opacity?: number;
-}
-
-type Props = OwnProps & SpacingProps;
+type Props = _TextProps & TextProps & _Spacing;
 
 export const _Text: React.FC<Props> = ({
   size,
@@ -28,17 +18,23 @@ export const _Text: React.FC<Props> = ({
   opacity,
   ...rest
 }) => {
-  const skeletor = useSkeletor();
+  const { _Text: styles, general } = useSkeletor();
   return (
     <Text
       style={[
         getUsableStylesFromProps({
-          color: color || skeletor.defaultColor,
-          fontFamily: font || skeletor.defaultFont,
+          color: color || styles.defaultColor,
+          fontFamily: font || general.defaultFont,
           opacity,
           textAlign,
           textTransform,
-          ...(size || skeletor.textSizes[skeletor.defaultTextSize]),
+          ...(size
+            ? typeof size === 'string'
+              ? styles.sizes[size]
+              : size
+            : typeof styles.defaultSize === 'string'
+            ? styles.sizes[styles.defaultSize]
+            : styles.defaultSize),
           ...margins,
           ...paddings,
         }),

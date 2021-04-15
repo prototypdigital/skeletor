@@ -1,14 +1,8 @@
 import React from 'react';
 import { View, ViewProps } from 'react-native';
-
-import { SpacingProps, AlignmentProps, SizeProps } from 'skeletor/models';
 import { getUsableStylesFromProps } from 'skeletor/helpers';
 
-interface OwnProps {
-  background?: string;
-}
-
-type Props = OwnProps & AlignmentProps & SpacingProps & SizeProps & ViewProps;
+type Props = _WrapperProps & _Alignment & _Spacing & _Size & ViewProps;
 
 export const _Wrapper: React.FC<Props> = ({
   children,

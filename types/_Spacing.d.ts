@@ -1,4 +1,4 @@
-export interface SpacingProps {
+interface _Spacing {
   margins?: {
     marginTop?: number;
     marginBottom?: number;
@@ -17,11 +17,4 @@ export interface SpacingProps {
     paddingVertical?: number;
     padding?: number;
   };
-}
-
-export class SpacingProps {
-  constructor() {
-    this.margins = undefined;
-    this.paddings = undefined;
-  }
 }

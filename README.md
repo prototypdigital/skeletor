@@ -32,10 +32,45 @@ const App = () => {
 };
 ```
 
-2. Configure the SkeletorProvider properties with whatever you desire. There are some defaults set, but the properties are as configurable as they need to be (you can add as many text sizes with whatever naming convention you want, for instance). In example, if you want to set the default font, you would add the `defaultFont` prop to the SkeletorProvider component like so:
+2. Configure the SkeletorProvider properties with whatever you desire. There are defaults set (SkeletorDefaults import), but the properties are as configurable as they need to be. You can configure all of the prebuilt Skeletor components. Here is the list of all configurable properties for the SkeletorProvider component:
 
 ```javascript
-<SkeletorProvider defaultFont="Arial">...</SkeletorProvider>
+type SkeletorConfig = {
+  general: {
+    defaultFont?: string;
+    defaultStatusBarType: 'dark-content' | 'light-content' | 'default';
+  };
+  _Text: {
+    sizes: _TextSizes;
+    defaultSize: _TextSize;
+    defaultColor: string;
+  };
+  _Input: {
+    containerStyle: StyleProp<ViewStyle>;
+    errorStyle: StyleProp<TextStyle>;
+    focusStyle: StyleProp<TextStyle>;
+    disabledStyle: StyleProp<TextStyle>;
+    multilineStyle: StyleProp<TextStyle>;
+    defaultStyle: StyleProp<TextStyle>;
+  };
+  _Button: {
+    height: number;
+    paddings: _Spacing['paddings'];
+    margins: _Spacing['margins'];
+    minWidth: number;
+    baseStyle: StyleProp<ViewStyle>;
+    pressedStyle: StyleProp<ViewStyle>;
+    disabledOpacity: number;
+    textStyle: _TextProps;
+    loadingColor: string;
+  };
+};
+```
+
+To override any of the defaults set, pass the object as a parameter into the `SkeletorProvider component` like so:
+
+```javascript
+<SkeletorProvider general={{ defaultFont: 'Arial' }}>...</SkeletorProvider>
 ```
 
 ## Usage
@@ -45,9 +80,9 @@ const App = () => {
 ```javascript
 const skeletor = useSkeletor();
 
-return <SomeComponent style={{ fontFamily: skeletor.defaultFont }} />;
+return <SomeComponent style={{ fontFamily: skeletor.general.defaultFont }} />;
 ```
 
-2. Feel free to use all the Skeletor components at your disposal. Those include `_Image`, `_Text`, `_Screen`, `_Wrapper`, `_Container` and `_Input`. They will make your life easier when creating screens or components, trust me.
+2. Feel free to use all the Skeletor components at your disposal. Those include `_Image`, `_Text`, `_Button`, `_Screen`, `_Wrapper`, `_Container` and `_Input`. They will make your life easier when creating screens or components, trust me.
 
 3. There are hooks at your disposal, which are sort of documented. Most notably, you can use `useForm` together with `_Input` components for much easier form validation and handling. For animations, you can use `useAnims` to make animation handling a little bit easier. Each one of those is documented enough, so have a crack at it.

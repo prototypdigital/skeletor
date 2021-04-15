@@ -12,21 +12,7 @@ import { useSkeletor } from 'skeletor/hooks';
 
 import { _Wrapper } from '../_Wrapper';
 
-interface OwnProps {
-  /** Pass a specific background view OR just a background color value. Custom components should be 100% height and width. */
-  background?: JSX.Element | string;
-  header?: JSX.Element;
-  disableAndroidBack?: boolean;
-  footer?: JSX.Element;
-  hideTopSafeArea?: boolean;
-  hideBottomSafeArea?: boolean;
-  bottomSafeAreaColor?: string;
-  topSafeAreaColor?: string;
-  statusBarType?: 'default' | 'light-content' | 'dark-content';
-  isLandscape?: boolean;
-}
-
-type Props = OwnProps & ViewProps;
+type Props = _ScreenProps & ViewProps;
 
 export const _Screen: React.FC<Props> = ({
   background,
@@ -78,7 +64,7 @@ export const _Screen: React.FC<Props> = ({
       <StatusBar
         translucent
         backgroundColor="transparent"
-        barStyle={statusBarType || skeletor.defaultStatusBarType}
+        barStyle={statusBarType || skeletor.general.defaultStatusBarType}
       />
 
       <_Wrapper

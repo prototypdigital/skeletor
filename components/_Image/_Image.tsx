@@ -1,17 +1,10 @@
 import React from 'react';
 import { Image, ImageProps } from 'react-native';
 import { getUsableStylesFromProps } from 'skeletor/helpers';
-import { AlignmentProps, SpacingProps } from 'skeletor/models';
 
 import { _Wrapper } from '../_Wrapper';
 
-interface OwnProps extends ImageProps {
-  radius?: number;
-  height: number | undefined;
-  width: number | undefined;
-}
-
-type Props = OwnProps & SpacingProps & AlignmentProps;
+type Props = ImageProps & _ImageProps & _Spacing & _Alignment;
 
 export const _Image: React.FC<Props> = ({
   height,
