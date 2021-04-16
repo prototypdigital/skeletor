@@ -9,60 +9,78 @@ type Values<T> = {
   [K in keyof T]: T[K];
 };
 
-type Config<T> = {
+type Config<R> = {
   /** List of optional properties. Optional properties will be marked as valid if left empty. */
-  optional?: Array<keyof T>;
+  optional?: Array<keyof R>;
   /** Validation rules by specified property name. If you define a validation rule function here, the field will be validated against it. If no rule is set, a crude value check will be used instead (Boolean(value)) */
-  rules?: Rules<T>;
+  rules?: Rules<R>;
+  /** Will compare key/value pairs instead of just top level JSON.stringify on complex objects/arrays */
+  deepCompare?: boolean;
 };
 
-function useFormState<T>(
-  values: Values<T>,
-  onNewInitialValue: (key: keyof T, value: T[keyof T]) => void,
-) {
-  const [initialValues, setInitialValues] = useState(values);
-  const [state, setState] = useState(values);
+function compareValues(
+  value: unknown,
+  initialValue: unknown,
+  deepCompare?: boolean,
+): boolean {
+  // Fallback for date handling (Date object causes constant changes for some reason)
+  if (value instanceof Date) {
+    return (
+      (value as Date).toISOString() !== (initialValue as Date).toISOString()
+    );
+  }
 
-  function compareValues(key: keyof T) {
-    // Fallback for date handling (Date object causes constant changes for some reason)
-    if (values[key] instanceof Date) {
-      return (
-        ((values[key] as unknown) as Date).toISOString() !==
-        ((initialValues[key] as unknown) as Date).toISOString()
+  // Very crudely handle object type changes. Could be performance intensive based on the size of the object.
+  if (value instanceof Object && initialValue instanceof Object) {
+    if (!deepCompare) {
+      const valueString = JSON.stringify({ ...value });
+      const initialValueString = JSON.stringify({ ...initialValue });
+      return valueString !== initialValueString;
+    }
+
+    if (Array.isArray(value) && Array.isArray(initialValue)) {
+      if (value.length !== initialValue.length) {
+        return true;
+      }
+
+      return value.some((item, index) =>
+        compareValues(item, initialValue[index]),
       );
     }
 
     // Very crudely handle object type changes. Could be performance intensive based on the size of the object.
-    if (typeof values[key] === 'object') {
-      return JSON.stringify(values[key]) !== JSON.stringify(initialValues[key]);
-    }
+    if (value instanceof Object && initialValue instanceof Object) {
+      const castValue = value as Record<string, unknown>;
+      const castInitialValue = initialValue as Record<string, unknown>;
 
-    return values[key] !== initialValues[key];
+      return Object.keys(value).some((key) =>
+        compareValues(castValue[key], castInitialValue[key]),
+      );
+    }
   }
+
+  return value !== initialValue;
+}
+
+function useFormState<T, R>(values: Values<T>, config?: Config<R>) {
+  const [initialValues, setInitialValues] = useState(values);
+  const [state, setState] = useState(values);
 
   const valuesChanged = Object.keys(values).filter((key) =>
-    compareValues(key as keyof T),
+    compareValues(
+      values[key as keyof T],
+      initialValues[key as keyof T],
+      config?.deepCompare,
+    ),
   );
 
-  function updateFromNewValues() {
-    if (!valuesChanged.length) {
-      return;
-    }
-
-    const update = { ...state };
-
-    for (const key in values) {
-      if (initialValues[key] !== values[key]) {
-        update[key] = values[key];
+  useEffect(() => {
+    if (valuesChanged.length) {
+      for (const key in values) {
         setInitialValues((s) => ({ ...s, [key]: values[key] }));
-        onNewInitialValue(key, values[key]);
       }
     }
-
-    setState(update);
-  }
-
-  useEffect(updateFromNewValues);
+  }, [valuesChanged]);
 
   return {
     state,
@@ -85,12 +103,7 @@ export function useForm<T, R extends T = T>(
   config?: Config<R>,
 ) {
   const [validation, setValidation] = useState<Validation<T>>({});
-  const { state, setState, initialValues } = useFormState(
-    values,
-    (key, value) =>
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      setValidation((s) => ({ ...s, [key]: localValidation(key, value) })),
-  );
+  const { state, setState, initialValues } = useFormState(values, config);
 
   function validateByRule(key: keyof T, value: T[keyof T] | undefined) {
     if (!value) {
@@ -147,8 +160,8 @@ export function useForm<T, R extends T = T>(
 
   /** Boolean value of whether the form has changed from it's initially set values. */
   function hasChanged() {
-    return Object.keys(state).some(
-      (key) => initialValues[key as keyof T] !== state[key as keyof T],
+    return Object.keys(state).some((key) =>
+      compareValues(state[key as keyof T], initialValues[key as keyof T]),
     );
   }
 
