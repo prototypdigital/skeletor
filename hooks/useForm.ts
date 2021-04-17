@@ -16,78 +16,8 @@ type Config<R> = {
   rules?: Rules<R>;
   /** Will compare key/value pairs instead of just top level JSON.stringify on complex objects/arrays */
   deepCompare?: boolean;
+  logging?: boolean;
 };
-
-function compareValues(
-  value: unknown,
-  initialValue: unknown,
-  deepCompare?: boolean,
-): boolean {
-  // Fallback for date handling (Date object causes constant changes for some reason)
-  if (value instanceof Date) {
-    return (
-      (value as Date).toISOString() !== (initialValue as Date).toISOString()
-    );
-  }
-
-  // Very crudely handle object type changes. Could be performance intensive based on the size of the object.
-  if (value instanceof Object && initialValue instanceof Object) {
-    if (!deepCompare) {
-      const valueString = JSON.stringify({ ...value });
-      const initialValueString = JSON.stringify({ ...initialValue });
-      return valueString !== initialValueString;
-    }
-
-    if (Array.isArray(value) && Array.isArray(initialValue)) {
-      if (value.length !== initialValue.length) {
-        return true;
-      }
-
-      return value.some((item, index) =>
-        compareValues(item, initialValue[index]),
-      );
-    }
-
-    // Very crudely handle object type changes. Could be performance intensive based on the size of the object.
-    if (value instanceof Object && initialValue instanceof Object) {
-      const castValue = value as Record<string, unknown>;
-      const castInitialValue = initialValue as Record<string, unknown>;
-
-      return Object.keys(value).some((key) =>
-        compareValues(castValue[key], castInitialValue[key]),
-      );
-    }
-  }
-
-  return value !== initialValue;
-}
-
-function useFormState<T, R>(values: Values<T>, config?: Config<R>) {
-  const [initialValues, setInitialValues] = useState(values);
-  const [state, setState] = useState(values);
-
-  const valuesChanged = Object.keys(values).filter((key) =>
-    compareValues(
-      values[key as keyof T],
-      initialValues[key as keyof T],
-      config?.deepCompare,
-    ),
-  );
-
-  useEffect(() => {
-    if (valuesChanged.length) {
-      for (const key in values) {
-        setInitialValues((s) => ({ ...s, [key]: values[key] }));
-      }
-    }
-  }, [valuesChanged]);
-
-  return {
-    state,
-    initialValues,
-    setState,
-  };
-}
 
 /** One-fits-all solution to manage state changes, field validation and optional entries within a form.
  * @example <caption>Simple use case:</caption>
@@ -98,12 +28,49 @@ function useFormState<T, R>(values: Values<T>, config?: Config<R>) {
  * const { state, validation, onUpdate } = useForm<{ numericOrUndefined: number | undefined }>({ numericOrUndefined: undefined }, { rules: { numericOrUndefined: (value: number | undefined): boolean | undefined => ... }});
  *
  */
-export function useForm<T, R extends T = T>(
-  values: Values<T>,
-  config?: Config<R>,
-) {
+export function useForm<T, R extends T>(values: Values<T>, config?: Config<R>) {
+  const { logging = false, deepCompare = false } = config || {};
+  const keys = Object.keys(values) as Array<keyof T>;
   const [validation, setValidation] = useState<Validation<T>>({});
-  const { state, setState, initialValues } = useFormState(values, config);
+  const [initialState, setInitialState] = useState({ ...values });
+  const [state, setState] = useState({ ...values });
+
+  function compareValues(
+    value: Values<T>[keyof T],
+    previousValue: Values<T>[keyof T],
+  ): boolean {
+    // Fallback for date handling (Date object causes constant changes for some reason)
+    if (value instanceof Date && previousValue instanceof Date) {
+      return value.toISOString() !== previousValue.toISOString();
+    }
+
+    // Very crudely handle object type changes. Could be performance intensive based on the size of the object.
+    if (value instanceof Object && previousValue instanceof Object) {
+      if (!deepCompare) {
+        const valueString = JSON.stringify({ ...value });
+        const previousValueString = JSON.stringify({ ...previousValue });
+        return valueString !== previousValueString;
+      }
+
+      if (Array.isArray(value) && Array.isArray(previousValue)) {
+        if (value.length !== previousValue.length) {
+          return true;
+        }
+
+        return value.some((item, index) =>
+          compareValues(item, previousValue[index]),
+        );
+      }
+
+      // Very crudely handle object type changes. Could be performance intensive based on the size of the object.
+
+      return Object.keys(value as Object).some((key) =>
+        compareValues((value as any)[key], (previousValue as any)[key]),
+      );
+    }
+
+    return value !== previousValue;
+  }
 
   function validateByRule(key: keyof T, value: T[keyof T] | undefined) {
     if (!value) {
@@ -141,7 +108,11 @@ export function useForm<T, R extends T = T>(
    * @example <caption>Usage with other components:</caption>
    * <TextInput ... onChange={(event) => onUpdate("nameOfProp", event.nativeEvent.text, false)} onBlur={(event) => onUpdate("nameOfProp", event.nativeEvent.text, true)}
    *  */
-  function onUpdate(key: keyof T, value: T[keyof T], validate?: boolean) {
+  function onUpdate<K extends keyof T>(
+    key: K,
+    value: Values<T>[K],
+    validate?: boolean,
+  ) {
     setState((s) => ({ ...s, [key]: value }));
     setValidation((s) => ({
       ...s,
@@ -151,7 +122,7 @@ export function useForm<T, R extends T = T>(
 
   /** Boolean value of whether the form is valid (ie can be submitted). Use this to disable/enable form submission. */
   function isFormValid() {
-    return !Object.keys(values).some((key) =>
+    return !keys.some((key) =>
       isOptional(key as keyof T)
         ? validation[key as keyof T] === false
         : !validation[key as keyof T],
@@ -160,14 +131,22 @@ export function useForm<T, R extends T = T>(
 
   /** Boolean value of whether the form has changed from it's initially set values. */
   function hasChanged() {
-    return Object.keys(state).some((key) =>
-      compareValues(state[key as keyof T], initialValues[key as keyof T]),
+    const changed = keys.filter((key) =>
+      compareValues(state[key], initialState[key]),
     );
+    if (logging && changed.length)
+      console.log('Changed values: ', changed.join(', '));
+    return Boolean(changed.length);
   }
 
   /** Resets changed values to initial state */
-  function clearState() {
+  function resetState() {
     setState(values);
+  }
+
+  /** Re-initializes initial state from currently passed values. Use this if you need to reinitialize the form after the source values change, i.e. if a different state object comes into play after submitting the form (such as reducer data or API endpoint response data) */
+  function resetInitialValues() {
+    setInitialState(values);
   }
 
   /** Resets validation to initial state.
@@ -185,7 +164,8 @@ export function useForm<T, R extends T = T>(
 
   /** Resets entire form, state and validation included */
   function clearForm() {
-    clearState();
+    resetInitialValues();
+    resetState();
     resetValidation();
   }
 
@@ -199,7 +179,8 @@ export function useForm<T, R extends T = T>(
     onUpdate,
     isFormValid,
     clearForm,
-    clearState,
+    resetState,
     resetValidation,
+    resetInitialValues,
   };
 }
