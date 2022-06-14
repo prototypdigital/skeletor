@@ -72,8 +72,12 @@ export function useForm<T, R extends T>(values: Values<T>, config?: Config<R>) {
     return value !== previousValue;
   }
 
-  function validateByRule(key: keyof T, value: T[keyof T] | undefined) {
-    if (!value) {
+  function validateByRule<K extends keyof T>(key: K, value: T[K] | undefined) {
+    if (
+      value === undefined ||
+      value === null ||
+      (typeof value === 'string' && value === '')
+    ) {
       return undefined;
     }
 
@@ -81,7 +85,7 @@ export function useForm<T, R extends T>(values: Values<T>, config?: Config<R>) {
       return Boolean(value);
     }
 
-    const isValid = config.rules[key]?.(value as R[keyof T]);
+    const isValid = config.rules[key]?.(value as R[K]);
     return isValid;
   }
 
