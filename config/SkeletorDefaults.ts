@@ -4,7 +4,7 @@ export const SkeletorDefaults: SkeletorConfig = {
   general: {
     defaultStatusBarType: 'dark-content',
   },
-  _Button: {
+  $Button: {
     height: 40,
     paddings: { paddingHorizontal: 20, paddingVertical: 10 },
     margins: { marginVertical: 10 },
@@ -23,7 +23,7 @@ export const SkeletorDefaults: SkeletorConfig = {
       textAlign: 'center',
     },
   },
-  _Text: {
+  $Text: {
     sizes: {
       micro: { fontSize: 8, lineHeight: 12 },
       tiny: { fontSize: 11, lineHeight: 16 },
@@ -36,7 +36,7 @@ export const SkeletorDefaults: SkeletorConfig = {
     defaultSize: 'small',
     defaultColor: 'black',
   },
-  _Input: {
+  $Input: {
     containerStyle: { marginVertical: 8 },
     defaultStyle: {
       height: 50,

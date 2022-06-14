@@ -6,8 +6,8 @@ export type SkeletorConfig = {
     defaultStatusBarType: 'dark-content' | 'light-content' | 'default';
   };
   _Text: {
-    sizes?: _TextSizes;
-    defaultSize?: _TextSize;
+    sizes?: $TextSizes;
+    defaultSize?: $TextSize;
     defaultColor?: string;
   };
   _Input: {
@@ -20,13 +20,13 @@ export type SkeletorConfig = {
   };
   _Button: {
     height?: number;
-    paddings?: _Spacing['paddings'];
-    margins?: _Spacing['margins'];
+    paddings?: $Spacing['paddings'];
+    margins?: $Spacing['margins'];
     minWidth?: number;
     baseStyle?: StyleProp<ViewStyle>;
     pressedStyle?: StyleProp<ViewStyle>;
     disabledOpacity?: number;
-    textStyle?: _TextProps;
+    textStyle?: $TextProps;
     loadingColor?: string;
   };
 };
