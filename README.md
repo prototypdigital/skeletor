@@ -22,13 +22,13 @@ Since this is supposed to be as configurable as possible while still maintaining
 ```javascript
 /// index.js
 const App = () => {
-    return (
-        <SkeletorProvider>
-            <StoreProvider>
-                <RootNavigator />
-            </StoreProvider>
-        </SkeletorProvider>
-    );
+  return (
+    <SkeletorProvider>
+      <StoreProvider>
+        <RootNavigator />
+      </StoreProvider>
+    </SkeletorProvider>
+  );
 };
 ```
 
@@ -37,33 +37,33 @@ const App = () => {
 ```javascript
 type SkeletorConfig = {
   general: {
-    defaultFont?: string;
-    defaultStatusBarType: 'dark-content' | 'light-content' | 'default';
-  };
+    defaultFont?: string,
+    defaultStatusBarType: 'dark-content' | 'light-content' | 'default',
+  },
   _Text: {
-    sizes: _TextSizes;
-    defaultSize: _TextSize;
-    defaultColor: string;
-  };
+    sizes: _TextSizes,
+    defaultSize: _TextSize,
+    defaultColor: string,
+  },
   _Input: {
-    containerStyle: StyleProp<ViewStyle>;
-    errorStyle: StyleProp<TextStyle>;
-    focusStyle: StyleProp<TextStyle>;
-    disabledStyle: StyleProp<TextStyle>;
-    multilineStyle: StyleProp<TextStyle>;
-    defaultStyle: StyleProp<TextStyle>;
-  };
+    containerStyle: StyleProp<ViewStyle>,
+    errorStyle: StyleProp<TextStyle>,
+    focusStyle: StyleProp<TextStyle>,
+    disabledStyle: StyleProp<TextStyle>,
+    multilineStyle: StyleProp<TextStyle>,
+    defaultStyle: StyleProp<TextStyle>,
+  },
   _Button: {
-    height: number;
-    paddings: _Spacing['paddings'];
-    margins: _Spacing['margins'];
-    minWidth: number;
-    baseStyle: StyleProp<ViewStyle>;
-    pressedStyle: StyleProp<ViewStyle>;
-    disabledOpacity: number;
-    textStyle: _TextProps;
-    loadingColor: string;
-  };
+    height: number,
+    paddings: _Spacing['paddings'],
+    margins: _Spacing['margins'],
+    minWidth: number,
+    baseStyle: StyleProp<ViewStyle>,
+    pressedStyle: StyleProp<ViewStyle>,
+    disabledOpacity: number,
+    textStyle: _TextProps,
+    loadingColor: string,
+  },
 };
 ```
 
@@ -83,6 +83,6 @@ const skeletor = useSkeletor();
 return <SomeComponent style={{ fontFamily: skeletor.general.defaultFont }} />;
 ```
 
-2. Feel free to use all the Skeletor components at your disposal. Those include `_Image`, `_Text`, `_Button`, `_Screen`, `_Wrapper`, `_Container` and `_Input`. They will make your life easier when creating screens or components, trust me.
+2. Feel free to use all the Skeletor components at your disposal. Those include `_Image`, `_Text`, `_Button`, `_Screen`, `$Wrapper`, `_Container` and `_Input`. They will make your life easier when creating screens or components, trust me.
 
 3. There are hooks at your disposal, which are sort of documented. Most notably, you can use `useForm` together with `_Input` components for much easier form validation and handling. For animations, you can use `useAnims` to make animation handling a little bit easier. Each one of those is documented enough, so have a crack at it.
