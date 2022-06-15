@@ -29,7 +29,7 @@ export const $Button: React.FC<Props> = ({
   loading,
   ...rest
 }) => {
-  const { _Button: styles } = useSkeletor();
+  const { $Button: styles } = useSkeletor();
 
   if (loading) {
     return (
