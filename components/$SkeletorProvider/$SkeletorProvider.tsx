@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { SkeletorDefaults } from 'skeletor/config';
 import { SkeletorConfig } from 'skeletor/models';
 import { $SkeletorContext } from './$SkeletorContext';

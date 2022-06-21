@@ -1,7 +1,7 @@
 import { useContext } from 'react';
-import { _SkeletorContext } from 'skeletor/components';
+import { $SkeletorContext } from '../components';
 
 export function useSkeletor() {
-  const skeletor = useContext(_SkeletorContext);
+  const skeletor = useContext($SkeletorContext);
   return skeletor;
 }
