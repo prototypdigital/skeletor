@@ -5,7 +5,7 @@ import { useSkeletor } from '../../hooks';
 
 type Props = $TextProps & TextProps & $Spacing;
 
-export const $Text: React.FC<Props> = ({
+export const $Text: ReactFC<Props> = ({
   size,
   font,
   textTransform,

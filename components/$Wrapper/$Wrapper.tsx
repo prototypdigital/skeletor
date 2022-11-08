@@ -4,7 +4,7 @@ import { getUsableStylesFromProps } from '../../helpers';
 
 type Props = $WrapperProps & $Alignment & $Spacing & $Size & ViewProps;
 
-export const $Wrapper: React.FC<Props> = ({
+export const $Wrapper: ReactFC<Props> = ({
   children,
   margins,
   paddings,

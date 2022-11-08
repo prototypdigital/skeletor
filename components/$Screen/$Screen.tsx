@@ -13,7 +13,7 @@ import { $Wrapper } from '../$Wrapper';
 
 type Props = $ScreenProps & ViewProps;
 
-export const $Screen: React.FC<Props> = ({
+export const $Screen: ReactFC<Props> = ({
   background,
   children,
   disableAndroidBack,
