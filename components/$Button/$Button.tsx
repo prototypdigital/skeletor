@@ -7,7 +7,7 @@ import { $Wrapper } from '../$Wrapper';
 
 type Props = $ButtonProps & $Spacing & $Size & $Alignment & PressableProps;
 
-export const $Button: React.FC<Props> = ({
+export const $Button: ReactFC<Props> = ({
   width,
   height,
   maxWidth,

@@ -7,7 +7,7 @@ type Props = $Alignment & $Size & $ContainerProps & ViewProps;
 /** Basically just a full height/width $Wrapper component (flex 1)
  * To be used as the main container within a _Screen component
  */
-export const $Container: React.FC<Props> = ({
+export const $Container: ReactFC<Props> = ({
   children,
   bounces = false,
   scrollable,

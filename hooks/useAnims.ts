@@ -1,23 +1,23 @@
-import { useEffect, useRef, useState } from 'react';
-import { Animated } from 'react-native';
+import { useEffect, useRef, useState } from "react";
+import { Animated } from "react-native";
 
 export type AnimType =
-  | 'fadeIn'
-  | 'slideIn'
-  | 'fadeOut'
+  | "fadeIn"
+  | "slideIn"
+  | "fadeOut"
   | number[]
   | string[]
   | { inputRange: number[] | string[]; outputRange: number[] | string[] };
 
 function getAnimationOutputRange(type: AnimType): number[] {
   switch (type) {
-    case 'fadeIn':
+    case "fadeIn":
       return [0, 1];
 
-    case 'fadeOut':
+    case "fadeOut":
       return [1, 0];
 
-    case 'slideIn':
+    case "slideIn":
       return [20, 0];
 
     default:
@@ -41,7 +41,7 @@ interface AnimationSet {
   ref: Animated.Value;
   animations: {
     config: { duration: number; loop?: boolean; useNativeDriver?: boolean };
-    items: Animated.AnimatedInterpolation[];
+    items: Animated.AnimatedInterpolation<string | number>[];
   };
 }
 
@@ -50,7 +50,7 @@ class AnimationSet {
     ref: Animated.Value,
     animations: {
       config: { duration: number; loop?: boolean; useNativeDriver?: boolean };
-      items: Animated.AnimatedInterpolation[];
+      items: Animated.AnimatedInterpolation<string | number>[];
     },
   ) {
     this.ref = ref;
@@ -78,7 +78,7 @@ interface TimelineConfiguration {
 function createAnimation(animations: AnimType[], ref: Animated.Value) {
   const processedAnimations = animations.map((type) => {
     const isDefinedAsObject =
-      typeof type === 'object' &&
+      typeof type === "object" &&
       !Array.isArray(type) &&
       type.inputRange &&
       type.outputRange;
@@ -112,11 +112,12 @@ function createAnimation(animations: AnimType[], ref: Animated.Value) {
   ...
   <Animated.View style={{opacity: content.animations.items[0]}} />
  */
-export function useAnims<T>(
-  definition: { [K in keyof T]: AnimConfiguration },
-): { [K in keyof T]: AnimationSet } {
-  const refs = useRef(Object.keys(definition).map(() => new Animated.Value(0)))
-    .current;
+export function useAnims<T>(definition: {
+  [K in keyof T]: AnimConfiguration;
+}): { [K in keyof T]: AnimationSet } {
+  const refs = useRef(
+    Object.keys(definition).map(() => new Animated.Value(0)),
+  ).current;
   const anims = Object.keys(definition).map(
     (key) => definition[key as keyof T].anims,
   );

@@ -5,7 +5,7 @@ import { $Wrapper } from '../$Wrapper';
 
 type Props = ImageProps & $ImageProps & $Spacing & $Alignment;
 
-export const $Image: React.FC<Props> = ({
+export const $Image: ReactFC<Props> = ({
   height,
   width,
   radius,
