@@ -5,12 +5,12 @@ export type SkeletorConfig = {
     defaultFont?: string;
     defaultStatusBarType: 'dark-content' | 'light-content' | 'default';
   };
-  _Text: {
+  $Text: {
     sizes?: $TextSizes;
     defaultSize?: $TextSize;
     defaultColor?: string;
   };
-  _Input: {
+  $Input: {
     containerStyle?: StyleProp<ViewStyle>;
     errorStyle?: StyleProp<TextStyle>;
     focusStyle?: StyleProp<TextStyle>;
@@ -18,7 +18,7 @@ export type SkeletorConfig = {
     multilineStyle?: StyleProp<TextStyle>;
     defaultStyle?: StyleProp<TextStyle>;
   };
-  _Button: {
+  $Button: {
     height?: number;
     paddings?: $Spacing['paddings'];
     margins?: $Spacing['margins'];

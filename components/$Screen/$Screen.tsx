@@ -8,7 +8,7 @@ import {
   StatusBar,
   Platform,
 } from 'react-native';
-import { useSkeletor } from 'skeletor/hooks';
+import { useSkeletor } from '../../hooks';
 import { $Wrapper } from '../$Wrapper';
 
 type Props = $ScreenProps & ViewProps;

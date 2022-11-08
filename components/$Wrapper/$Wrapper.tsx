@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ViewProps } from 'react-native';
-import { getUsableStylesFromProps } from 'skeletor/helpers';
+import { getUsableStylesFromProps } from '../../helpers';
 
 type Props = $WrapperProps & $Alignment & $Spacing & $Size & ViewProps;
 

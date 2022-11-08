@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image, ImageProps } from 'react-native';
-import { getUsableStylesFromProps } from 'skeletor/helpers';
+import { getUsableStylesFromProps } from '../../helpers';
 import { $Wrapper } from '../$Wrapper';
 
 type Props = ImageProps & $ImageProps & $Spacing & $Alignment;

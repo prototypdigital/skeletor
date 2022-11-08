@@ -9,7 +9,7 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import { useSkeletor } from 'skeletor/hooks';
+import { useSkeletor } from '../../hooks';
 import { $Wrapper } from '../$Wrapper';
 
 export type InputProps = {

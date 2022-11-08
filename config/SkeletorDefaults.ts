@@ -1,4 +1,4 @@
-import { SkeletorConfig } from 'skeletor/models';
+import { SkeletorConfig } from '../models';
 
 export const SkeletorDefaults: SkeletorConfig = {
   general: {
