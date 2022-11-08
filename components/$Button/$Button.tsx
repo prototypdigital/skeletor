@@ -1,7 +1,7 @@
 import React from 'react';
 import { ActivityIndicator, Pressable, PressableProps } from 'react-native';
-import { getUsableStylesFromProps } from 'skeletor/helpers';
-import { useSkeletor } from 'skeletor/hooks';
+import { getUsableStylesFromProps } from '../../helpers';
+import { useSkeletor } from '../../hooks';
 import { $Text } from '../$Text';
 import { $Wrapper } from '../$Wrapper';
 

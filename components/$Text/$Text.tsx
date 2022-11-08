@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, TextProps } from 'react-native';
-import { getUsableStylesFromProps } from 'skeletor/helpers';
-import { useSkeletor } from 'skeletor/hooks';
+import { getUsableStylesFromProps } from '../../helpers';
+import { useSkeletor } from '../../hooks';
 
 type Props = $TextProps & TextProps & $Spacing;
 

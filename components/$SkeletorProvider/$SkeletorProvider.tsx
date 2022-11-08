@@ -1,6 +1,6 @@
 import React from 'react';
-import { SkeletorDefaults } from 'skeletor/config';
-import { SkeletorConfig } from 'skeletor/models';
+import { SkeletorDefaults } from '../../config';
+import { SkeletorConfig } from '../../models';
 import { $SkeletorContext } from './$SkeletorContext';
 
 export const SkeletorProvider: React.FC<Partial<SkeletorConfig>> = ({
