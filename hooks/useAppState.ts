@@ -1,5 +1,5 @@
-import { useCallback, useEffect } from 'react';
-import { AppState, AppStateStatus } from 'react-native';
+import { useCallback, useEffect } from "react";
+import { AppState, AppStateStatus } from "react-native";
 
 interface Config {
   onForeground?: () => void;
@@ -13,7 +13,7 @@ export function useAppState({ onForeground, onBackground }: Config) {
         onBackground();
       }
 
-      if (state === 'active' && onForeground) {
+      if (state === "active" && onForeground) {
         onForeground();
       }
     },
@@ -21,10 +21,7 @@ export function useAppState({ onForeground, onBackground }: Config) {
   );
 
   useEffect(() => {
-    AppState.addEventListener('change', handleAppStateChange);
-
-    return () => {
-      AppState.removeEventListener('change', handleAppStateChange);
-    };
+    const event = AppState.addEventListener("change", handleAppStateChange);
+    return event.remove;
   }, [handleAppStateChange]);
 }
