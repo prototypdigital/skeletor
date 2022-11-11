@@ -9,13 +9,8 @@ interface Config {
 export function useAppState({ onForeground, onBackground }: Config) {
   const handleAppStateChange = useCallback(
     (state: AppStateStatus) => {
-      if (state.match(/background|inactive/) && onBackground) {
-        onBackground();
-      }
-
-      if (state === "active" && onForeground) {
-        onForeground();
-      }
+      if (state.match(/background|inactive/)) onBackground?.();
+      if (state === "active") onForeground?.();
     },
     [onBackground, onForeground],
   );
