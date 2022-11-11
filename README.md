@@ -5,9 +5,8 @@
 ### Initialization
 
 1. Open the root of your react-native project in the terminal.
-2. Type in `cd src && git submodule add git@github.com:prototypdigital/skeletor.git && cd ..`
-3. Type in `yarn add ./src/skeletor`
-4. You are good to go!
+2. Change directory to where you want to add the skeletor folder, ie: `cd src && git submodule add git@github.com:prototypdigital/skeletor.git`
+3. You are good to go!
 
 ---
 
@@ -22,55 +21,36 @@ Since this is supposed to be as configurable as possible while still maintaining
 ```javascript
 /// index.js
 const App = () => {
-  return (
-    <SkeletorProvider>
-      <StoreProvider>
-        <RootNavigator />
-      </StoreProvider>
-    </SkeletorProvider>
-  );
+    return (
+        <SkeletorProvider>
+            <StoreProvider>
+                <RootNavigator />
+            </StoreProvider>
+        </SkeletorProvider>
+    );
 };
 ```
 
-2. Configure the SkeletorProvider properties with whatever you desire. There are defaults set (SkeletorDefaults import), but the properties are as configurable as they need to be. You can configure all of the prebuilt Skeletor components. Here is the list of all configurable properties for the SkeletorProvider component:
+2. Configure the SkeletorProvider properties with whatever you desire. Here is the list of all configurable properties for the SkeletorProvider component:
 
 ```javascript
 type SkeletorConfig = {
-  general: {
-    defaultFont?: string,
-    defaultStatusBarType: 'dark-content' | 'light-content' | 'default',
-  },
-  _Text: {
-    sizes: _TextSizes,
-    defaultSize: _TextSize,
-    defaultColor: string,
-  },
-  _Input: {
-    containerStyle: StyleProp<ViewStyle>,
-    errorStyle: StyleProp<TextStyle>,
-    focusStyle: StyleProp<TextStyle>,
-    disabledStyle: StyleProp<TextStyle>,
-    multilineStyle: StyleProp<TextStyle>,
-    defaultStyle: StyleProp<TextStyle>,
-  },
-  _Button: {
-    height: number,
-    paddings: _Spacing['paddings'],
-    margins: _Spacing['margins'],
-    minWidth: number,
-    baseStyle: StyleProp<ViewStyle>,
-    pressedStyle: StyleProp<ViewStyle>,
-    disabledOpacity: number,
-    textStyle: _TextProps,
-    loadingColor: string,
-  },
+    defaultFont: $Font,
+    defaultStatusBarType: "dark-content" | "light-content" | "default",
 };
 ```
 
-To override any of the defaults set, pass the object as a parameter into the `SkeletorProvider component` like so:
+For Skeletor to detect the fonts you have added, you will have to create a type defintion file to override the existing $Font type like in the following example:
 
 ```javascript
-<SkeletorProvider general={{ defaultFont: 'Arial' }}>...</SkeletorProvider>
+/// src/types/$Font.d.ts
+type $Font = "Helvetica" | "Roboto" | "San Francisco";
+```
+
+Then you can configure the `defaultFont` property as follows:
+
+```javascript
+<SkeletorProvider general={{ defaultFont: "Arial" }}>...</SkeletorProvider>
 ```
 
 ## Usage
@@ -79,10 +59,29 @@ To override any of the defaults set, pass the object as a parameter into the `Sk
 
 ```javascript
 const skeletor = useSkeletor();
-
-return <SomeComponent style={{ fontFamily: skeletor.general.defaultFont }} />;
+return <SomeComponent style={{ fontFamily: skeletor.defaultFont }} />;
 ```
 
-2. Feel free to use all the Skeletor components at your disposal. Those include `_Image`, `_Text`, `_Button`, `_Screen`, `$Wrapper`, `_Container` and `_Input`. They will make your life easier when creating screens or components, trust me.
+2. The `$Text`, `$Screen`, `$Block` components have been built to make inline styling easy and allow you to quickly compose screens eliminating a lot of the need to create StyleSheet styles. As a rule of thumb:
 
-3. There are hooks at your disposal, which are sort of documented. Most notably, you can use `useForm` together with `_Input` components for much easier form validation and handling. For animations, you can use `useAnims` to make animation handling a little bit easier. Each one of those is documented enough, so have a crack at it.
+-   Wrap every screen you navigate to with `$Screen`. It has some helpful layout properties and events built into it.
+-   You can control how every component is laid out with the `$Block` component. It can defined alignment, spacing, size and border properties inline, without the need to generate a StyleSheet.
+-   Use `$Text` instead of the default `Text` component, it has inline properties that help you change the font to your custom font defined in the `$Font` type and will always default to the one you set in the `SkeletonProvider` context wrapper.
+
+3. List of utility hooks you can use:
+
+-   `useForm` -> This can handle input change / validation without any particular handler being created. It will make working with forms and inputs a LOT easier.
+-   `useAnimation` & `useAnimationTimeline` -> This will help you create animations with as little code as possible. `useAnimation` defines the animations, `useAnimationTimeline` lays the animated elements out on a timeline you can configure with delays, staggers, parallel executions etc. There are caveats - for instance `transformX/transformY` can be defined in the `useAnimation` hook, but when using it on an animated element you have to pass the values in as follows:
+
+```javascript
+<Animated.View
+    style={{ transform: [{ translateY: element.animations.translateY }] }}
+>
+    ...
+</Animated.View>
+```
+
+### TODO
+
+1. Improve documentation
+2. Maybe separate `$Screen` into `$ScreenContainer`, `$ScreenHeader`, `$ScreenContent`, `$ScreenFooter` to clean up properties and not have to pass in header/footer as a prop.

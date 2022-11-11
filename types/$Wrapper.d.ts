@@ -1,3 +1,0 @@
-type $WrapperProps = {
-  background?: string;
-};

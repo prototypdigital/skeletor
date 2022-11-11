@@ -1,1 +1,1 @@
-export * from './SkeletorConfig';
+export * from "./$Alignment";

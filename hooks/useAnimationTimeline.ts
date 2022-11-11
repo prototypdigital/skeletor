@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Animated, ViewStyle } from "react-native";
+import { Animated, Easing, ViewStyle } from "react-native";
 import { AnimationSet } from "./useAnimation";
 
 interface BaseTimelineType<Keys extends keyof Partial<ViewStyle>> {
@@ -60,6 +60,7 @@ export function useAnimTimeline<Keys extends keyof Partial<ViewStyle>>(
             toValue: timeline.start ? lastValue : 0,
             duration: configuration.duration,
             useNativeDriver: !configuration.loop,
+            easing: Easing.ease,
           });
 
           compositions.push(configuration.loop ? Animated.loop(base) : base);

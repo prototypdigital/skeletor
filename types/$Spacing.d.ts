@@ -1,20 +1,20 @@
 interface $Spacing {
   margins?: {
-    marginTop?: number;
-    marginBottom?: number;
-    marginLeft?: number;
-    marginRight?: number;
-    marginHorizontal?: number;
-    marginVertical?: number;
-    margin?: number;
+    marginTop?: number | string;
+    marginBottom?: number | string;
+    marginLeft?: number | string;
+    marginRight?: number | string;
+    marginHorizontal?: number | string;
+    marginVertical?: number | string;
+    margin?: number | string;
   };
   paddings?: {
-    paddingTop?: number;
-    paddingBottom?: number;
-    paddingLeft?: number;
-    paddingRight?: number;
-    paddingHorizontal?: number;
-    paddingVertical?: number;
-    padding?: number;
+    paddingTop?: number | string;
+    paddingBottom?: number | string;
+    paddingLeft?: number | string;
+    paddingRight?: number | string;
+    paddingHorizontal?: number | string;
+    paddingVertical?: number | string;
+    padding?: number | string;
   };
 }
