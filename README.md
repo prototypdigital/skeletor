@@ -36,6 +36,7 @@ const App = () => {
 ```javascript
 type SkeletorConfig = {
     defaultFont: $Font,
+    defaultFontSize: number,
     defaultStatusBarType: "dark-content" | "light-content" | "default",
 };
 ```
@@ -50,7 +51,7 @@ type $Font = "Helvetica" | "Roboto" | "San Francisco";
 Then you can configure the `defaultFont` property as follows:
 
 ```javascript
-<SkeletorProvider general={{ defaultFont: "Arial" }}>...</SkeletorProvider>
+<SkeletorProvider defaultFont="Arial">...</SkeletorProvider>
 ```
 
 ## Usage
