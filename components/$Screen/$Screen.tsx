@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 import {
   SafeAreaView,
   View,
@@ -7,9 +7,9 @@ import {
   StyleSheet,
   StatusBar,
   Platform,
-} from 'react-native';
-import { useSkeletor } from '../../hooks';
-import { $Wrapper } from '../$Wrapper';
+} from "react-native";
+import { useSkeletor } from "../../hooks";
+import { $Block } from "../$Block";
 
 type Props = $ScreenProps & ViewProps;
 
@@ -28,7 +28,7 @@ export const $Screen: ReactFC<Props> = ({
   isLandscape,
   ...rest
 }) => {
-  const skeletor = useSkeletor();
+  const { defaultStatusBarType } = useSkeletor();
   function isAndroidBackButtonDisabled() {
     return Boolean(disableAndroidBack);
   }
@@ -36,13 +36,13 @@ export const $Screen: ReactFC<Props> = ({
   /** Disable android back button if need be */
   useEffect(() => {
     BackHandler.addEventListener(
-      'hardwareBackPress',
+      "hardwareBackPress",
       isAndroidBackButtonDisabled,
     );
 
     return () =>
       BackHandler.removeEventListener(
-        'hardwareBackPress',
+        "hardwareBackPress",
         isAndroidBackButtonDisabled,
       );
   }, [disableAndroidBack]);
@@ -50,7 +50,7 @@ export const $Screen: ReactFC<Props> = ({
   return (
     <>
       {background &&
-        (typeof background === 'string' ? (
+        (typeof background === "string" ? (
           <View style={[styles.container, { backgroundColor: background }]} />
         ) : (
           <View style={styles.container}>{background}</View>
@@ -63,13 +63,13 @@ export const $Screen: ReactFC<Props> = ({
       <StatusBar
         translucent
         backgroundColor="transparent"
-        barStyle={statusBarType || skeletor.general.defaultStatusBarType}
+        barStyle={statusBarType || defaultStatusBarType}
       />
 
-      <$Wrapper
+      <$Block
         paddings={{
           paddingTop:
-            Platform.OS === 'android' && !isLandscape
+            Platform.OS === "android" && !isLandscape
               ? StatusBar.currentHeight || 24
               : 0,
         }}
@@ -79,7 +79,7 @@ export const $Screen: ReactFC<Props> = ({
       >
         {header}
         {children}
-      </$Wrapper>
+      </$Block>
 
       {footer}
 
@@ -92,8 +92,8 @@ export const $Screen: ReactFC<Props> = ({
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    height: '100%',
-    width: '100%',
+    position: "absolute",
+    height: "100%",
+    width: "100%",
   },
 });

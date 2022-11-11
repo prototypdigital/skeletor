@@ -1,14 +1,15 @@
 import { useMemo, useRef } from "react";
-import { Animated, ViewStyle } from "react-native";
-
-type BaseKeyType = keyof Partial<ViewStyle>;
+import { Animated, Easing, ViewStyle } from "react-native";
 
 /** Any is a hotfix, requires more investigation */
-type Animation<Keys extends BaseKeyType> = Record<
+type Animation<Keys extends keyof Partial<ViewStyle>> = Record<
   Keys,
   Animated.AnimatedInterpolation<string | number> | any
 >;
-type Definition<Keys extends BaseKeyType> = Record<Keys, number[] | string[]>;
+type Definition<Keys extends keyof Partial<ViewStyle>> = Record<
+  Keys,
+  number[] | string[]
+>;
 
 interface Configuration {
   /** In miliseconds */
@@ -17,14 +18,14 @@ interface Configuration {
   loop?: boolean;
 }
 
-export interface AnimationSet<Keys extends BaseKeyType> {
+export interface AnimationSet<Keys extends keyof Partial<ViewStyle>> {
   values: Animated.Value[];
   definitions: Definition<Keys>;
   animations: Animation<Keys>;
   configuration: Configuration;
 }
 
-export function useAnimation<Keys extends BaseKeyType>(
+export function useAnimation<Keys extends keyof Partial<ViewStyle>>(
   styles: Definition<Keys>,
   configuration?: Configuration,
 ): AnimationSet<Keys> {
