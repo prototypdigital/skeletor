@@ -55,7 +55,7 @@ export function useAnimation<Keys extends keyof Partial<ViewStyle>>(
   return {
     values,
     animations,
-    configuration: configuration || { duration: 500 },
+    configuration: configuration || { duration: 250 },
     definitions: styles,
   };
 }
