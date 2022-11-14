@@ -4,7 +4,7 @@ import { useSkeletor } from "../../hooks";
 
 interface $TextProps extends TextProps {
   font?: $Font;
-  /** [fontSize, lineHeight?] */
+  /** Either define [fontSize, lineHeight] or just one size applied to both fontSize and lineHeight */
   size?: [number, number] | number;
   textTransform?: TextStyle["textTransform"];
   color?: string;
