@@ -60,7 +60,7 @@ export function useAnimTimeline<Keys extends keyof Partial<ViewStyle>>(
             toValue: timeline.start ? lastValue : 0,
             duration: configuration.duration,
             useNativeDriver: !configuration.loop,
-            easing: Easing.ease,
+            easing: Easing.inOut(Easing.sin),
           });
 
           compositions.push(configuration.loop ? Animated.loop(base) : base);

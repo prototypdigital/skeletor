@@ -1,5 +1,4 @@
 import React from "react";
-import { SkeletorDefaults } from "../../config";
 import { $SkeletorContext } from "./$SkeletorContext";
 
 type Props = Partial<$SkeletorConfig> & {
@@ -13,7 +12,6 @@ export function SkeletorProvider({ children, ...config }: Props) {
   return (
     <$SkeletorContext.Provider
       value={{
-        ...SkeletorDefaults,
         ...config,
       }}
     >
