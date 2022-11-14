@@ -29,12 +29,13 @@ export const $Screen: ReactFC<Props> = ({
   ...rest
 }) => {
   const { defaultStatusBarType } = useSkeletor();
-  function isAndroidBackButtonDisabled() {
-    return Boolean(disableAndroidBack);
-  }
 
   /** Disable android back button if need be */
   useEffect(() => {
+    function isAndroidBackButtonDisabled() {
+      return Boolean(disableAndroidBack);
+    }
+
     BackHandler.addEventListener(
       "hardwareBackPress",
       isAndroidBackButtonDisabled,
