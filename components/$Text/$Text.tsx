@@ -29,16 +29,17 @@ export const $Text: ReactFC<Props> = ({
 }) => {
   const { defaultFont, defaultFontSize } = useSkeletor();
 
-  const getSize = useMemo(() => {
-    if (Array.isArray(size)) {
-      const [fontSize, lineHeight] = size;
-      return { fontSize, lineHeight };
+  const textSize = useMemo(() => {
+    function mapper(value: [number, number] | number) {
+      if (Array.isArray(value)) {
+        const [fontSize, lineHeight] = value;
+        return { fontSize, lineHeight };
+      } else {
+        return { fontSize: value, lineHeight: value };
+      }
     }
 
-    return {
-      fontSize: size || defaultFontSize,
-      lineHeight: size || defaultFontSize,
-    };
+    return mapper(size || defaultFontSize);
   }, [size, defaultFontSize]);
 
   const styles = useMemo(
@@ -46,7 +47,7 @@ export const $Text: ReactFC<Props> = ({
       StyleSheet.flatten([
         {
           color,
-          ...getSize,
+          ...textSize,
           fontFamily: font || defaultFont,
           opacity,
           textAlign,
