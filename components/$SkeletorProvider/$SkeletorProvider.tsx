@@ -1,5 +1,5 @@
 import React from "react";
-import { $SkeletorContext } from "./$SkeletorContext";
+import { $SkeletorContext, $SkeletorDefaults } from "./$SkeletorContext";
 
 type Props = Partial<$SkeletorConfig> & {
   children: React.ReactNode;
@@ -10,11 +10,7 @@ type Props = Partial<$SkeletorConfig> & {
  * @example type $Font = "Helvetica" | "Montserrat" ...  */
 export function SkeletorProvider({ children, ...config }: Props) {
   return (
-    <$SkeletorContext.Provider
-      value={{
-        ...config,
-      }}
-    >
+    <$SkeletorContext.Provider value={{ ...$SkeletorDefaults, ...config }}>
       {children}
     </$SkeletorContext.Provider>
   );
