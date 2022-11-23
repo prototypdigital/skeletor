@@ -77,7 +77,7 @@ export const Block: ReactFC<Props> = ({ children, ...props }) => {
   const spacing = extractSpacingProperties(props);
   const border = extractBorderProperties(props);
 
-  const Element = () => (
+  const element = () => (
     <BlockElement
       background={background}
       style={style}
@@ -90,7 +90,7 @@ export const Block: ReactFC<Props> = ({ children, ...props }) => {
     </BlockElement>
   );
 
-  if (!scrollable) return <Element />;
+  if (!scrollable) return element();
 
   const {
     horizontal,
@@ -107,7 +107,7 @@ export const Block: ReactFC<Props> = ({ children, ...props }) => {
       contentContainerStyle={{ flexGrow: 1, backgroundColor: background }}
       bounces={bounces}
     >
-      <Element />
+      {element()}
     </ScrollView>
   );
 };
