@@ -1,9 +1,14 @@
 import React, { useMemo } from "react";
-import { StyleSheet, Text, TextProps, TextStyle } from "react-native";
+import {
+  StyleSheet,
+  Text as RNText,
+  TextProps as RNTextProps,
+  TextStyle,
+} from "react-native";
 import { useSkeletor } from "../../hooks";
 
-interface $TextProps extends TextProps {
-  font?: $Font;
+interface TextProps extends RNTextProps {
+  font?: Font;
   /** Either define [fontSize, lineHeight] or just one size applied to both fontSize and lineHeight */
   size?: [number, number] | number;
   textTransform?: TextStyle["textTransform"];
@@ -12,9 +17,9 @@ interface $TextProps extends TextProps {
   opacity?: TextStyle["opacity"];
 }
 
-type Props = $TextProps & $Spacing;
+type Props = TextProps & Spacing;
 
-export const $Text: ReactFC<Props> = ({
+export const Text: ReactFC<Props> = ({
   font,
   size,
   textTransform,
@@ -61,13 +66,13 @@ export const $Text: ReactFC<Props> = ({
   );
 
   return (
-    <Text
+    <RNText
       style={styles}
       allowFontScaling={false}
       maxFontSizeMultiplier={1}
       {...props}
     >
       {children}
-    </Text>
+    </RNText>
   );
 };

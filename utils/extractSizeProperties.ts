@@ -1,6 +1,4 @@
-export function extractSizeProperties<Props extends $Size>(
-  props: Props,
-): $Size {
+export function extractSizeProperties<Props extends Size>(props: Props): Size {
   return {
     flex: props.flex,
     height: props.height,

@@ -32,10 +32,10 @@ interface BlockViewProps extends SharedProps {
 }
 
 interface BlockElementProps extends SharedProps {
-  alignment: $Alignment;
-  spacing: $Spacing;
-  size: $Size;
-  border: $Border;
+  alignment: Alignment;
+  spacing: Spacing;
+  size: Size;
+  border: Border;
 }
 
 const BlockElement: ReactFC<BlockElementProps> = ({ children, ...props }) => {
@@ -67,10 +67,10 @@ const BlockElement: ReactFC<BlockElementProps> = ({ children, ...props }) => {
   );
 };
 
-type BaseProps = $Alignment & $Spacing & $Size & $Border;
+type BaseProps = Alignment & Spacing & Size & Border;
 type Props = (BlockViewProps | BlockScrollViewProps) & BaseProps;
 
-export const $Block: ReactFC<Props> = ({ children, ...props }) => {
+export const Block: ReactFC<Props> = ({ children, ...props }) => {
   const { scrollable, background, style, ...rest } = props;
   const alignment = extractAlignmentProperties(props);
   const size = extractSizeProperties(props);
