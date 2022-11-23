@@ -35,17 +35,17 @@ const App = () => {
 
 ```javascript
 type SkeletorConfig = {
-    defaultFont: $Font,
+    defaultFont: Font,
     defaultFontSize: number,
     defaultStatusBarType: "dark-content" | "light-content" | "default",
 };
 ```
 
-For Skeletor to detect the fonts you have added, you will have to create a type defintion file to override the existing $Font type like in the following example:
+For Skeletor to detect the fonts you have added, you will have to create a type defintion file to override the existing Font type like in the following example:
 
 ```javascript
-/// src/types/$Font.d.ts
-type $Font = "Helvetica" | "Roboto" | "San Francisco";
+/// src/types/Font.d.ts
+type Font = "Helvetica" | "Roboto" | "San Francisco";
 ```
 
 Then you can configure the `defaultFont` property as follows:
@@ -63,11 +63,11 @@ const skeletor = useSkeletor();
 return <SomeComponent style={{ fontFamily: skeletor.defaultFont }} />;
 ```
 
-2. The `$Text`, `$Screen`, `$Block` components have been built to make inline styling easy and allow you to quickly compose screens eliminating a lot of the need to create StyleSheet styles. As a rule of thumb:
+2. The `Text`, `Screen`, `Block` components have been built to make inline styling easy and allow you to quickly compose screens eliminating a lot of the need to create StyleSheet styles. As a rule of thumb:
 
--   Wrap every screen you navigate to with `$Screen`. It has some helpful layout properties and events built into it.
--   You can control how every component is laid out with the `$Block` component. It can defined alignment, spacing, size and border properties inline, without the need to generate a StyleSheet.
--   Use `$Text` instead of the default `Text` component, it has inline properties that help you change the font to your custom font defined in the `$Font` type and will always default to the one you set in the `SkeletonProvider` context wrapper.
+-   Wrap every screen you navigate to with `Screen`. It has some helpful layout properties and events built into it.
+-   You can control how every component is laid out with the `Block` component. It can defined alignment, spacing, size and border properties inline, without the need to generate a StyleSheet.
+-   Use `Text` instead of the default `Text` component, it has inline properties that help you change the font to your custom font defined in the `Font` type and will always default to the one you set in the `SkeletonProvider` context wrapper.
 
 3. List of utility hooks you can use:
 
@@ -85,4 +85,4 @@ return <SomeComponent style={{ fontFamily: skeletor.defaultFont }} />;
 ### TODO
 
 1. Improve documentation
-2. Maybe separate `$Screen` into `$ScreenContainer`, `$ScreenHeader`, `$ScreenContent`, `$ScreenFooter` to clean up properties and not have to pass in header/footer as a prop.
+2. Maybe separate `Screen` into `ScreenContainer`, `ScreenHeader`, `ScreenContent`, `ScreenFooter` to clean up properties and not have to pass in header/footer as a prop.

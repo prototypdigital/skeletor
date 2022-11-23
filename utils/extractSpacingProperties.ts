@@ -1,5 +1,5 @@
-export function extractSpacingProperties<Props extends $Spacing>(
+export function extractSpacingProperties<Props extends Spacing>(
   props: Props,
-): $Spacing {
+): Spacing {
   return { margins: props.margins, paddings: props.paddings };
 }

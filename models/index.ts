@@ -1,1 +1,1 @@
-export * from "./$Alignment";
+export * from "./Alignment";

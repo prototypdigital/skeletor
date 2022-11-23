@@ -1,6 +1,6 @@
-export function extractAlignmentProperties<Props extends $Alignment>(
+export function extractAlignmentProperties<Props extends Alignment>(
   props: Props,
-): $Alignment {
+): Alignment {
   return {
     align: props.align,
     alignSelf: props.align,
