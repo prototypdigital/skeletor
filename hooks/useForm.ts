@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 type Validation<T> = { [K in keyof Partial<T>]?: boolean };
 type Rules<T> = {
@@ -9,7 +9,7 @@ type Values<T> = {
   [K in keyof T]: T[K];
 };
 
-type Config<R> = {
+export type FormConfig<R> = {
   /** List of optional properties. Optional properties will be marked as valid if left empty. */
   optional?: Array<keyof R>;
   /** Validation rules by specified property name. If you define a validation rule function here, the field will be validated against it. If no rule is set, a crude value check will be used instead (Boolean(value)) */
@@ -21,14 +21,17 @@ type Config<R> = {
 
 /** One-fits-all solution to manage state changes, field validation and optional entries within a form.
  * @example <caption>Simple use case:</caption>
- *  const { state, validation, onUpdate } = useForm({ email: '', password: '', });
+ *  const { state, validation, update } = useForm({ email: '', password: '', });
  *
  *
  * @example <caption>For more complex form states (ie one field can be of multiple types), you should pass the form's type:</caption>
- * const { state, validation, onUpdate } = useForm<{ numericOrUndefined: number | undefined }>({ numericOrUndefined: undefined }, { rules: { numericOrUndefined: (value: number | undefined): boolean | undefined => ... }});
+ * const { state, validation, update } = useForm<{ numericOrUndefined: number | undefined }>({ numericOrUndefined: undefined }, { rules: { numericOrUndefined: (value: number | undefined): boolean | undefined => ... }});
  *
  */
-export function useForm<T, R extends T>(values: Values<T>, config?: Config<R>) {
+export function useForm<T, R extends T>(
+  values: Values<T>,
+  config?: FormConfig<R>,
+) {
   const { logging = false, deepCompare = false } = config || {};
   const keys = Object.keys(values) as Array<keyof T>;
   const [validation, setValidation] = useState<Validation<T>>({});
@@ -76,7 +79,7 @@ export function useForm<T, R extends T>(values: Values<T>, config?: Config<R>) {
     if (
       value === undefined ||
       value === null ||
-      (typeof value === 'string' && value === '')
+      (typeof value === "string" && value === "")
     ) {
       return undefined;
     }
@@ -105,14 +108,10 @@ export function useForm<T, R extends T>(values: Values<T>, config?: Config<R>) {
   }
 
   /** This function updates the specific property with a new value and validates it if it needs to do so.
-   * Best used in conjunction with the prebuilt _Input field because it handles blur and change events, but can be used with the default input as well.
-   * @example <caption>Usage with _Input:</caption>
-   * <_Input ... prop="nameOfProp" onUpdate={onUpdate} />
-   *
    * @example <caption>Usage with other components:</caption>
-   * <TextInput ... onChange={(event) => onUpdate("nameOfProp", event.nativeEvent.text, false)} onBlur={(event) => onUpdate("nameOfProp", event.nativeEvent.text, true)}
+   * <TextInput ... onChange={(event) => update("nameOfProp", event.nativeEvent.text, false)} onBlur={(event) => update("nameOfProp", event.nativeEvent.text, true)}
    *  */
-  function onUpdate<K extends keyof T>(
+  function update<K extends keyof T>(
     key: K,
     value: Values<T>[K],
     validate?: boolean,
@@ -122,6 +121,10 @@ export function useForm<T, R extends T>(values: Values<T>, config?: Config<R>) {
       ...s,
       [key]: validate ? localValidation(key, value) : undefined,
     }));
+  }
+
+  function validate<K extends keyof T>(key: K) {
+    setValidation((s) => ({ ...s, [key]: localValidation(key, state[key]) }));
   }
 
   /** Boolean value of whether the form is valid (ie can be submitted). Use this to disable/enable form submission. */
@@ -139,7 +142,7 @@ export function useForm<T, R extends T>(values: Values<T>, config?: Config<R>) {
       compareValues(state[key], initialState[key]),
     );
     if (logging && changed.length)
-      console.log('Changed values: ', changed.join(', '));
+      console.log("Changed values: ", changed.join(", "));
     return Boolean(changed.length);
   }
 
@@ -180,7 +183,8 @@ export function useForm<T, R extends T>(values: Values<T>, config?: Config<R>) {
     state,
     validation,
     hasChanged,
-    onUpdate,
+    update,
+    validate,
     isFormValid,
     clearForm,
     resetState,
