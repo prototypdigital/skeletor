@@ -102,6 +102,7 @@ export const Block: ReactFC<Props> = ({ children, ...props }) => {
   return (
     <ScrollView
       horizontal={horizontal}
+      keyboardShouldPersistTaps="handled"
       showsHorizontalScrollIndicator={showsHorizontalScrollIndicator}
       showsVerticalScrollIndicator={showsVerticalScrollIndicator}
       contentContainerStyle={{ flexGrow: 1, backgroundColor: background }}
