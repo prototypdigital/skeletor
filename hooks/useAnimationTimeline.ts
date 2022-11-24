@@ -53,6 +53,7 @@ export function useAnimTimeline<Keys extends keyof Partial<ViewStyle>>(
     timeline.elements.forEach(
       ({ values, animations, configuration, definitions }, index) => {
         const keys = Object.keys(animations).map((key) => key as Keys);
+
         keys.forEach((key, index) => {
           const value = values[index];
           const lastValue = definitions[key]!.length - 1;
@@ -60,7 +61,6 @@ export function useAnimTimeline<Keys extends keyof Partial<ViewStyle>>(
             toValue: timeline.start ? lastValue : 0,
             duration: configuration.duration,
             useNativeDriver: !configuration.loop,
-            easing: Easing.inOut(Easing.sin),
           });
 
           compositions.push(configuration.loop ? Animated.loop(base) : base);
