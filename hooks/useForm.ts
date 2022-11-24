@@ -28,10 +28,7 @@ export type FormConfig<R> = {
  * const { state, validation, update } = useForm<{ numericOrUndefined: number | undefined }>({ numericOrUndefined: undefined }, { rules: { numericOrUndefined: (value: number | undefined): boolean | undefined => ... }});
  *
  */
-export function useForm<T, R extends T>(
-  values: Values<T>,
-  config?: FormConfig<R>,
-) {
+export function useForm<T>(values: Values<T>, config?: FormConfig<T>) {
   const { logging = false, deepCompare = false } = config || {};
   const keys = Object.keys(values) as Array<keyof T>;
   const [validation, setValidation] = useState<Validation<T>>({});
@@ -88,7 +85,7 @@ export function useForm<T, R extends T>(
       return Boolean(value);
     }
 
-    const isValid = config.rules[key]?.(value as R[K]);
+    const isValid = config.rules[key]?.(value as T[K]);
     return isValid;
   }
 
