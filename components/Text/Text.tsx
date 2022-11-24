@@ -62,7 +62,17 @@ export const Text: ReactFC<Props> = ({
         },
         style,
       ]),
-    [color, font, opacity, textAlign, textTransform, margins, paddings, style],
+    [
+      color,
+      font,
+      opacity,
+      textAlign,
+      textTransform,
+      textSize,
+      margins,
+      paddings,
+      style,
+    ],
   );
 
   return (
