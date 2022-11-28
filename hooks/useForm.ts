@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Validation<T> = { [K in keyof Partial<T>]?: boolean };
 type Rules<T> = {
@@ -32,8 +32,19 @@ export function useForm<T>(values: Values<T>, config?: FormConfig<T>) {
   const { logging = false, deepCompare = false } = config || {};
   const keys = Object.keys(values) as Array<keyof T>;
   const [validation, setValidation] = useState<Validation<T>>({});
-  const [initialState, setInitialState] = useState({ ...values });
-  const [state, setState] = useState({ ...values });
+  const [initialState, setInitialState] = useState(values);
+  const [state, setState] = useState(values);
+
+  useEffect(() => {
+    const changed = keys.filter((key) => values[key] !== initialState[key]);
+    if (!changed.length) return;
+
+    const updatedState = { ...state };
+    changed.forEach((key) => (updatedState[key] = values[key]));
+
+    setInitialState({ ...values, ...updatedState });
+    setState(updatedState);
+  }, [values]);
 
   function compareValues(
     value: Values<T>[keyof T],
@@ -188,7 +199,6 @@ export function useForm<T>(values: Values<T>, config?: FormConfig<T>) {
   return {
     state,
     validation,
-    hasChanged,
     update,
     validate,
     validateForm,
