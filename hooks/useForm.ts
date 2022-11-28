@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type Validation<T> = { [K in keyof Partial<T>]?: boolean };
 type Rules<T> = {
-  [K in keyof T]?: ((value: T[K]) => boolean | undefined) | undefined;
+  [K in keyof T]?: (value: T[K]) => boolean | undefined;
 };
 
 type Values<T> = {
@@ -72,40 +72,58 @@ export function useForm<T>(values: Values<T>, config?: FormConfig<T>) {
     return value !== previousValue;
   }
 
-  function validateByRule<K extends keyof T>(key: K, value: T[K] | undefined) {
-    if (
-      value === undefined ||
-      value === null ||
-      (typeof value === "string" && value === "")
-    ) {
-      return undefined;
-    }
-
-    if (!config || !config.rules || config.rules[key] === undefined) {
-      return Boolean(value);
-    }
-
-    const isValid = config.rules[key]?.(value as T[K]);
-    return isValid;
+  function doesValueExist(value: T[keyof T] | undefined): value is T[keyof T] {
+    if (value === null || value === undefined || value === "" || value < 0)
+      return false;
+    return true;
   }
 
-  function localValidation(key: keyof T, value: T[keyof T] | undefined) {
-    let isValid = validateByRule(key, value);
-    const isOptional = config?.optional?.includes(key);
+  /** Check if state has value for key */
+  function doesKeyValueExist(key: keyof T) {
+    const value = state[key];
+    return doesValueExist(value);
+  }
 
-    if (isOptional && isValid === undefined) {
-      isValid = true;
-    }
-
-    return isValid;
+  function validateByRule<K extends keyof T>(key: K, value: T[K]) {
+    // If rule exists, validate with rule
+    if (config?.rules && config.rules[key]) return config.rules[key]?.(value);
+    // else return true because we know the value exists already.
+    return true;
   }
 
   function isOptional(key: keyof T) {
     return config?.optional?.includes(key);
   }
 
+  function fieldValidation(key: keyof T, value: T[keyof T] | undefined) {
+    const hasValue = doesValueExist(value);
+    const optional = isOptional(key);
+    if (!hasValue) {
+      return !!optional;
+    } else {
+      return validateByRule(key, value);
+    }
+  }
+
+  /** Validate entire form, store validation state and return validation value.
+   * In human readable terms, use this when you want to validate the form on submit.
+   */
+  function validateForm(): boolean {
+    const _map: Validation<T> = {};
+
+    keys.forEach((key) => {
+      const value = state[key];
+      // Force true / false values for entire form. Undefined has no value when submitting.
+      _map[key] = fieldValidation(key, value) || false;
+    });
+
+    setValidation(_map);
+
+    return !keys.some((key) => !_map[key]);
+  }
+
   /** This function updates the specific property with a new value and validates it if it needs to do so.
-   * @example <caption>Usage with other components:</caption>
+   * @example <caption>Usage:</caption>
    * <TextInput ... onChange={(event) => update("nameOfProp", event.nativeEvent.text, false)} onBlur={(event) => update("nameOfProp", event.nativeEvent.text, true)}
    *  */
   function update<K extends keyof T>(
@@ -116,20 +134,19 @@ export function useForm<T>(values: Values<T>, config?: FormConfig<T>) {
     setState((s) => ({ ...s, [key]: value }));
     setValidation((s) => ({
       ...s,
-      [key]: validate ? localValidation(key, value) : undefined,
+      [key]: validate ? fieldValidation(key, value) : undefined,
     }));
   }
 
   function validate<K extends keyof T>(key: K) {
-    setValidation((s) => ({ ...s, [key]: localValidation(key, state[key]) }));
+    setValidation((s) => ({ ...s, [key]: fieldValidation(key, state[key]) }));
   }
 
-  /** Boolean value of whether the form is valid (ie can be submitted). Use this to disable/enable form submission. */
+  /** Boolean value of whether the form is valid (ie can be submitted). Use this to disable/enable form submission.
+   * Only use when validating fields separately, has no value when valiating on form submit. */
   function isFormValid() {
     return !keys.some((key) =>
-      isOptional(key as keyof T)
-        ? validation[key as keyof T] === false
-        : !validation[key as keyof T],
+      isOptional(key) ? validation[key] === false : !validation[key],
     );
   }
 
@@ -153,17 +170,9 @@ export function useForm<T>(values: Values<T>, config?: FormConfig<T>) {
     setInitialState(values);
   }
 
-  /** Resets validation to initial state.
-   * Generally you would not be using this unless for something completely custom, at which point maybe you should not be using this hook at all.
-   * */
+  /** Resets validation to initial state. */
   function resetValidation() {
-    const validity: Validation<T> = {};
-    for (const key in values) {
-      const isValid = localValidation(key, values[key]);
-      validity[key] = isValid;
-    }
-
-    setValidation(validity);
+    setValidation({});
   }
 
   /** Resets entire form, state and validation included */
@@ -174,7 +183,7 @@ export function useForm<T>(values: Values<T>, config?: FormConfig<T>) {
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(resetValidation, []);
+  // useEffect(resetValidation, []);
 
   return {
     state,
@@ -182,6 +191,7 @@ export function useForm<T>(values: Values<T>, config?: FormConfig<T>) {
     hasChanged,
     update,
     validate,
+    validateForm,
     isFormValid,
     clearForm,
     resetState,
