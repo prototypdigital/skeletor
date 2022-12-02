@@ -5,6 +5,7 @@ import {
   TextProps as RNTextProps,
   TextStyle,
 } from "react-native";
+import { extractSizeProperties } from "skeletor/utils";
 import { useSkeletor } from "../../hooks";
 
 interface TextProps extends RNTextProps {
@@ -17,7 +18,7 @@ interface TextProps extends RNTextProps {
   opacity?: TextStyle["opacity"];
 }
 
-type Props = TextProps & Spacing;
+type Props = TextProps & Spacing & Size;
 
 export const Text: ReactFC<Props> = ({
   font,
@@ -33,6 +34,7 @@ export const Text: ReactFC<Props> = ({
   ...props
 }) => {
   const { defaultFont, defaultFontSize } = useSkeletor();
+  const sizeProps = extractSizeProperties(props);
 
   const textSize = useMemo(() => {
     function mapper(value: [number, number] | number) {
@@ -59,6 +61,7 @@ export const Text: ReactFC<Props> = ({
           textTransform,
           ...margins,
           ...paddings,
+          ...sizeProps,
         },
         style,
       ]),
