@@ -33,7 +33,7 @@ export const Text: ReactFC<Props> = ({
   paddings,
   ...props
 }) => {
-  const { defaultFont, defaultFontSize } = useSkeletor();
+  const { defaultFont, defaultFontSize, defaultTextColor } = useSkeletor();
   const sizeProps = extractSizeProperties(props);
 
   const textSize = useMemo(() => {
@@ -53,7 +53,7 @@ export const Text: ReactFC<Props> = ({
     () =>
       StyleSheet.flatten([
         {
-          color,
+          color: color || defaultTextColor,
           ...textSize,
           fontFamily: font || defaultFont,
           opacity,
