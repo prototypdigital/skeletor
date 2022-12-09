@@ -39,7 +39,8 @@ interface BlockElementProps extends SharedProps {
 }
 
 const BlockElement: ReactFC<BlockElementProps> = ({ children, ...props }) => {
-  const { alignment, spacing, size, background, style, ...view } = props;
+  const { alignment, spacing, size, border, background, style, ...view } =
+    props;
   const { align: alignItems, justify: justifyContent, ...align } = alignment;
   const { margins, paddings } = spacing;
 
@@ -51,6 +52,7 @@ const BlockElement: ReactFC<BlockElementProps> = ({ children, ...props }) => {
           ...paddings,
           ...align,
           ...size,
+          ...border,
           alignItems,
           justifyContent,
           backgroundColor: background,

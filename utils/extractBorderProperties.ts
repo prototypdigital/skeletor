@@ -4,5 +4,6 @@ export function extractBorderProperties<Props extends Border>(
   return {
     borderColor: props.borderColor,
     borderWidth: props.borderWidth,
+    borderRadius: props.borderRadius,
   };
 }
