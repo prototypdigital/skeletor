@@ -6,5 +6,6 @@ export function extractAlignmentProperties<Props extends Alignment>(
     alignSelf: props.align,
     justify: props.justify,
     flexDirection: props.flexDirection,
+    flexWrap: props.flexWrap,
   };
 }

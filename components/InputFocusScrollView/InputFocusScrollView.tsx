@@ -9,8 +9,9 @@ import {
   StyleSheet,
   TextInputFocusEventData,
 } from "react-native";
+import { extractSpacingProperties } from "skeletor/utils";
 
-interface Props extends Omit<ScrollViewProps, "children"> {
+interface Props extends Omit<ScrollViewProps, "children">, Spacing {
   children: (
     onInputFocus: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void,
   ) => React.ReactNode;
@@ -27,6 +28,7 @@ export const InputFocusScrollView: React.FC<Props> = ({
   children,
   ...rest
 }) => {
+  const { margins, paddings } = extractSpacingProperties(rest);
   const ref = useRef<ScrollView>(null);
   /** ScrollView Y offset (where the ScrollView begins) */
   const [layoutOffset, setLayoutOffset] = useState(0);
@@ -62,6 +64,11 @@ export const InputFocusScrollView: React.FC<Props> = ({
     setScrollPosition(e.nativeEvent.contentOffset.y);
   }
 
+  const containerStyles = StyleSheet.flatten([styles.container, margins]);
+  const contentStyles = StyleSheet.create({
+    contentContainer: { ...paddings },
+  });
+
   return (
     <ScrollView
       ref={ref}
@@ -71,7 +78,8 @@ export const InputFocusScrollView: React.FC<Props> = ({
       scrollToOverflowEnabled
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}
-      style={styles.container}
+      style={containerStyles}
+      contentContainerStyle={contentStyles.contentContainer}
       {...rest}
     >
       {children(onInputFocus)}

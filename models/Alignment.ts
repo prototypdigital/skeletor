@@ -5,4 +5,5 @@ export interface Alignment {
   alignSelf?: ViewStyle["alignSelf"];
   justify?: ViewStyle["justifyContent"];
   flexDirection?: ViewStyle["flexDirection"];
+  flexWrap?: ViewStyle["flexWrap"];
 }
