@@ -54,7 +54,7 @@ export function useAnimTimeline<Keys extends keyof Partial<ViewStyle>>(
       ({ values, animations, configuration, definitions }, index) => {
         const keys = Object.keys(animations).map((key) => key as Keys);
 
-        keys.forEach((key, index) => {
+        const elementCompositions = keys.map((key, index) => {
           const value = values[index];
           const lastValue = definitions[key]!.length - 1;
           const base = Animated.timing(value, {
@@ -63,8 +63,10 @@ export function useAnimTimeline<Keys extends keyof Partial<ViewStyle>>(
             useNativeDriver: !configuration.loop,
           });
 
-          compositions.push(configuration.loop ? Animated.loop(base) : base);
+          return configuration.loop ? Animated.loop(base) : base;
         });
+
+        compositions.push(Animated.parallel(elementCompositions));
       },
     );
 
