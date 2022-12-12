@@ -13,6 +13,7 @@ interface TextProps extends RNTextProps {
   /** Either define [fontSize, lineHeight] or just one size applied to both fontSize and lineHeight */
   size?: [number, number] | number;
   textTransform?: TextStyle["textTransform"];
+  letterSpacing?: TextStyle["letterSpacing"];
   color?: string;
   textAlign?: TextStyle["textAlign"];
   opacity?: TextStyle["opacity"];
@@ -24,6 +25,7 @@ export const Text: ReactFC<Props> = ({
   font,
   size,
   textTransform,
+  letterSpacing,
   color,
   style,
   children,
@@ -59,6 +61,7 @@ export const Text: ReactFC<Props> = ({
           opacity,
           textAlign,
           textTransform,
+          letterSpacing,
           ...margins,
           ...paddings,
           ...sizeProps,
