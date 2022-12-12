@@ -1,24 +1,26 @@
 import { useEffect, useState } from "react";
-import { Animated, Easing, ViewStyle } from "react-native";
+import { Animated, ViewStyle } from "react-native";
 import { AnimationSet } from "./useAnimation";
 
-interface BaseTimelineType<Keys extends keyof Partial<ViewStyle>> {
-  elements: AnimationSet<Keys>[];
+interface BaseTimelineType {
+  elements: AnimationSet<any>[];
   start: boolean;
   onFinished?: () => void;
   onStarted?: () => void;
 }
 
-type DelayTimeline<Keys extends keyof Partial<ViewStyle>> =
-  BaseTimelineType<Keys> & { delay: number };
-type StaggerTimeline<Keys extends keyof Partial<ViewStyle>> =
-  BaseTimelineType<Keys> & { stagger: number };
+type DelayTimeline = BaseTimelineType & {
+  delay: number;
+};
+type StaggerTimeline = BaseTimelineType & {
+  stagger: number;
+};
 
-interface TimelineConfiguration<Keys extends keyof Partial<ViewStyle>> {
-  delay?: DelayTimeline<Keys>;
-  parallel?: BaseTimelineType<Keys>;
-  sequence?: BaseTimelineType<Keys>;
-  stagger?: StaggerTimeline<Keys>;
+interface TimelineConfiguration {
+  delay?: DelayTimeline;
+  parallel?: BaseTimelineType;
+  sequence?: BaseTimelineType;
+  stagger?: StaggerTimeline;
 }
 
 /** Used to layout animated values on a timeline and handle starting/reversing the animations. 
@@ -29,9 +31,7 @@ interface TimelineConfiguration<Keys extends keyof Partial<ViewStyle>> {
     sequence: { elements: [button], start: Boolean(show && !disabled) },
   });
 */
-export function useAnimTimeline<Keys extends keyof Partial<ViewStyle>>(
-  config: TimelineConfiguration<Keys>,
-): void {
+export function useAnimTimeline(config: TimelineConfiguration): void {
   const { delay, parallel, sequence, stagger } = config;
   const staggerStart = Boolean(stagger?.start);
   const delayStart = Boolean(delay?.start);
@@ -44,15 +44,14 @@ export function useAnimTimeline<Keys extends keyof Partial<ViewStyle>>(
   const [previousParallelStart, setPreviousParallelStart] = useState(false);
 
   function getBaseAnimations(
-    timeline:
-      | BaseTimelineType<Keys>
-      | StaggerTimeline<Keys>
-      | DelayTimeline<Keys>,
+    timeline: BaseTimelineType | StaggerTimeline | DelayTimeline,
   ) {
     const compositions: Animated.CompositeAnimation[] = [];
     timeline.elements.forEach(
       ({ values, animations, configuration, definitions }, index) => {
-        const keys = Object.keys(animations).map((key) => key as Keys);
+        const keys = Object.keys(animations).map(
+          (key) => key as keyof Partial<ViewStyle>,
+        );
 
         const elementCompositions = keys.map((key, index) => {
           const value = values[index];
@@ -73,21 +72,21 @@ export function useAnimTimeline<Keys extends keyof Partial<ViewStyle>>(
     return compositions;
   }
 
-  function setupParallelAnimations(timeline: BaseTimelineType<Keys>) {
+  function setupParallelAnimations(timeline: BaseTimelineType) {
     if (timeline.onStarted) {
       timeline.onStarted();
     }
     Animated.parallel(getBaseAnimations(timeline)).start(timeline.onFinished);
   }
 
-  function setupSequenceAnimations(timeline: BaseTimelineType<Keys>) {
+  function setupSequenceAnimations(timeline: BaseTimelineType) {
     if (timeline.onStarted) {
       timeline.onStarted();
     }
     Animated.sequence(getBaseAnimations(timeline)).start(timeline.onFinished);
   }
 
-  function setupStaggerAnimations(timeline: StaggerTimeline<Keys>) {
+  function setupStaggerAnimations(timeline: StaggerTimeline) {
     if (timeline.onStarted) {
       timeline.onStarted();
     }
@@ -96,7 +95,7 @@ export function useAnimTimeline<Keys extends keyof Partial<ViewStyle>>(
     );
   }
 
-  function setupDelayAnimations(timeline: DelayTimeline<Keys>) {
+  function setupDelayAnimations(timeline: DelayTimeline) {
     Animated.delay(timeline.delay).start(() =>
       setupParallelAnimations(timeline),
     );
