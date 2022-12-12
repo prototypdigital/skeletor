@@ -4,7 +4,7 @@ export function extractSizeProperties<Props extends Size>(props: Props): Size {
     height: props.height,
     width: props.width,
     maxHeight: props.maxHeight,
-    maxWidth: props.maxHeight,
+    maxWidth: props.maxWidth,
     minHeight: props.minHeight,
     minWidth: props.minWidth,
   };
