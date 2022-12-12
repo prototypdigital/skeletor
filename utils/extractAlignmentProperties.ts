@@ -3,7 +3,7 @@ export function extractAlignmentProperties<Props extends Alignment>(
 ): Alignment {
   return {
     align: props.align,
-    alignSelf: props.align,
+    alignSelf: props.alignSelf,
     justify: props.justify,
     flexDirection: props.flexDirection,
     flexWrap: props.flexWrap,

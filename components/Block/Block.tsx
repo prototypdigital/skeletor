@@ -16,6 +16,7 @@ import {
 
 interface SharedProps extends ViewProps {
   background?: string;
+  overflow?: ViewStyle["overflow"];
 }
 
 interface BlockScrollViewProps extends SharedProps {
@@ -39,8 +40,16 @@ interface BlockElementProps extends SharedProps {
 }
 
 const BlockElement: ReactFC<BlockElementProps> = ({ children, ...props }) => {
-  const { alignment, spacing, size, border, background, style, ...view } =
-    props;
+  const {
+    alignment,
+    spacing,
+    size,
+    border,
+    background,
+    style,
+    overflow,
+    ...view
+  } = props;
   const { align: alignItems, justify: justifyContent, ...align } = alignment;
   const { margins, paddings } = spacing;
 
@@ -56,10 +65,11 @@ const BlockElement: ReactFC<BlockElementProps> = ({ children, ...props }) => {
           alignItems,
           justifyContent,
           backgroundColor: background,
+          overflow,
         },
         style,
       ]),
-    [spacing, alignment, size, background, style],
+    [spacing, alignment, size, background, style, overflow],
   );
 
   return (
@@ -87,6 +97,7 @@ export const Block: ReactFC<Props> = ({ children, ...props }) => {
       spacing={spacing}
       border={border}
       size={size}
+      {...rest}
     >
       {children}
     </BlockElement>
