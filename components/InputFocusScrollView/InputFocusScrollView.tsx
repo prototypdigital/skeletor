@@ -2,16 +2,13 @@ import React, { useRef, useState } from "react";
 import {
   Platform,
   LayoutChangeEvent,
-  NativeScrollEvent,
   NativeSyntheticEvent,
   ScrollView,
   ScrollViewProps,
   StyleSheet,
   TextInputFocusEventData,
-  Text,
 } from "react-native";
 import { extractSpacingProperties } from "skeletor/utils";
-import { Block } from "../Block";
 
 interface Props extends Omit<ScrollViewProps, "children">, Spacing {
   /** To how much of a point offset will the scroll view be scrolled to on input focus. Play around with this if you want to position the focused input differently. */
@@ -77,7 +74,7 @@ export const InputFocusScrollView: React.FC<Props> = ({
       contentContainerStyle={contentStyles}
       {...rest}
     >
-      <Block flex={1}>{children(onInputFocus)}</Block>
+      {children(onInputFocus)}
     </ScrollView>
   );
 };
