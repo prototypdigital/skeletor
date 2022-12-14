@@ -8,10 +8,15 @@ import {
   ScrollViewProps,
   StyleSheet,
   TextInputFocusEventData,
+  Text,
 } from "react-native";
 import { extractSpacingProperties } from "skeletor/utils";
+import { Block } from "../Block";
 
 interface Props extends Omit<ScrollViewProps, "children">, Spacing {
+  /** To how much of a point offset will the scroll view be scrolled to on input focus. Play around with this if you want to position the focused input differently. */
+  focusPositionOffset?: number;
+  height?: "full" | "auto";
   children: (
     onInputFocus: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void,
   ) => React.ReactNode;
@@ -28,74 +33,56 @@ export const InputFocusScrollView: React.FC<Props> = ({
   children,
   style,
   contentContainerStyle,
+  height = "full",
+  focusPositionOffset = 275,
   ...rest
 }) => {
   const { margins, paddings } = extractSpacingProperties(rest);
   const ref = useRef<ScrollView>(null);
-  /** ScrollView Y offset (where the ScrollView begins) */
-  const [layoutOffset, setLayoutOffset] = useState(0);
-  /** Height of the scroll view */
-  const [scrollHeight, setScrollHeight] = useState(0);
-  /** Current scroll position */
-  const [scrollPosition, setScrollPosition] = useState(0);
+  const [scrollTarget, setScrollTarget] = useState<number | null>();
 
   function onInputFocus(e: NativeSyntheticEvent<TextInputFocusEventData>) {
-    if (Platform.OS !== "ios") return;
-    e.target.measure((nope, nuuh, nada, dont, stillno, py) => {
-      // Anything below 60% of the screen needs to be scrolled to
-      const scrollToCutoffPoint = scrollHeight * 0.6;
-
-      // Target position's total offset is current page offset + scroll position (page offset tracks viewport, not layout) - layout offset;
-      const targetPosition = py - layoutOffset + scrollPosition;
-
-      // If target position is in the bottom 40% of the screen, scroll to it.
-      if (targetPosition >= scrollToCutoffPoint) {
-        ref.current?.scrollTo({ y: targetPosition - scrollToCutoffPoint });
-      }
-    });
+    if (Platform.OS !== "ios" || !scrollTarget) return;
+    e.target.measureLayout(
+      scrollTarget,
+      (nope, top, nuuh, height) => {
+        const scrollY = top - height - (focusPositionOffset || 0);
+        ref.current?.scrollTo({ y: scrollY < 0 ? 0 : scrollY });
+      },
+      () => console.error("failed to measure layout"),
+    );
   }
 
   function onScrollViewLayout(e: LayoutChangeEvent) {
     if (Platform.OS !== "ios") return;
-    setScrollHeight(e.nativeEvent.layout.height);
-    e.currentTarget.measureInWindow((x, y) => setLayoutOffset(y));
+    setScrollTarget(e.nativeEvent.target);
   }
 
-  function onScroll(e: NativeSyntheticEvent<NativeScrollEvent>) {
-    if (Platform.OS !== "ios") return;
-    setScrollPosition(e.nativeEvent.contentOffset.y);
-  }
+  const containerStyles = StyleSheet.flatten([styles[height], margins, style]);
 
-  const containerStyles = StyleSheet.flatten([
-    styles.container,
-    margins,
-    style,
+  const contentStyles = StyleSheet.flatten([
+    { ...paddings },
+    contentContainerStyle,
   ]);
-  const contentStyles = StyleSheet.create({
-    contentContainer: { ...paddings },
-  });
 
   return (
     <ScrollView
       ref={ref}
       scrollEventThrottle={16}
       onLayout={onScrollViewLayout}
-      onScroll={onScroll}
       scrollToOverflowEnabled
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}
       style={containerStyles}
-      contentContainerStyle={[
-        contentStyles.contentContainer,
-        contentContainerStyle,
-      ]}
+      contentContainerStyle={contentStyles}
       {...rest}
     >
-      {children(onInputFocus)}
+      <Block flex={1}>{children(onInputFocus)}</Block>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  full: { flex: 1 },
+  auto: { flex: 0 },
 });
