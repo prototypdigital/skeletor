@@ -26,6 +26,8 @@ interface Props extends Omit<ScrollViewProps, "children">, Spacing {
  */
 export const InputFocusScrollView: React.FC<Props> = ({
   children,
+  style,
+  contentContainerStyle,
   ...rest
 }) => {
   const { margins, paddings } = extractSpacingProperties(rest);
@@ -64,7 +66,11 @@ export const InputFocusScrollView: React.FC<Props> = ({
     setScrollPosition(e.nativeEvent.contentOffset.y);
   }
 
-  const containerStyles = StyleSheet.flatten([styles.container, margins]);
+  const containerStyles = StyleSheet.flatten([
+    styles.container,
+    margins,
+    style,
+  ]);
   const contentStyles = StyleSheet.create({
     contentContainer: { ...paddings },
   });
@@ -79,7 +85,10 @@ export const InputFocusScrollView: React.FC<Props> = ({
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}
       style={containerStyles}
-      contentContainerStyle={contentStyles.contentContainer}
+      contentContainerStyle={[
+        contentStyles.contentContainer,
+        contentContainerStyle,
+      ]}
       {...rest}
     >
       {children(onInputFocus)}
@@ -88,7 +97,5 @@ export const InputFocusScrollView: React.FC<Props> = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: { flex: 1 },
 });
