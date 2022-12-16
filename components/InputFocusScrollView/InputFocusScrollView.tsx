@@ -31,7 +31,7 @@ export const InputFocusScrollView: React.FC<Props> = ({
   style,
   contentContainerStyle,
   height = "full",
-  focusPositionOffset = 275,
+  focusPositionOffset,
   ...rest
 }) => {
   const { margins, paddings } = extractSpacingProperties(rest);
@@ -40,11 +40,13 @@ export const InputFocusScrollView: React.FC<Props> = ({
 
   function onInputFocus(e: NativeSyntheticEvent<TextInputFocusEventData>) {
     if (Platform.OS !== "ios" || !scrollTarget) return;
-    e.target.measureLayout(
+    e.currentTarget.measureLayout(
       scrollTarget,
       (nope, top, nuuh, height) => {
-        const scrollY = top - height - (focusPositionOffset || 0);
-        ref.current?.scrollTo({ y: scrollY < 0 ? 0 : scrollY });
+        let scrollY = top - height;
+        if (focusPositionOffset) scrollY = scrollY - focusPositionOffset;
+
+        ref.current?.scrollTo({ y: scrollY });
       },
       () => console.error("failed to measure layout"),
     );
@@ -58,6 +60,7 @@ export const InputFocusScrollView: React.FC<Props> = ({
   const containerStyles = StyleSheet.flatten([styles[height], margins, style]);
 
   const contentStyles = StyleSheet.flatten([
+    styles.content,
     { ...paddings },
     contentContainerStyle,
   ]);
@@ -82,4 +85,5 @@ export const InputFocusScrollView: React.FC<Props> = ({
 const styles = StyleSheet.create({
   full: { flex: 1 },
   auto: { flex: 0 },
+  content: { flexGrow: 1 },
 });
