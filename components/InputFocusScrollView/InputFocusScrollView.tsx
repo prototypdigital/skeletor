@@ -60,7 +60,6 @@ export const InputFocusScrollView: React.FC<Props> = ({
   const containerStyles = StyleSheet.flatten([styles[height], margins, style]);
 
   const contentStyles = StyleSheet.flatten([
-    styles.content,
     { ...paddings },
     contentContainerStyle,
   ]);
@@ -85,5 +84,4 @@ export const InputFocusScrollView: React.FC<Props> = ({
 const styles = StyleSheet.create({
   full: { flex: 1 },
   auto: { flex: 0 },
-  content: { flexGrow: 1 },
 });
