@@ -7,11 +7,12 @@ import {
   ScrollViewProps,
   StyleSheet,
   TextInputFocusEventData,
+  useWindowDimensions,
 } from "react-native";
 import { extractSpacingProperties } from "skeletor/utils";
 
 interface Props extends Omit<ScrollViewProps, "children">, Spacing {
-  /** To how much of a point offset will the scroll view be scrolled to on input focus. Play around with this if you want to position the focused input differently. */
+  /** Percentage of screen to add to element position. Values between 0 and 1. Use this if you want to position the input focus somewhere other than the top of the screen. Defaults to 0.3 */
   focusPositionOffset?: number;
   height?: "full" | "auto";
   children: (
@@ -31,9 +32,10 @@ export const InputFocusScrollView: React.FC<Props> = ({
   style,
   contentContainerStyle,
   height = "full",
-  focusPositionOffset,
+  focusPositionOffset = 0.3,
   ...rest
 }) => {
+  const dimensions = useWindowDimensions();
   const { margins, paddings } = extractSpacingProperties(rest);
   const ref = useRef<ScrollView>(null);
   const [scrollTarget, setScrollTarget] = useState<number | null>();
@@ -44,7 +46,8 @@ export const InputFocusScrollView: React.FC<Props> = ({
       scrollTarget,
       (nope, top, nuuh, height) => {
         let scrollY = top - height;
-        if (focusPositionOffset) scrollY = scrollY - focusPositionOffset;
+        if (focusPositionOffset)
+          scrollY = scrollY - dimensions.height * focusPositionOffset;
 
         ref.current?.scrollTo({ y: scrollY });
       },
