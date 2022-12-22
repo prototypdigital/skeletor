@@ -7,7 +7,7 @@ import {
   ScrollViewProps,
   StyleSheet,
   TextInputFocusEventData,
-  useWindowDimensions,
+  Dimensions,
 } from "react-native";
 import { extractSpacingProperties } from "skeletor/utils";
 
@@ -35,7 +35,7 @@ export const InputFocusScrollView: React.FC<Props> = ({
   focusPositionOffset = 0.3,
   ...rest
 }) => {
-  const dimensions = useWindowDimensions();
+  const screenHeight = useRef(Dimensions.get("screen").height).current;
   const { margins, paddings } = extractSpacingProperties(rest);
   const ref = useRef<ScrollView>(null);
   const [scrollTarget, setScrollTarget] = useState<number | null>();
@@ -47,7 +47,7 @@ export const InputFocusScrollView: React.FC<Props> = ({
       (nope, top, nuuh, height) => {
         let scrollY = top - height;
         if (focusPositionOffset)
-          scrollY = scrollY - dimensions.height * focusPositionOffset;
+          scrollY = scrollY - screenHeight * focusPositionOffset;
 
         ref.current?.scrollTo({ y: scrollY });
       },
@@ -63,6 +63,7 @@ export const InputFocusScrollView: React.FC<Props> = ({
   const containerStyles = StyleSheet.flatten([styles[height], margins, style]);
 
   const contentStyles = StyleSheet.flatten([
+    styles.content,
     { ...paddings },
     contentContainerStyle,
   ]);
@@ -87,4 +88,7 @@ export const InputFocusScrollView: React.FC<Props> = ({
 const styles = StyleSheet.create({
   full: { flex: 1 },
   auto: { flex: 0 },
+  content: {
+    paddingBottom: 30,
+  },
 });
