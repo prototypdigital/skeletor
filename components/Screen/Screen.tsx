@@ -82,7 +82,6 @@ export const Screen: ReactFC<Props> = ({
       />
 
       <Block
-        scrollable
         paddings={{
           paddingTop:
             Platform.OS === "android" && !isLandscape
