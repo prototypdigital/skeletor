@@ -56,10 +56,14 @@ export function useAnimTimeline(config: TimelineConfiguration): void {
         const elementCompositions = keys.map((key, index) => {
           const value = values[index];
           const lastValue = definitions[key]!.length - 1;
+          const nativeAnimation = configuration.loop
+            ? false
+            : configuration.useNativeDriver || false;
+
           const base = Animated.timing(value, {
             toValue: timeline.start ? lastValue : 0,
             duration: configuration.duration,
-            useNativeDriver: !configuration.loop,
+            useNativeDriver: nativeAnimation,
           });
 
           return configuration.loop ? Animated.loop(base) : base;

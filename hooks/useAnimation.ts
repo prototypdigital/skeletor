@@ -16,6 +16,7 @@ interface Configuration {
   duration: number;
   /** Loop will disable native driver because it breaks the loop animation (at least it did last time I tested in 2020.) */
   loop?: boolean;
+  useNativeDriver?: boolean;
 }
 
 export interface AnimationSet<Keys extends keyof Partial<ViewStyle>> {
