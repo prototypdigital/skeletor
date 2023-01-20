@@ -7,6 +7,7 @@ import {
   StyleSheet,
   StatusBar,
   Platform,
+  Dimensions,
 } from "react-native";
 import { useSkeletor } from "../../hooks";
 import { Block } from "../Block";
@@ -92,14 +93,15 @@ export const Screen: ReactFC<Props> = ({
         style={style}
         {...rest}
       >
-        {header}
         {children}
       </Block>
 
-      {footer}
-
       {!hideBottomSafeArea && (
-        <SafeAreaView style={{ backgroundColor: bottomSafeAreaColor }} />
+        <SafeAreaView
+          style={{
+            backgroundColor: bottomSafeAreaColor,
+          }}
+        />
       )}
     </>
   );
@@ -108,7 +110,7 @@ export const Screen: ReactFC<Props> = ({
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    height: "100%",
-    width: "100%",
+    height: Dimensions.get("screen").height,
+    width: Dimensions.get("screen").width,
   },
 });
