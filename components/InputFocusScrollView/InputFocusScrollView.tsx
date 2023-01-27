@@ -39,6 +39,8 @@ export const InputFocusScrollView: React.FC<Props> = ({
   const { margins, paddings } = extractSpacingProperties(rest);
   const ref = useRef<ScrollView>(null);
   const [scrollTarget, setScrollTarget] = useState<number | null>();
+  /** Cached scroll position to keep focus on input if layout shifts. */
+  const [scrollPosition, setScrollPosition] = useState<number | null>();
 
   function onInputFocus(e: NativeSyntheticEvent<TextInputFocusEventData>) {
     if (Platform.OS !== "ios" || !scrollTarget) return;
@@ -49,6 +51,9 @@ export const InputFocusScrollView: React.FC<Props> = ({
         if (focusPositionOffset)
           scrollY = scrollY - screenHeight * focusPositionOffset;
 
+        // Cache scroll position for layout shift cases
+        setScrollPosition(scrollY);
+        // Scroll to input position
         ref.current?.scrollTo({ y: scrollY });
       },
       () => console.error("failed to measure layout"),
@@ -58,6 +63,14 @@ export const InputFocusScrollView: React.FC<Props> = ({
   function onScrollViewLayout(e: LayoutChangeEvent) {
     if (Platform.OS !== "ios") return;
     setScrollTarget(e.nativeEvent.target);
+  }
+
+  /** Handle layout shifts by programmatically scrolling to the same input position without animation. */
+  function onContentSizeChange(_: number, h: number) {
+    if (scrollPosition) {
+      ref.current?.scrollTo({ y: scrollPosition, animated: false });
+      setScrollPosition(undefined);
+    }
   }
 
   const containerStyles = StyleSheet.flatten([styles[height], margins, style]);
@@ -71,9 +84,10 @@ export const InputFocusScrollView: React.FC<Props> = ({
   return (
     <ScrollView
       ref={ref}
+      scrollToOverflowEnabled
       scrollEventThrottle={16}
       onLayout={onScrollViewLayout}
-      scrollToOverflowEnabled
+      onContentSizeChange={onContentSizeChange}
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}
       style={containerStyles}
