@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 type Validation<T> = { [K in keyof Partial<T>]?: boolean };
 type Rules<T> = {
-  [K in keyof T]?: (value: T[K]) => boolean | undefined;
+  [K in keyof T]?: (value: T[K], state: T) => boolean | undefined;
 };
 
 type Values<T> = {
@@ -58,12 +58,15 @@ export function useForm<T>(values: Values<T>, config?: FormConfig<T>) {
     setState((s) => ({ ...s, [key]: value }));
     setValidation((s) => ({
       ...s,
-      [key]: validate ? fieldValidation(key, value) : undefined,
+      [key]: validate ? fieldValidation(key, value, state) : undefined,
     }));
   }
 
   function validate<K extends keyof T>(key: K) {
-    setValidation((s) => ({ ...s, [key]: fieldValidation(key, state[key]) }));
+    setValidation((s) => ({
+      ...s,
+      [key]: fieldValidation(key, state[key], state),
+    }));
   }
 
   /** Validate entire form, store validation state and return validation value.
@@ -130,9 +133,14 @@ export function useFormUtils<T>(config?: FormConfig<T>) {
     return true;
   }
 
-  function validateByRule<K extends keyof T>(key: K, value: T[K]) {
+  function validateByRule<K extends keyof T>(
+    key: K,
+    value: T[K],
+    state: Values<T>,
+  ) {
     // If rule exists, validate with rule
-    if (config?.rules && config.rules[key]) return config.rules[key]?.(value);
+    if (config?.rules && config.rules[key])
+      return config.rules[key]?.(value, state);
     // else return true because we know the value exists already.
     return true;
   }
@@ -141,13 +149,17 @@ export function useFormUtils<T>(config?: FormConfig<T>) {
     return config?.optional?.includes(key);
   }
 
-  function fieldValidation(key: keyof T, value: T[keyof T] | undefined) {
+  function fieldValidation(
+    key: keyof T,
+    value: T[keyof T] | undefined,
+    state: Values<T>,
+  ) {
     const hasValue = doesValueExist(value);
     const optional = isOptional(key);
     if (!hasValue) {
       return !!optional;
     } else {
-      return validateByRule(key, value);
+      return validateByRule(key, value, state);
     }
   }
 
@@ -158,7 +170,7 @@ export function useFormUtils<T>(config?: FormConfig<T>) {
     keys.forEach((key) => {
       const value = state[key];
       // Force true / false values for entire form. Undefined has no value when submitting.
-      validation[key] = fieldValidation(key, value) || false;
+      validation[key] = fieldValidation(key, value, state) || false;
     });
 
     return {
