@@ -12,11 +12,12 @@ import {
 import { useSkeletor } from "../../hooks";
 import { Block } from "../Block";
 
-type ScreenProps = {
+export type ScreenProps = {
   /** Pass a specific background view OR just a background color value. Custom components should be 100% height and width. */
   background?: JSX.Element | string;
   header?: JSX.Element;
   disableAndroidBack?: boolean;
+  onAndroidBack?: () => void;
   footer?: JSX.Element;
   hideTopSafeArea?: boolean;
   hideBottomSafeArea?: boolean;
@@ -41,27 +42,26 @@ export const Screen: ReactFC<Props> = ({
   style,
   statusBarType,
   isLandscape,
+  onAndroidBack,
   ...rest
 }) => {
   const { defaultStatusBarType } = useSkeletor();
 
   /** Disable android back button if need be */
   useEffect(() => {
-    function isAndroidBackButtonDisabled() {
-      return Boolean(disableAndroidBack);
+    /** Return true to disable default Android back.
+     * Return false to enable default Android back.
+     * If onAndroidBack is passed, default back behavior will be disabled.
+     */
+    function handleAndroidBack() {
+      onAndroidBack?.();
+      return Boolean(onAndroidBack || disableAndroidBack);
     }
 
-    BackHandler.addEventListener(
-      "hardwareBackPress",
-      isAndroidBackButtonDisabled,
-    );
-
+    BackHandler.addEventListener("hardwareBackPress", handleAndroidBack);
     return () =>
-      BackHandler.removeEventListener(
-        "hardwareBackPress",
-        isAndroidBackButtonDisabled,
-      );
-  }, [disableAndroidBack]);
+      BackHandler.removeEventListener("hardwareBackPress", handleAndroidBack);
+  }, [disableAndroidBack, onAndroidBack]);
 
   return (
     <>
