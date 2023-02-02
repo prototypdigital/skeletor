@@ -67,10 +67,9 @@ export const InputFocusScrollView: React.FC<Props> = ({
 
   /** Handle layout shifts by programmatically scrolling to the same input position without animation. */
   function onContentSizeChange(_: number, h: number) {
-    if (scrollPosition) {
-      ref.current?.scrollTo({ y: scrollPosition, animated: false });
-      setScrollPosition(undefined);
-    }
+    if (Platform.OS !== "ios" || !scrollPosition) return;
+    ref.current?.scrollTo({ y: scrollPosition, animated: false });
+    setScrollPosition(undefined);
   }
 
   const containerStyles = StyleSheet.flatten([styles[height], margins, style]);
