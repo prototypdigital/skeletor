@@ -48,7 +48,7 @@ export const InputFocusScrollView: React.FC<Props> = ({
       scrollTarget,
       (nope, top, nuuh, height) => {
         let scrollY = top - height;
-        if (focusPositionOffset)
+        if (focusPositionOffset !== undefined)
           scrollY = scrollY - screenHeight * focusPositionOffset;
 
         // Cache scroll position for layout shift cases
@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
   full: { height: "100%" },
   auto: { height: "auto" },
   content: {
+    flexGrow: 1,
     paddingBottom: 30,
   },
 });
