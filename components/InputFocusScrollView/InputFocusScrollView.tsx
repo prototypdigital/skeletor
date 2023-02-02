@@ -100,8 +100,8 @@ export const InputFocusScrollView: React.FC<Props> = ({
 };
 
 const styles = StyleSheet.create({
-  full: { flex: 1 },
-  auto: { flex: 0 },
+  full: { height: "100%" },
+  auto: { height: "auto" },
   content: {
     paddingBottom: 30,
   },
