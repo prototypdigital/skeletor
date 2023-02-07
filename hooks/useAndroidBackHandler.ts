@@ -38,8 +38,6 @@ export function useAndroidBackHandler(props: AndroidBackHandlerConfig) {
       return props.disableDefault;
     });
 
-    return () => {
-      handler.remove();
-    };
+    return handler.remove;
   }, [enabled]);
 }
