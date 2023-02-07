@@ -1,31 +1,45 @@
-import { useEffect, useState } from "react";
-import { BackHandler, NativeEventSubscription } from "react-native";
+import { useEffect } from "react";
+import { BackHandler } from "react-native";
 
-export interface AndroidBackHandlerConfig {
-  /** Optional callback function to execute on back button press */
-  handlePress?: () => void;
-  /** Whether or not the default android back button behavior will be blocked */
-  disableBack: boolean;
+interface DefaultProps {
+  /** Whether the custom handler is enabled or disabled. */
+  enabled: boolean;
+}
+interface WithCallback extends DefaultProps {
+  /** Callback function to execute on back button press. Will disable default behavior. */
+  handlePress: () => void;
 }
 
-export function useAndroidBackHandler(config: AndroidBackHandlerConfig) {
-  const { handlePress, disableBack } = config;
-  const [handler, setHandler] = useState<NativeEventSubscription>();
+interface WithDisable extends DefaultProps {
+  /** Whether or not the default android back button behavior will be blocked */
+  disableDefault: boolean;
+}
 
-  /** Enable custom back handler */
-  function enable() {
+export type AndroidBackHandlerConfig = WithCallback | WithDisable;
+
+function isWithCallback(
+  props: AndroidBackHandlerConfig,
+): props is WithCallback {
+  return Object.keys(props).some((key) => key === "handlePress");
+}
+
+export function useAndroidBackHandler(props: AndroidBackHandlerConfig) {
+  const { enabled } = props;
+
+  useEffect(() => {
+    if (!enabled) return;
+
     const handler = BackHandler.addEventListener("hardwareBackPress", () => {
-      handlePress?.();
-      return !!handlePress || disableBack;
+      if (isWithCallback(props)) {
+        props.handlePress();
+        return true;
+      }
+
+      return props.disableDefault;
     });
 
-    setHandler(handler);
-  }
-
-  /** Disable custom back handler */
-  function remove() {
-    handler?.remove();
-  }
-
-  return { enable, remove };
+    return () => {
+      handler.remove();
+    };
+  }, [enabled]);
 }
