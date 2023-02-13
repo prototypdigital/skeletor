@@ -1,5 +1,5 @@
 import { useMemo, useRef } from "react";
-import { Animated, Easing, ViewStyle } from "react-native";
+import { Animated, ViewStyle } from "react-native";
 
 /** Any is a hotfix, requires more investigation */
 type Animation<Keys extends keyof Partial<ViewStyle>> = Record<
@@ -43,7 +43,7 @@ export function useAnimation<Keys extends keyof Partial<ViewStyle>>(
       const definition = styles[key]!;
 
       const interpolation = value.interpolate({
-        inputRange: definition.map((_, index) => index),
+        inputRange: definition.map((_, i) => i),
         outputRange: definition,
       });
 

@@ -27,7 +27,9 @@ export function useAndroidBackHandler(props: AndroidBackHandlerConfig) {
   const { enabled } = props;
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled) {
+      return;
+    }
 
     const handler = BackHandler.addEventListener("hardwareBackPress", () => {
       if (isWithCallback(props)) {

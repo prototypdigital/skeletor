@@ -23,7 +23,7 @@ interface TimelineConfiguration {
   stagger?: StaggerTimeline;
 }
 
-/** Used to layout animated values on a timeline and handle starting/reversing the animations. 
+/** Used to layout animated values on a timeline and handle starting/reversing the animations.
  * Supports all Animated types (delay, stagger, parallel, sequence).
  * @example
  * useAnimTimeline({
@@ -48,7 +48,7 @@ export function useAnimTimeline(config: TimelineConfiguration): void {
   ) {
     const compositions: Animated.CompositeAnimation[] = [];
     timeline.elements.forEach(
-      ({ values, animations, configuration, definitions }, index) => {
+      ({ values, animations, configuration, definitions }) => {
         const keys = Object.keys(animations).map(
           (key) => key as keyof Partial<ViewStyle>,
         );

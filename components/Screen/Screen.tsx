@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   SafeAreaView,
   View,
   ViewProps,
-  BackHandler,
   StyleSheet,
   StatusBar,
   Platform,
@@ -12,11 +11,10 @@ import {
 import { useSkeletor } from "../../hooks";
 import { Block } from "../Block";
 
-export type ScreenProps = {
+type OwnProps = {
   /** Pass a specific background view OR just a background color value. Custom components should be 100% height and width. */
   background?: JSX.Element | string;
   header?: JSX.Element;
-  onAndroidBack?: () => void;
   footer?: JSX.Element;
   hideTopSafeArea?: boolean;
   hideBottomSafeArea?: boolean;
@@ -26,21 +24,18 @@ export type ScreenProps = {
   isLandscape?: boolean;
 };
 
-type Props = ScreenProps & ViewProps;
+type ScreenProps = OwnProps & ViewProps;
 
-export const Screen: ReactFC<Props> = ({
+export const Screen: ReactFC<ScreenProps> = ({
   background,
   children,
-  footer,
   hideBottomSafeArea,
   hideTopSafeArea,
   bottomSafeAreaColor,
   topSafeAreaColor,
-  header,
   style,
   statusBarType,
   isLandscape,
-  onAndroidBack,
   ...rest
 }) => {
   const { defaultStatusBarType } = useSkeletor();
