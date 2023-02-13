@@ -4,6 +4,9 @@
   "author": "Luka Buljan <luka@prototyp.digital>",
   "version": "1.0.0",
   "types": "./types",
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
     "react-native",
     "ui",
