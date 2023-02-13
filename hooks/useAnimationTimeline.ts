@@ -26,12 +26,12 @@ interface TimelineConfiguration {
 /** Used to layout animated values on a timeline and handle starting/reversing the animations.
  * Supports all Animated types (delay, stagger, parallel, sequence).
  * @example
- * useAnimTimeline({
+ * useAnimationTimeline({
     stagger: { elements: [ring1, ring2, ring3], stagger: 900, start: show },
     sequence: { elements: [button], start: Boolean(show && !disabled) },
   });
 */
-export function useAnimTimeline(config: TimelineConfiguration): void {
+export function useAnimationTimeline(config: TimelineConfiguration): void {
   const { delay, parallel, sequence, stagger } = config;
   const staggerStart = Boolean(stagger?.start);
   const delayStart = Boolean(delay?.start);
