@@ -83,7 +83,7 @@ isLandscape?: boolean;
 
 #### Usage
 
-```javascript
+```typescript
 function Component: React.FC = () => {
 	return <Screen background={<GradientBackground />} statusBarType="dark-content">
 	 ...
@@ -99,7 +99,7 @@ Will detect configured Font type, built with the ability to easily customize the
 
 #### Props
 
-```javascript
+```typescript
 /** Inferred from @types/Font.d.ts */
 font?: Font;
 /** Either define [fontSize, lineHeight] or just one size applied to both fontSize and lineHeight */
@@ -115,7 +115,7 @@ opacity?: TextStyle["opacity"];
 
 To use the `Text` component, simply import it and pass in the desired props.
 
-```javascript
+```typescript
 import { Text } from "./Text";
 
 function MyComponent() {
@@ -135,7 +135,7 @@ This is a flexible and customizable React Native component that can be used as e
 
 #### Props
 
-```javascript
+```typescript
 /** Determine if Block is scrollable or not. If scrollable, extends ScrollView props. */
 scrollable?: boolean;
 align?: ViewStyle["alignItems"];
@@ -188,7 +188,7 @@ border?: {
 
 Use cases are many, but simple. This component is intended to be used as a building block for your layout. One example is:
 
-```javascript
+```typescript
 <Block
     maxHeight="75%"
     flexDirection="row"
@@ -209,7 +209,7 @@ This scroll view will automatically scroll to an active input field rendered ins
 
 #### Props
 
-```javascript
+```typescript
 /** Decimal value of screen height percentage the input will be positioned at. */
 /** Defaults to 0.3, just above the keyboard. */
 focusPositionOffset?: number;
@@ -219,7 +219,7 @@ height?: "full" | "auto";
 
 #### Usage
 
-```javascript
+```typescript
 <InputFocusScrollView  focusPositionOffset={0.1}>
 	{(onInputFocus) => (
 		...
@@ -241,20 +241,139 @@ height?: "full" | "auto";
 </InputFocusScrollView>
 ```
 
--   `useForm` -> This can handle input change / validation without any particular handler being created. It will make working with forms and inputs a LOT easier.
+## Hooks
 
--   `useAnimation` & `useAnimationTimeline` -> This will help you create animations with as little code as possible. `useAnimation` defines the animations, `useAnimationTimeline` lays the animated elements out on a timeline you can configure with delays, staggers, parallel executions etc. There are caveats - for instance `transformX/transformY` can be defined in the `useAnimation` hook, but when using it on an animated element you have to pass the values in as follows:
+### useForm & useFormUtils
+
+Handle form value updates and validation with `useForm`. Full TypeScript support, ability to configure optional parameters, custom validation rules.
+
+Flexible in its function, supports multiple validation approaches through callbacks:
+
+1. For on-change validation, use `update("prop", value, true)`
+2. To trigger standalone validation, use `validate("prop")`
+3. Validate entire form with `validateForm()`
+
+#### Example 1: Simple use case with standalone validation on blur:
 
 ```javascript
-<Animated.View
-    style={{ transform: [{ translateY: element.animations.translateY }] }}
->
-    ...
-</Animated.View>
+const {state, validation, update, validate} = useForm({email: "", password: "");
+
+...
+<Input
+	keyboardType="email-address"
+	returnKeyType="next"
+	label="E-mail Address"
+	errorMessage="Email is not valid."
+	emptyMessage="Email is a required field."
+	placeholder="What's your email address?"
+	value={state.email}
+	textContentType="emailAddress"
+	valid={validation.email}
+	onChangeText={(text) =>  update("email", text)}
+	onBlur={() => validate("email")}
+/>
+...
 ```
 
-### TODO
+#### Example 2: Simple use case with on-change validation:
 
-1. Improve documentation
+```javascript
+// See example 1
+...
+onChangeText={(text) =>  update("email", text, true)}
+...
+```
 
-2. Maybe separate `Screen` into `ScreenContainer`, `ScreenHeader`, `ScreenContent`, `ScreenFooter` to clean up properties and not have to pass in header/footer as a prop.
+#### Example 3: Simple use case with on-submit validation:
+
+```javascript
+// See example 1
+
+function submit() {
+	if(!validateForm()) {
+		// Throw invalid error
+		// validation object will be populated
+	}
+}
+
+...
+<Input
+	keyboardType="email-address"
+	returnKeyType="next"
+	label="E-mail Address"
+	errorMessage="Email is not valid."
+	emptyMessage="Email is a required field."
+	placeholder="What's your email address?"
+	value={state.email}
+	textContentType="emailAddress"
+	valid={validation.email}
+	onChangeText={(text) =>  update("email", text)}
+/>
+<Button onPress={submit}>Submit</Button>
+```
+
+#### Example 4: Form configuration
+
+```javascript
+const { state, validation, update, validate } = useForm(
+{ firstName: "", middleName: "", lastName: ""},
+{
+	// If left empty, validation.middleName will be true
+	optional: ["middleName"],
+	// validation.lastName is invalid if lastName is <3 characters long
+	// state can be used to compare with other values (ie repeat password)
+	rules: { lastName: (value, state) => value.length >= 3,
+}
+```
+
+#### Example 5: useFormUtils
+
+Utility functions to help with standalone state validation, such as when re-validating a list of form values in a parent components.
+
+```javascript
+const { stateValidation } =  useFormUtils<Person>();
+
+function validatePeople() {
+	return people.every(person => stateValidation(person).valid);
+}
+```
+
+Other utilities: `doesValueExist`, `validateByRule`, `isOptional`, `fieldValidation`, `stateValidation`. Some are meant for internal `useForm` usage, such as `fieldValidation` and `validateByRule`, but are not unusable.
+
+### useAnimation & useAnimationTimeline
+
+`useAnimation` helps you quickly create simple animations and transitions using the default react-native animation toolkit. You can define as many animations as possible for a single element with a single invocation of the hook.
+
+`useAnimationTimeline` is used to lay the defined animations out on a timeline and configure when and how each animation is triggered. Available methods are `stagger`, `parallel`, `sequence`, `delay`.
+
+#### Usage
+
+```javascript
+const inputs = useAnimation(...);
+const  heading  =  useAnimation(
+	{opacity: [0, 1], translateY: [20, 0]},
+	{duration: 400},
+);
+
+// Use this hook to lay the animations out in a specific schedule/timeline.
+useAnimTimeline({
+	stagger: {
+		elements: [heading, inputs],
+		stagger: 200,
+		start: true,
+	},
+});
+
+...
+
+// Transformations cannot be applied outside the transform style.
+// so translateY has to be passed in through the transform style prop.
+<Animated.View
+	style={{
+		...heading.animations,
+		transform: [{translateY: heading.animations.translateY}],
+	}}
+>
+	...
+</Animated.View>
+```
