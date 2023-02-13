@@ -2,7 +2,7 @@
   "name": "@prototyp/skeletor",
   "description": "React-Native UI and functional toolkit",
   "author": "Luka Buljan <luka@prototyp.digital>",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "types": "./types",
   "publishConfig": {
     "access": "public"
