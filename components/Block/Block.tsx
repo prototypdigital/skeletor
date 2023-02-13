@@ -7,12 +7,7 @@ import {
   ViewProps,
   ViewStyle,
 } from "react-native";
-import {
-  extractAlignmentProperties,
-  extractBorderProperties,
-  extractSizeProperties,
-  extractSpacingProperties,
-} from "../../utils";
+import { extractAlignmentProperties, extractSizeProperties } from "../../utils";
 
 interface SharedProps extends ViewProps {
   background?: string;
@@ -28,30 +23,22 @@ interface BlockScrollViewProps extends SharedProps {
   style?: StyleProp<ViewStyle>;
 }
 
-interface BlockViewProps extends SharedProps {
+export interface BlockViewProps extends SharedProps {
   scrollable?: false | undefined;
 }
 
-interface BlockElementProps extends SharedProps {
-  alignment: Alignment;
-  spacing: Spacing;
-  size: Size;
-  border: Border;
-}
+type BlockElementProps = SharedProps & Alignment & Spacing & Size & Border;
 
 const BlockElement: ReactFC<BlockElementProps> = ({ children, ...props }) => {
+  const { border, paddings, margins, background, style, overflow, ...view } =
+    props;
+
+  const size = extractSizeProperties(props);
   const {
-    alignment,
-    spacing,
-    size,
-    border,
-    background,
-    style,
-    overflow,
-    ...view
-  } = props;
-  const { align: alignItems, justify: justifyContent, ...align } = alignment;
-  const { margins, paddings } = spacing;
+    align: alignItems,
+    justify: justifyContent,
+    ...alignment
+  } = extractAlignmentProperties(props);
 
   const styles = useMemo(
     () =>
@@ -59,7 +46,7 @@ const BlockElement: ReactFC<BlockElementProps> = ({ children, ...props }) => {
         {
           ...margins,
           ...paddings,
-          ...align,
+          ...alignment,
           ...size,
           ...border,
           alignItems,
@@ -69,7 +56,7 @@ const BlockElement: ReactFC<BlockElementProps> = ({ children, ...props }) => {
         },
         style,
       ]),
-    [spacing, alignment, size, background, style, overflow],
+    [alignment, size, background, style, overflow, margins, paddings],
   );
 
   return (
@@ -80,30 +67,15 @@ const BlockElement: ReactFC<BlockElementProps> = ({ children, ...props }) => {
 };
 
 type BaseProps = Alignment & Spacing & Size & Border;
-type Props = (BlockViewProps | BlockScrollViewProps) & BaseProps;
+export type BlockProps = (BlockViewProps | BlockScrollViewProps) & BaseProps;
 
-export const Block: ReactFC<Props> = ({ children, ...props }) => {
-  const { scrollable, background, style, ...rest } = props;
-  const alignment = extractAlignmentProperties(props);
-  const size = extractSizeProperties(props);
-  const spacing = extractSpacingProperties(props);
-  const border = extractBorderProperties(props);
+export const Block: ReactFC<BlockProps> = ({ children, ...props }) => {
+  const { scrollable, ...rest } = props;
+  const element = () => <BlockElement {...rest}>{children}</BlockElement>;
 
-  const element = () => (
-    <BlockElement
-      background={background}
-      style={style}
-      alignment={alignment}
-      spacing={spacing}
-      border={border}
-      size={size}
-      {...rest}
-    >
-      {children}
-    </BlockElement>
-  );
-
-  if (!scrollable) return element();
+  if (!scrollable) {
+    return element();
+  }
 
   const {
     horizontal,
@@ -118,7 +90,7 @@ export const Block: ReactFC<Props> = ({ children, ...props }) => {
       keyboardShouldPersistTaps="handled"
       showsHorizontalScrollIndicator={showsHorizontalScrollIndicator}
       showsVerticalScrollIndicator={showsVerticalScrollIndicator}
-      contentContainerStyle={{ flexGrow: 1, backgroundColor: background }}
+      contentContainerStyle={{ flexGrow: 1, backgroundColor: rest.background }}
       bounces={bounces}
     >
       {element()}

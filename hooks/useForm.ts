@@ -37,7 +37,9 @@ export function useForm<T>(values: Values<T>, config?: FormConfig<T>) {
 
   useEffect(() => {
     const changed = keys.filter((key) => values[key] !== initialState[key]);
-    if (!changed.length) return;
+    if (!changed.length) {
+      return;
+    }
 
     const updatedState = { ...state };
     changed.forEach((key) => (updatedState[key] = values[key]));
@@ -53,12 +55,12 @@ export function useForm<T>(values: Values<T>, config?: FormConfig<T>) {
   function update<K extends keyof T>(
     key: K,
     value: Values<T>[K],
-    validate?: boolean,
+    shouldValidate?: boolean,
   ) {
     setState((s) => ({ ...s, [key]: value }));
     setValidation((s) => ({
       ...s,
-      [key]: validate ? fieldValidation(key, value, state) : undefined,
+      [key]: shouldValidate ? fieldValidation(key, value, state) : undefined,
     }));
   }
 
@@ -73,9 +75,9 @@ export function useForm<T>(values: Values<T>, config?: FormConfig<T>) {
    * In human readable terms, use this when you want to validate the form on submit.
    */
   function validateForm(): boolean {
-    const { valid, validation } = stateValidation(state);
-    setValidation(validation);
-    return valid;
+    const formValidationState = stateValidation(state);
+    setValidation(formValidationState.validation);
+    return formValidationState.valid;
   }
 
   /** Boolean value of whether the form is valid (ie can be submitted). Use this to disable/enable form submission.
@@ -108,9 +110,6 @@ export function useForm<T>(values: Values<T>, config?: FormConfig<T>) {
     resetValidation();
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  // useEffect(resetValidation, []);
-
   return {
     state,
     validation,
@@ -128,8 +127,9 @@ export function useForm<T>(values: Values<T>, config?: FormConfig<T>) {
 /** Helper hook to validate form state outside of the scope of useForm. */
 export function useFormUtils<T>(config?: FormConfig<T>) {
   function doesValueExist(value: T[keyof T] | undefined): value is T[keyof T] {
-    if (value === null || value === undefined || value === "" || value < 0)
+    if (value === null || value === undefined || value === "" || value < 0) {
       return false;
+    }
     return true;
   }
 
@@ -139,8 +139,9 @@ export function useFormUtils<T>(config?: FormConfig<T>) {
     state: Values<T>,
   ) {
     // If rule exists, validate with rule
-    if (config?.rules && config.rules[key])
+    if (config?.rules && config.rules[key]) {
       return config.rules[key]?.(value, state);
+    }
     // else return true because we know the value exists already.
     return true;
   }
