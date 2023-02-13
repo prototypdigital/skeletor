@@ -22,7 +22,7 @@ type OwnProps = {
   isLandscape?: boolean;
 };
 
-type ScreenProps = OwnProps & ViewProps;
+export type ScreenProps = OwnProps & ViewProps;
 
 export const Screen: ReactFC<ScreenProps> = ({
   background,
