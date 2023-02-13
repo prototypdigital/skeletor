@@ -1,8 +1,20 @@
 {
   "name": "@prototyp/skeletor",
+  "description": "React-Native UI and functional toolkit",
+  "author": "Luka Buljan <luka@prototyp.digital>",
   "version": "1.0.0",
+  "types": "./types",
+  "keywords": [
+    "react-native",
+    "ui",
+    "kit",
+    "validation",
+    "animation",
+    "helpers",
+    "utilities",
+    "utils"
+  ],
   "devDependencies": {
     "typescript": "4.2.2"
-  },
-  "types": "./types"
+  }
 }
