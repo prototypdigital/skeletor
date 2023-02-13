@@ -83,7 +83,7 @@ isLandscape?: boolean;
 
 #### Usage
 
-```javascript
+```typescript
 function Component: React.FC = () => {
 	return <Screen background={<GradientBackground />} statusBarType="dark-content">
 	 ...
@@ -99,7 +99,7 @@ Will detect configured Font type, built with the ability to easily customize the
 
 #### Props
 
-```javascript
+```typescript
 /** Inferred from @types/Font.d.ts */
 font?: Font;
 /** Either define [fontSize, lineHeight] or just one size applied to both fontSize and lineHeight */
@@ -115,7 +115,7 @@ opacity?: TextStyle["opacity"];
 
 To use the `Text` component, simply import it and pass in the desired props.
 
-```javascript
+```typescript
 import { Text } from "./Text";
 
 function MyComponent() {
@@ -135,7 +135,7 @@ This is a flexible and customizable React Native component that can be used as e
 
 #### Props
 
-```javascript
+```typescript
 /** Determine if Block is scrollable or not. If scrollable, extends ScrollView props. */
 scrollable?: boolean;
 align?: ViewStyle["alignItems"];
@@ -188,7 +188,7 @@ border?: {
 
 Use cases are many, but simple. This component is intended to be used as a building block for your layout. One example is:
 
-```javascript
+```typescript
 <Block
     maxHeight="75%"
     flexDirection="row"
@@ -209,7 +209,7 @@ This scroll view will automatically scroll to an active input field rendered ins
 
 #### Props
 
-```javascript
+```typescript
 /** Decimal value of screen height percentage the input will be positioned at. */
 /** Defaults to 0.3, just above the keyboard. */
 focusPositionOffset?: number;
@@ -219,7 +219,7 @@ height?: "full" | "auto";
 
 #### Usage
 
-```javascript
+```typescript
 <InputFocusScrollView  focusPositionOffset={0.1}>
 	{(onInputFocus) => (
 		...
@@ -244,6 +244,8 @@ height?: "full" | "auto";
 ## Hooks
 
 ### useForm & useFormUtils
+
+---
 
 Handle form value updates and validation with `useForm`. Full TypeScript support, ability to configure optional parameters, custom validation rules.
 
@@ -342,6 +344,8 @@ Other utilities: `doesValueExist`, `validateByRule`, `isOptional`, `fieldValidat
 
 ### useAnimation & useAnimationTimeline
 
+---
+
 `useAnimation` helps you quickly create simple animations and transitions using the default react-native animation toolkit. You can define as many animations as possible for a single element with a single invocation of the hook.
 
 `useAnimationTimeline` is used to lay the defined animations out on a timeline and configure when and how each animation is triggered. Available methods are `stagger`, `parallel`, `sequence`, `delay`.
@@ -377,3 +381,42 @@ useAnimTimeline({
 	...
 </Animated.View>
 ```
+
+### useAndroidBackHandler
+
+---
+
+Handle how the android back button behaves through enabling / disabling the button or passing in a completely custom callback. External `enabled` control in order to be able to mount / unmount the back handler event based on outside integrations, such as checking if the current screen is focused or not with `react-navigation`. Will always be cleared on unmount.
+
+#### Usage
+
+```javascript
+const Component: React.FC = () => {
+	useAndroidBackHandler({
+		handlePress: () =>  setOpenCancelModal(true),
+		enabled: !openCancelModal  &&  isFocused,
+	});
+	...
+}
+```
+
+### useAppState
+
+---
+
+Handle what happens when the application changes state between background and foreground. <b>Note:</b> Background states cannot be processed on Android, only foreground.
+
+#### Usage
+
+```javascript
+useAppState({ onForeground: () => Alert.alert("Foreground") });
+```
+
+## Contributions
+
+Suggestions and requests welcome, contributions appreciated but will be reviewed.
+
+## Disclaimer
+
+Parts of this readme file were generated with ChatGPT.
+Thank you for making documentation easy for a lazy programmer.
