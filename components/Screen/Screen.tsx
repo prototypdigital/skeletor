@@ -14,8 +14,6 @@ import { Block } from "../Block";
 type OwnProps = {
   /** Pass a specific background view OR just a background color value. Custom components should be 100% height and width. */
   background?: JSX.Element | string;
-  header?: JSX.Element;
-  footer?: JSX.Element;
   hideTopSafeArea?: boolean;
   hideBottomSafeArea?: boolean;
   bottomSafeAreaColor?: string;
