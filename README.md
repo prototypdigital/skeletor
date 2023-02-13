@@ -2,10 +2,6 @@
 
 #### Our small in-house react-native toolkit to make your life easier
 
-## Installation
-
-`yarn add prototypdigital/skeletor`
-
 ## Project setup
 
 Since this is supposed to be as configurable as possible while still maintaining some form and structure with how things should be done, you'll have to set up a couple things first.
