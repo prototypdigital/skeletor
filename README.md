@@ -83,7 +83,7 @@ isLandscape?: boolean;
 
 #### Usage
 
-```typescript
+```javascript
 function Component: React.FC = () => {
 	return <Screen background={<GradientBackground />} statusBarType="dark-content">
 	 ...
@@ -99,7 +99,7 @@ Will detect configured Font type, built with the ability to easily customize the
 
 #### Props
 
-```typescript
+```javascript
 /** Inferred from @types/Font.d.ts */
 font?: Font;
 /** Either define [fontSize, lineHeight] or just one size applied to both fontSize and lineHeight */
@@ -115,7 +115,7 @@ opacity?: TextStyle["opacity"];
 
 To use the `Text` component, simply import it and pass in the desired props.
 
-```typescript
+```javascript
 import { Text } from "./Text";
 
 function MyComponent() {
@@ -135,7 +135,7 @@ This is a flexible and customizable React Native component that can be used as e
 
 #### Props
 
-```typescript
+```javascript
 /** Determine if Block is scrollable or not. If scrollable, extends ScrollView props. */
 scrollable?: boolean;
 align?: ViewStyle["alignItems"];
@@ -188,7 +188,7 @@ border?: {
 
 Use cases are many, but simple. This component is intended to be used as a building block for your layout. One example is:
 
-```typescript
+```javascript
 <Block
     maxHeight="75%"
     flexDirection="row"
@@ -209,7 +209,7 @@ This scroll view will automatically scroll to an active input field rendered ins
 
 #### Props
 
-```typescript
+```javascript
 /** Decimal value of screen height percentage the input will be positioned at. */
 /** Defaults to 0.3, just above the keyboard. */
 focusPositionOffset?: number;
@@ -219,7 +219,7 @@ height?: "full" | "auto";
 
 #### Usage
 
-```typescript
+```javascript
 <InputFocusScrollView  focusPositionOffset={0.1}>
 	{(onInputFocus) => (
 		...
