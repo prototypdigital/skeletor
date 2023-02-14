@@ -1,4 +1,4 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import {
   SafeAreaView,
   View,
@@ -24,7 +24,7 @@ type OwnProps = {
 
 export type ScreenProps = OwnProps & ViewProps;
 
-export const Screen: ReactFC<ScreenProps> = ({
+export const Screen: React.FC<PropsWithChildren<ScreenProps>> = ({
   background,
   children,
   hideBottomSafeArea,
