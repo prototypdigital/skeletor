@@ -6,8 +6,11 @@
 
     /* Completeness */
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
-    "baseUrl": "./",
-    "rootDirs": ["./"],
-    "types": ["./types"]
+    "baseUrl": "src",
+    "rootDirs": ["src"],
+    "lib": ["es2016"],
+    "jsx": "react-native",
+    "emitDeclarationOnly": true,
+    "noEmit": false
   }
 }
