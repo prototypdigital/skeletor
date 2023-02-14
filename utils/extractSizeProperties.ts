@@ -1,3 +1,5 @@
+import { Size } from "../models";
+
 export function extractSizeProperties<Props extends Size>(props: Props): Size {
   return {
     flex: props.flex,

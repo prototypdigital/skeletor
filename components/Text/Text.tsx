@@ -5,10 +5,11 @@ import {
   TextProps as RNTextProps,
   TextStyle,
 } from "react-native";
-import { extractSizeProperties } from "skeletor/utils";
+import { Size, Spacing } from "../../models";
+import { extractSizeProperties } from "../../utils";
 import { useSkeletor } from "../../hooks";
 
-interface TextProps extends RNTextProps {
+interface OwnProps extends RNTextProps {
   font?: Font;
   /** Either define [fontSize, lineHeight] or just one size applied to both fontSize and lineHeight */
   size?: [number, number] | number;
@@ -19,9 +20,9 @@ interface TextProps extends RNTextProps {
   opacity?: TextStyle["opacity"];
 }
 
-type Props = TextProps & Spacing & Size;
+export type TextProps = OwnProps & Spacing & Size;
 
-export const Text: ReactFC<Props> = ({
+export const Text: ReactFC<TextProps> = ({
   font,
   size,
   textTransform,

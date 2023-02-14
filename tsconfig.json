@@ -1,0 +1,13 @@
+{
+  "extends": "@tsconfig/react-native/tsconfig.json" /* Recommended React Native TSConfig base */,
+  "exclude": ["__tests__", "./*.config.js", "index.js", "node_modules"],
+  "compilerOptions": {
+    /* Visit https://aka.ms/tsconfig.json to read more about this file */
+
+    /* Completeness */
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+    "baseUrl": "./",
+    "rootDirs": ["./"],
+    "types": ["./types"]
+  }
+}

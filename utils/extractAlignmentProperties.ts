@@ -1,3 +1,5 @@
+import { Alignment } from "../models";
+
 export function extractAlignmentProperties<Props extends Alignment>(
   props: Props,
 ): Alignment {

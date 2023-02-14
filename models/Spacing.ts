@@ -1,4 +1,4 @@
-interface Spacing {
+export interface Spacing {
   margins?: {
     marginTop?: number | string;
     marginBottom?: number | string;
