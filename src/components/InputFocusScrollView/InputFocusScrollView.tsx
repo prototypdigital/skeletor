@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { PropsWithChildren, useRef, useState } from "react";
 import {
   Platform,
   LayoutChangeEvent,
@@ -18,7 +18,7 @@ export interface InputFocusScrollViewProps
   focusPositionOffset?: number;
   height?: "full" | "auto";
   children: (
-    onInputFocus: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void,
+    onInputFocus: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void
   ) => React.ReactNode;
 }
 
@@ -29,7 +29,9 @@ export interface InputFocusScrollViewProps
  * @example <InputFocusScrollView>{(onInputFocus) => <TextInput onFocus={onInputFocus} ... />}</InputFocusScrollView>
  * NOTE: This works on iOS only, Android does this by default with @param android:windowSoftInputMode
  */
-export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
+export const InputFocusScrollView: React.FC<
+  PropsWithChildren<InputFocusScrollViewProps>
+> = ({
   children,
   style,
   contentContainerStyle,
@@ -62,7 +64,7 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
         // Scroll to input position
         ref.current?.scrollTo({ y: scrollY });
       },
-      () => console.error("failed to measure layout"),
+      () => console.error("failed to measure layout")
     );
   }
 

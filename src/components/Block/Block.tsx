@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { PropsWithChildren, useMemo } from "react";
 import {
   ScrollView,
   StyleProp,
@@ -30,7 +30,10 @@ export interface BlockViewProps extends SharedProps {
 
 type BlockElementProps = SharedProps & Alignment & Spacing & Size & Border;
 
-const BlockElement: ReactFC<BlockElementProps> = ({ children, ...props }) => {
+const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
+  children,
+  ...props
+}) => {
   const { border, paddings, margins, background, style, overflow, ...view } =
     props;
 
@@ -57,7 +60,7 @@ const BlockElement: ReactFC<BlockElementProps> = ({ children, ...props }) => {
         },
         style,
       ]),
-    [alignment, size, background, style, overflow, margins, paddings],
+    [alignment, size, background, style, overflow, margins, paddings]
   );
 
   return (
@@ -70,7 +73,10 @@ const BlockElement: ReactFC<BlockElementProps> = ({ children, ...props }) => {
 type BaseProps = Alignment & Spacing & Size & Border;
 export type BlockProps = (BlockViewProps | BlockScrollViewProps) & BaseProps;
 
-export const Block: ReactFC<BlockProps> = ({ children, ...props }) => {
+export const Block: React.FC<PropsWithChildren<BlockProps>> = ({
+  children,
+  ...props
+}) => {
   const { scrollable, ...rest } = props;
   const element = () => <BlockElement {...rest}>{children}</BlockElement>;
 

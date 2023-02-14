@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { PropsWithChildren, useMemo } from "react";
 import {
   StyleSheet,
   Text as RNText,
@@ -22,7 +22,7 @@ interface OwnProps extends RNTextProps {
 
 export type TextProps = OwnProps & Spacing & Size;
 
-export const Text: ReactFC<TextProps> = ({
+export const Text: React.FC<PropsWithChildren<TextProps>> = ({
   font,
   size,
   textTransform,
@@ -79,7 +79,7 @@ export const Text: ReactFC<TextProps> = ({
       margins,
       paddings,
       style,
-    ],
+    ]
   );
 
   return (

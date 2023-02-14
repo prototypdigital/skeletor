@@ -8,6 +8,7 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
     "baseUrl": "src",
     "rootDirs": ["src"],
+    "typeRoots": ["./src/types"],
     "lib": ["es2016"],
     "jsx": "react-native",
     "emitDeclarationOnly": true,

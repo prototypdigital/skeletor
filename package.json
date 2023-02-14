@@ -5,6 +5,8 @@
   "version": "1.0.0",
   "types": "lib/typescript/src/index.d.ts",
   "main": "lib/commonjs/index.js",
+  "react-native": "src/index.ts",
+  "module": "lib/module/index.js",
   "repository": {
     "type": "git",
     "directory": "git+https://github.com/prototypdigital/skeletor.git"
@@ -13,7 +15,7 @@
     "prepack": "bob build"
   },
   "devDependencies": {
-    "@types/react-native": "0.70.5",
+    "@types/react-native": "0.70.6",
     "@types/jest": "29.4.0",
     "@tsconfig/react-native": "2.0.3",
     "react-native-builder-bob": "0.20.3",
@@ -39,10 +41,7 @@
     "utilities",
     "utils"
   ],
-  "react-native": "src/index.ts",
-  "module": "lib/module/index.js",
   "files": [
-    "src",
     "lib",
     "!**/__tests__",
     "!**/__fixtures__",
