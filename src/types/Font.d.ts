@@ -1,1 +1,1 @@
-type Font = any;
+type Font = string;
