@@ -10,6 +10,8 @@ import { extractSizeProperties } from "../../utils";
 import { useSkeletor } from "../../hooks";
 
 interface OwnProps extends RNTextProps {
+  /** Create a Font.d.ts type in your typescript types directory and define fonts as follows:
+   * @example type Font = "Helvetica" | "Montserrat" ...  */
   font?: Font;
   /** Either define [fontSize, lineHeight] or just one size applied to both fontSize and lineHeight */
   size?: [number, number] | number;
@@ -22,6 +24,8 @@ interface OwnProps extends RNTextProps {
 
 export type TextProps = OwnProps & Spacing & Size;
 
+/** Create a Font.d.ts type in your typescript types directory and define fonts as follows:
+ * @example type Font = "Helvetica" | "Montserrat" ...  */
 export const Text: React.FC<PropsWithChildren<TextProps>> = ({
   font,
   size,
