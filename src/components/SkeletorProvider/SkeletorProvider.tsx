@@ -1,4 +1,5 @@
 import React from "react";
+import { SkeletorConfig } from "../../models";
 import { SkeletorContext, SkeletorDefaults } from "./SkeletorContext";
 
 type Props = Partial<SkeletorConfig> & {
