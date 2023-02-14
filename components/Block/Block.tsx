@@ -7,6 +7,7 @@ import {
   ViewProps,
   ViewStyle,
 } from "react-native";
+import { Alignment, Border, Size, Spacing } from "../../models";
 import { extractAlignmentProperties, extractSizeProperties } from "../../utils";
 
 interface SharedProps extends ViewProps {

@@ -4,6 +4,22 @@
   "author": "Luka Buljan <luka@prototyp.digital>",
   "version": "1.0.1",
   "types": "./types",
+  "main": "index.ts",
+  "repository": {
+    "type": "git",
+    "directory": "git+https://github.com/prototypdigital/skeletor.git"
+  },
+  "scripts": {
+    "build": "yarn build:esm && yarn build:cjs",
+    "build:esm": "tsc index.ts --outDir dist/esm",
+    "build:cjs": "tsc index.ts --module commonjs --outDir dist/cjs"
+  },
+  "devDependencies": {
+    "typescript": "4.2.2"
+  },
+  "peerDependencies": {
+    "react": ">=18.1.0"
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -16,8 +32,5 @@
     "helpers",
     "utilities",
     "utils"
-  ],
-  "devDependencies": {
-    "typescript": "4.2.2"
-  }
+  ]
 }

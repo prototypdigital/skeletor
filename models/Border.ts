@@ -1,4 +1,4 @@
-type Border = {
+export interface Border {
   border?: {
     borderWidth?: number;
     borderTopWidth?: number;
@@ -12,4 +12,4 @@ type Border = {
     borderBottomLeftRadius?: number;
     borderBottomRightRadius?: number;
   };
-};
+}
