@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Platform,
   LayoutChangeEvent,
@@ -29,9 +29,7 @@ export interface InputFocusScrollViewProps
  * @example <InputFocusScrollView>{(onInputFocus) => <TextInput onFocus={onInputFocus} ... />}</InputFocusScrollView>
  * NOTE: This works on iOS only, Android does this by default with @param android:windowSoftInputMode
  */
-export const InputFocusScrollView: React.FC<
-  PropsWithChildren<InputFocusScrollViewProps>
-> = ({
+export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
   children,
   style,
   contentContainerStyle,
