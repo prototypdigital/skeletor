@@ -13,24 +13,25 @@ Add the SkeletorProvider component as the (or one of) top wrapper of your applic
 ```javascript
 /// index.js
 const App = () => {
-    return (
-        <SkeletorProvider>
-            <StoreProvider>
-                <RootNavigator />
-            </StoreProvider>
-        </SkeletorProvider>
-    );
+  return (
+    <SkeletorProvider>
+      <StoreProvider>
+        <RootNavigator />
+      </StoreProvider>
+    </SkeletorProvider>
+  );
 };
 ```
 
 Configure the SkeletorProvider properties with whatever you desire. Here is the list of all configurable properties for the SkeletorProvider component:
 
 ```javascript
-type SkeletorConfig = {
-    defaultFont: Font,
-    defaultFontSize: number,
-    defaultStatusBarType: "dark-content" | "light-content" | "default",
-};
+interface SkeletorConfig {
+  defaultFont: Font | undefined;
+  defaultFontSize: [number, number] | number;
+  defaultStatusBarType: "dark-content" | "light-content" | "default";
+  defaultTextColor: string;
+}
 ```
 
 For Skeletor to detect the fonts you have added, you will have to create a type defintion file to override the existing Font type like in the following example:
@@ -43,7 +44,7 @@ type Font = "Helvetica" | "Roboto" | "San Francisco";
 Then you can configure the `defaultFont` property as follows:
 
 ```javascript
-<SkeletorProvider defaultFont="Arial">...</SkeletorProvider>
+<SkeletorProvider defaultFont="Helvetica">...</SkeletorProvider>
 ```
 
 To get access to the skeletor styles in other components, you can use the provided `useSkeletor` hook that will return the entire Skeletor configuration object. For instance:
@@ -115,11 +116,11 @@ To use the `Text` component, simply import it and pass in the desired props.
 import { Text } from "./Text";
 
 function MyComponent() {
-    return (
-        <Text font="Arial" size={[14, 18]} color="#333" textAlign="center">
-            Hello World!
-        </Text>
-    );
+  return (
+    <Text font="Arial" size={[14, 18]} color="#333" textAlign="center">
+      Hello World!
+    </Text>
+  );
 }
 ```
 
@@ -186,12 +187,12 @@ Use cases are many, but simple. This component is intended to be used as a build
 
 ```typescript
 <Block
-    maxHeight="75%"
-    flexDirection="row"
-    align="flex-start"
-    justify="space-between"
+  maxHeight="75%"
+  flexDirection="row"
+  align="flex-start"
+  justify="space-between"
 >
-    ... ...
+  ... ...
 </Block>
 ```
 
