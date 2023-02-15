@@ -7,9 +7,10 @@
   "main": "lib/module/index.js",
   "react-native": "src/index.ts",
   "module": "lib/module/index.js",
+  "homepage": "https://github.com/prototypdigital/skeletor",
   "repository": {
     "type": "git",
-    "directory": "git+https://github.com/prototypdigital/skeletor.git"
+    "directory": "https://github.com/prototypdigital/skeletor"
   },
   "scripts": {
     "prepack": "bob build"
