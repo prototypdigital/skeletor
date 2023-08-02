@@ -1,3 +1,5 @@
+import { AnimatableNumericValue, DimensionValue } from "react-native/types";
+
 export interface Border {
   border?: {
     borderWidth?: number;
@@ -6,10 +8,10 @@ export interface Border {
     borderLeftWidth?: number;
     borderRightWidth?: number;
     borderColor?: string;
-    borderRadius?: number;
-    borderTopLeftRadius?: number;
-    borderTopRightRadius?: number;
-    borderBottomLeftRadius?: number;
-    borderBottomRightRadius?: number;
+    borderRadius?: AnimatableNumericValue;
+    borderTopLeftRadius?: AnimatableNumericValue;
+    borderTopRightRadius?: AnimatableNumericValue;
+    borderBottomLeftRadius?: AnimatableNumericValue;
+    borderBottomRightRadius?: AnimatableNumericValue;
   };
 }
