@@ -1,9 +1,11 @@
+import { DimensionValue } from "react-native/types";
+
 export interface Size {
-  width?: number | string;
-  height?: number | string;
-  minHeight?: number | string;
-  minWidth?: number | string;
-  maxHeight?: number | string;
-  maxWidth?: number | string;
+  width?: DimensionValue;
+  height?: DimensionValue;
+  minHeight?: DimensionValue;
+  minWidth?: DimensionValue;
+  maxHeight?: DimensionValue;
+  maxWidth?: DimensionValue;
   flex?: number;
 }

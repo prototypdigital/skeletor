@@ -8,6 +8,9 @@ import {
   StyleSheet,
   TextInputFocusEventData,
   Dimensions,
+  UIManager,
+  findNodeHandle,
+  TextInput,
 } from "react-native";
 import { Spacing } from "../../models";
 
@@ -41,15 +44,14 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
 }) => {
   const screenHeight = useRef(Dimensions.get("screen").height).current;
   const ref = useRef<ScrollView>(null);
-  const [scrollTarget, setScrollTarget] = useState<number | null>();
   /** Cached scroll position to keep focus on input if layout shifts. */
-  const [scrollPosition, setScrollPosition] = useState<number | null>();
+  const [scrollPosition, setScrollPosition] = useState<number | null>(null);
+  const [scrollTarget, setScrollTarget] = useState<number | null>(null);
 
   function onInputFocus(e: NativeSyntheticEvent<TextInputFocusEventData>) {
-    if (Platform.OS !== "ios" || !scrollTarget) {
-      return;
-    }
-    e.currentTarget.measureLayout(
+    if (Platform.OS !== "ios" || !scrollTarget) return;
+
+    (e.currentTarget as unknown as TextInput).measureLayout(
       scrollTarget,
       (nope, top, nuuh, elementHeight) => {
         let scrollY = top - elementHeight;
@@ -66,20 +68,13 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
     );
   }
 
-  function onScrollViewLayout(e: LayoutChangeEvent) {
-    if (Platform.OS !== "ios") {
-      return;
-    }
-    setScrollTarget(e.nativeEvent.target);
-  }
-
   /** Handle layout shifts by programmatically scrolling to the same input position without animation. */
   function onContentSizeChange() {
     if (Platform.OS !== "ios" || !scrollPosition) {
       return;
     }
     ref.current?.scrollTo({ y: scrollPosition, animated: false });
-    setScrollPosition(undefined);
+    setScrollPosition(null);
   }
 
   const containerStyles = StyleSheet.flatten([styles[height], margins, style]);
@@ -95,7 +90,7 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
       ref={ref}
       scrollToOverflowEnabled
       scrollEventThrottle={16}
-      onLayout={onScrollViewLayout}
+      onLayout={(e) => setScrollTarget(e.currentTarget)}
       onContentSizeChange={onContentSizeChange}
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}
