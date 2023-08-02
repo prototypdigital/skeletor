@@ -1,4 +1,4 @@
-import { AnimatableNumericValue, DimensionValue } from "react-native/types";
+import { AnimatableNumericValue } from "react-native/types";
 
 export interface Border {
   border?: {
