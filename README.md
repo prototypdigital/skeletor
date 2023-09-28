@@ -252,6 +252,12 @@ Flexible in its function, supports multiple validation approaches through callba
 2. To trigger standalone validation, use `validate("prop")`
 3. Validate entire form with `validateForm()`
 
+The order of importance when it comes to validating fields is:
+
+1. Custom validation rule - will get the value as-is for your rule to validate it fully. The configuration rule receives the current value, state and optional flag values for you to validate against.
+2. If there is no custom validation rule and the primitive value check returns false (there is no value), check if the field is optional. If optional, the validation result is `true`, otherwise it is `false`;
+3. If all previous checks have not been triggered, return the primitive "has value" check result. This will return `false` for values such as: `null | undefined | NaN | "" | Invalid Date`. This will return `true` if you have a complex value type such as `object | Array`, <b>so in case you have a complex value type use a custom validation rule to get what you need</b>.
+
 #### Example 1: Simple use case with standalone validation on blur:
 
 ```javascript
@@ -321,7 +327,7 @@ const { state, validation, update, validate } = useForm(
 	optional: ["middleName"],
 	// validation.lastName is invalid if lastName is <3 characters long
 	// state can be used to compare with other values (ie repeat password)
-	rules: { lastName: (value, state) => value.length >= 3,
+	rules: { lastName: (value, state, optional) => value.length >= 3,
 }
 ```
 
