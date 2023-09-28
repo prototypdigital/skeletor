@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 
 export type Validation<T> = { [K in keyof Partial<T>]?: boolean };
 type Rules<T> = {
-  [K in keyof T]?: (value: T[K], state: T) => boolean | undefined;
+  [K in keyof T]?: (
+    value: T[K],
+    state: T,
+    optional: boolean
+  ) => boolean | undefined;
 };
 
 export type Values<T> = {
@@ -148,17 +152,17 @@ export function useFormUtils<T>(config?: FormConfig<T>) {
     return true;
   }
 
+  function isOptional(key: keyof T) {
+    return config?.optional?.includes(key) || false;
+  }
+
   /** Validate by custom validation rule. If the rule does not exist, returns undefined. */
   function validateByRule<K extends keyof T>(
     key: K,
     value: T[K],
     state: Values<T>
   ) {
-    return config?.rules?.[key]?.(value, state);
-  }
-
-  function isOptional(key: keyof T) {
-    return config?.optional?.includes(key);
+    return config?.rules?.[key]?.(value, state, isOptional(key));
   }
 
   /** Handles validation for a specific form field.
