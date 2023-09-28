@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 
-type Validation<T> = { [K in keyof Partial<T>]?: boolean };
+export type Validation<T> = { [K in keyof Partial<T>]?: boolean };
 type Rules<T> = {
   [K in keyof T]?: (value: T[K], state: T) => boolean | undefined;
 };
 
-type Values<T> = {
+export type Values<T> = {
   [K in keyof T]: T[K];
 };
 
 export type FormConfig<R> = {
   /** List of optional properties. Optional properties will be marked as valid if left empty. */
   optional?: Array<keyof R>;
-  /** Validation rules by specified property name. If you define a validation rule function here, the field will be validated against it. If no rule is set, a crude value check will be used instead (Boolean(value)) */
+  /** Validation rules by specified property name. If you define a validation rule function here, the field will be validated against it. If no rule is set, a crude value check will be used instead (optional || Boolean(value)). Note: For complex value types (objects, arrays, dates etc) it is best to use a custom validation rule. */
   rules?: Rules<R>;
   /** Will compare key/value pairs instead of just top level JSON.stringify on complex objects/arrays */
   deepCompare?: boolean;
@@ -55,7 +55,7 @@ export function useForm<T>(values: Values<T>, config?: FormConfig<T>) {
   function update<K extends keyof T>(
     key: K,
     value: Values<T>[K],
-    shouldValidate?: boolean,
+    shouldValidate?: boolean
   ) {
     setState((s) => ({ ...s, [key]: value }));
     setValidation((s) => ({
@@ -84,7 +84,7 @@ export function useForm<T>(values: Values<T>, config?: FormConfig<T>) {
    * Only use when validating fields separately, has no value when valiating on form submit. */
   function isFormValid() {
     return !keys.some((key) =>
-      isOptional(key) ? validation[key] === false : !validation[key],
+      isOptional(key) ? validation[key] === false : !validation[key]
     );
   }
 
@@ -126,42 +126,56 @@ export function useForm<T>(values: Values<T>, config?: FormConfig<T>) {
 
 /** Helper hook to validate form state outside of the scope of useForm. */
 export function useFormUtils<T>(config?: FormConfig<T>) {
-  function doesValueExist(value: T[keyof T] | undefined): value is T[keyof T] {
-    if (value === null || value === undefined || value === "" || value < 0) {
+  function doesValueExist(
+    value: T[keyof T]
+  ): value is Exclude<T[keyof T], null | undefined> {
+    if (value === undefined || value === null) {
       return false;
     }
+
+    if (typeof value === "string") {
+      return value !== "";
+    }
+
+    if (typeof value === "number") {
+      return value >= 0 || value < 0 || !isNaN(value);
+    }
+
+    if (value instanceof Date) {
+      return !isNaN(value.valueOf());
+    }
+
     return true;
   }
 
+  /** Validate by custom validation rule. If the rule does not exist, returns undefined. */
   function validateByRule<K extends keyof T>(
     key: K,
     value: T[K],
-    state: Values<T>,
+    state: Values<T>
   ) {
-    // If rule exists, validate with rule
-    if (config?.rules && config.rules[key]) {
-      return config.rules[key]?.(value, state);
-    }
-    // else return true because we know the value exists already.
-    return true;
+    return config?.rules?.[key]?.(value, state);
   }
 
   function isOptional(key: keyof T) {
     return config?.optional?.includes(key);
   }
 
-  function fieldValidation(
-    key: keyof T,
-    value: T[keyof T] | undefined,
-    state: Values<T>,
-  ) {
+  /** Handles validation for a specific form field.
+   * Order of priority:
+   * 1. If there is a custom validation rule, always use that to preserve all possible type values
+   * 2. If there is no value (is a falsy value), check if the field is optional
+   * 3. Fallback to simple truthy value check if all other checks are not triggered. */
+  function fieldValidation(key: keyof T, value: T[keyof T], state: Values<T>) {
     const hasValue = doesValueExist(value);
     const optional = isOptional(key);
-    if (!hasValue) {
-      return !!optional;
-    } else {
-      return validateByRule(key, value, state);
-    }
+
+    // If form has custom validation rule, always trigger only that.
+    if (!!config?.rules?.[key]) return validateByRule(key, value, state);
+    // If value does not exist (is null, undefined or other falsy value), check if field is optional.
+    if (!hasValue) return !!optional;
+    // Fallback, simple check if value exists
+    return hasValue;
   }
 
   function stateValidation(state: Values<T>) {
