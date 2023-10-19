@@ -16,9 +16,6 @@
   "scripts": {
     "prepack": "bob build"
   },
-  "dependencies": {
-    "@prototyp/skeleform": "1.0.1"
-  },
   "devDependencies": {
     "@tsconfig/react-native": "^3.0.0",
     "@types/jest": "29.4.0",
