@@ -1741,6 +1741,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@prototyp/skeleform@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@prototyp/skeleform/-/skeleform-1.0.1.tgz#9263f36cf7aea3a4ea7e3645b507d9314d88a327"
+  integrity sha512-vQZJsBnnaZipsZgjmAEylwK/cqAwVio2yNKvGkk7tQTx2LD5J2xoWrZJO4NcBef2TYe3LGDygnZD9fTnwQ8ihg==
+
 "@react-native-community/cli-clean@11.3.5":
   version "11.3.5"
   resolved "https://registry.yarnpkg.com/@react-native-community/cli-clean/-/cli-clean-11.3.5.tgz#07c8a01e433ea6c6e32eb647908be48952888cdd"

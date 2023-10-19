@@ -2,7 +2,8 @@
   "name": "@prototyp/skeletor",
   "description": "React-Native UI and functional toolkit",
   "author": "Luka Buljan <luka@prototyp.digital>",
-  "version": "1.0.6",
+  "version": "1.0.7",
+  "license": "MIT",
   "types": "lib/typescript/src/index.d.ts",
   "main": "lib/module/index.js",
   "react-native": "src/index.ts",
@@ -14,6 +15,9 @@
   },
   "scripts": {
     "prepack": "bob build"
+  },
+  "dependencies": {
+    "@prototyp/skeleform": "1.0.1"
   },
   "devDependencies": {
     "@tsconfig/react-native": "^3.0.0",
@@ -39,6 +43,8 @@
     "react-native",
     "ui",
     "kit",
+    "form",
+    "input",
     "validation",
     "animation",
     "helpers",
@@ -46,11 +52,9 @@
     "utils"
   ],
   "files": [
-    "src",
     "lib",
-    "!**/__tests__",
-    "!**/__fixtures__",
-    "!**/__mocks__"
+    "README.md",
+    "package.json"
   ],
   "react-native-builder-bob": {
     "source": "src",
