@@ -2,11 +2,11 @@
   "name": "@prototyp/skeletor",
   "description": "React-Native UI and functional toolkit",
   "author": "Luka Buljan <luka@prototyp.digital>",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "license": "MIT",
   "types": "lib/typescript/index.d.ts",
   "main": "lib/module/index.js",
-  "react-native": "src/index.ts",
+  "react-native": "lib/module/index.js",
   "module": "lib/module/index.js",
   "homepage": "https://github.com/prototypdigital/skeletor",
   "repository": {
