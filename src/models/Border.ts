@@ -1,17 +1,9 @@
-import { AnimatableNumericValue } from "react-native/types";
+import { ViewStyle } from "react-native/types";
+
+type BorderStyles = {
+  [Key in keyof ViewStyle]: Key extends `border${infer Rest}` ? Key : never;
+}[keyof ViewStyle];
 
 export interface Border {
-  border?: {
-    borderWidth?: number;
-    borderTopWidth?: number;
-    borderBottomWidth?: number;
-    borderLeftWidth?: number;
-    borderRightWidth?: number;
-    borderColor?: string;
-    borderRadius?: AnimatableNumericValue;
-    borderTopLeftRadius?: AnimatableNumericValue;
-    borderTopRightRadius?: AnimatableNumericValue;
-    borderBottomLeftRadius?: AnimatableNumericValue;
-    borderBottomRightRadius?: AnimatableNumericValue;
-  };
+  border?: BorderStyles;
 }
