@@ -1,22 +1,17 @@
-import { DimensionValue } from "react-native/types";
+import { ViewStyle } from "react-native/types";
+
+type MarginKey = Extract<keyof ViewStyle, `margin${string}`>;
+type PaddingKey = Extract<keyof ViewStyle, `padding${string}`>;
+
+type MarginStyles = {
+  [K in MarginKey]?: ViewStyle[K];
+};
+
+type PaddingStyles = {
+  [K in PaddingKey]?: ViewStyle[K];
+};
 
 export interface Spacing {
-  margins?: {
-    marginTop?: DimensionValue;
-    marginBottom?: DimensionValue;
-    marginLeft?: DimensionValue;
-    marginRight?: DimensionValue;
-    marginHorizontal?: DimensionValue;
-    marginVertical?: DimensionValue;
-    margin?: DimensionValue;
-  };
-  paddings?: {
-    paddingTop?: DimensionValue;
-    paddingBottom?: DimensionValue;
-    paddingLeft?: DimensionValue;
-    paddingRight?: DimensionValue;
-    paddingHorizontal?: DimensionValue;
-    paddingVertical?: DimensionValue;
-    padding?: DimensionValue;
-  };
+  margins?: MarginStyles;
+  paddings?: PaddingStyles;
 }
