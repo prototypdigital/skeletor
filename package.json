@@ -2,6 +2,10 @@
   "name": "@prototyp/skeletor",
   "description": "React-Native UI and functional toolkit",
   "author": "Luka Buljan <luka@prototyp.digital>",
+  "contributors": [
+    "Luka Buljan <luka@prototyp.digital>",
+    "Vlatko Vlahek <vlatko@prototyp.digital>"
+  ],
   "version": "1.0.9",
   "license": "MIT",
   "types": "lib/typescript/index.d.ts",
