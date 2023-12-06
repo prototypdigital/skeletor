@@ -1,16 +1,14 @@
 import React, { useRef, useState } from "react";
 import {
   Platform,
-  LayoutChangeEvent,
   NativeSyntheticEvent,
   ScrollView,
   ScrollViewProps,
   StyleSheet,
   TextInputFocusEventData,
   Dimensions,
-  UIManager,
-  findNodeHandle,
   TextInput,
+  Animated,
 } from "react-native";
 import { Spacing } from "../../models";
 
@@ -86,7 +84,7 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
   ]);
 
   return (
-    <ScrollView
+    <Animated.ScrollView
       ref={ref}
       scrollToOverflowEnabled
       scrollEventThrottle={16}
@@ -99,7 +97,7 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
       {...rest}
     >
       {children(onInputFocus)}
-    </ScrollView>
+    </Animated.ScrollView>
   );
 };
 

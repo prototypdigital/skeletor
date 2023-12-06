@@ -1,12 +1,16 @@
 import React, { PropsWithChildren, useMemo } from "react";
 import {
   StyleSheet,
-  Text as RNText,
   TextProps as RNTextProps,
   TextStyle,
+  Animated,
 } from "react-native";
-import { Size, Spacing } from "../../models";
-import { extractSizeProperties } from "../../utils";
+import { Flex, Position, Size, Spacing } from "../../models";
+import {
+  extractFlexProperties,
+  extractPositionProperties,
+  extractSizeProperties,
+} from "../../utils";
 import { useSkeletor } from "../../hooks";
 
 interface OwnProps extends RNTextProps {
@@ -22,7 +26,7 @@ interface OwnProps extends RNTextProps {
   opacity?: TextStyle["opacity"];
 }
 
-export type TextProps = OwnProps & Spacing & Size;
+export type TextProps = OwnProps & Spacing & Size & Flex & Position;
 
 /** Create a Font.d.ts type in your typescript types directory and define fonts as follows:
  * @example type Font = "Helvetica" | "Montserrat" ...  */
@@ -41,7 +45,12 @@ export const Text: React.FC<PropsWithChildren<TextProps>> = ({
   ...props
 }) => {
   const { defaultFont, defaultFontSize, defaultTextColor } = useSkeletor();
-  const sizeProps = extractSizeProperties(props);
+  const positionProps = useMemo(
+    () => extractPositionProperties(props),
+    [props]
+  );
+  const flexProps = useMemo(() => extractFlexProperties(props), [props]);
+  const sizeProps = useMemo(() => extractSizeProperties(props), [props]);
 
   const textSize = useMemo(() => {
     function mapper(value: [number, number] | number) {
@@ -70,6 +79,8 @@ export const Text: React.FC<PropsWithChildren<TextProps>> = ({
           ...margins,
           ...paddings,
           ...sizeProps,
+          ...flexProps,
+          ...positionProps,
         },
         style,
       ]),
@@ -83,17 +94,20 @@ export const Text: React.FC<PropsWithChildren<TextProps>> = ({
       margins,
       paddings,
       style,
+      positionProps,
+      sizeProps,
+      flexProps,
     ]
   );
 
   return (
-    <RNText
+    <Animated.Text
       style={styles}
       allowFontScaling={false}
       maxFontSizeMultiplier={1}
       {...props}
     >
       {children}
-    </RNText>
+    </Animated.Text>
   );
 };

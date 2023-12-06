@@ -7,5 +7,4 @@ export interface Size {
   minWidth?: DimensionValue;
   maxHeight?: DimensionValue;
   maxWidth?: DimensionValue;
-  flex?: number;
 }
