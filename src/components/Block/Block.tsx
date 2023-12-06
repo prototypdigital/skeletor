@@ -8,21 +8,14 @@ import {
   ViewStyle,
   Animated,
 } from "react-native";
-import {
-  Alignment,
-  Animation,
-  Border,
-  Flex,
-  Position,
-  Size,
-  Spacing,
-} from "../../models";
+import { Alignment, Border, Flex, Position, Size, Spacing } from "../../models";
 import {
   extractAlignmentProperties,
   extractFlexProperties,
   extractPositionProperties,
   extractSizeProperties,
 } from "../../utils";
+import { useAnimation } from "hooks";
 
 interface SharedProps extends ViewProps {
   background?: string;
@@ -47,23 +40,14 @@ type BlockElementProps = SharedProps &
   Size &
   Border &
   Flex &
-  Position &
-  Animation;
+  Position;
 
 const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
   children,
   ...props
 }) => {
-  const {
-    border,
-    paddings,
-    margins,
-    background,
-    style,
-    overflow,
-    animations,
-    ...view
-  } = props;
+  const { border, paddings, margins, background, style, overflow, ...view } =
+    props;
 
   const flexProps = useMemo(() => extractFlexProperties(props), [props]);
   const sizeProps = useMemo(() => extractSizeProperties(props), [props]);
@@ -90,7 +74,6 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
         flexProps,
         sizeProps,
         positionProps,
-        animations,
         style,
       ]),
     [
@@ -103,7 +86,6 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
       paddings,
       positionProps,
       flexProps,
-      animations,
     ]
   );
 
@@ -114,13 +96,7 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
   );
 };
 
-type BaseProps = Alignment &
-  Spacing &
-  Size &
-  Border &
-  Flex &
-  Position &
-  Animation;
+type BaseProps = Alignment & Spacing & Size & Border & Flex & Position;
 
 export type BlockProps = (BlockViewProps | BlockScrollViewProps) & BaseProps;
 
