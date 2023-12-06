@@ -6,9 +6,15 @@ import {
   View,
   ViewProps,
   ViewStyle,
+  Animated,
 } from "react-native";
-import { Alignment, Border, Size, Spacing } from "../../models";
-import { extractAlignmentProperties, extractSizeProperties } from "../../utils";
+import { Alignment, Border, Flex, Position, Size, Spacing } from "../../models";
+import {
+  extractAlignmentProperties,
+  extractFlexProperties,
+  extractPositionProperties,
+  extractSizeProperties,
+} from "../../utils";
 
 interface SharedProps extends ViewProps {
   background?: string;
@@ -28,7 +34,13 @@ export interface BlockViewProps extends SharedProps {
   scrollable?: false | undefined;
 }
 
-type BlockElementProps = SharedProps & Alignment & Spacing & Size & Border;
+type BlockElementProps = SharedProps &
+  Alignment &
+  Spacing &
+  Size &
+  Border &
+  Flex &
+  Position;
 
 const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
   children,
@@ -37,12 +49,17 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
   const { border, paddings, margins, background, style, overflow, ...view } =
     props;
 
-  const size = extractSizeProperties(props);
+  const flexProps = useMemo(() => extractFlexProperties(props), [props]);
+  const sizeProps = useMemo(() => extractSizeProperties(props), [props]);
+  const positionProps = useMemo(
+    () => extractPositionProperties(props),
+    [props]
+  );
   const {
     align: alignItems,
     justify: justifyContent,
-    ...alignment
-  } = extractAlignmentProperties(props);
+    alignSelf,
+  } = useMemo(() => extractAlignmentProperties(props), [props]);
 
   const styles = useMemo(
     () =>
@@ -50,9 +67,11 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
         {
           ...margins,
           ...paddings,
-          ...alignment,
-          ...size,
           ...border,
+          ...flexProps,
+          ...sizeProps,
+          ...positionProps,
+          alignSelf,
           alignItems,
           justifyContent,
           backgroundColor: background,
@@ -60,17 +79,29 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
         },
         style,
       ]),
-    [alignment, size, background, style, overflow, margins, paddings]
+    [
+      alignItems,
+      alignSelf,
+      justifyContent,
+      sizeProps,
+      background,
+      style,
+      overflow,
+      margins,
+      paddings,
+      positionProps,
+      flexProps,
+    ]
   );
 
   return (
-    <View {...view} style={styles}>
+    <Animated.View {...view} style={styles}>
       {children}
-    </View>
+    </Animated.View>
   );
 };
 
-type BaseProps = Alignment & Spacing & Size & Border;
+type BaseProps = Alignment & Spacing & Size & Border & Flex & Position;
 export type BlockProps = (BlockViewProps | BlockScrollViewProps) & BaseProps;
 
 export const Block: React.FC<PropsWithChildren<BlockProps>> = ({
@@ -92,7 +123,7 @@ export const Block: React.FC<PropsWithChildren<BlockProps>> = ({
   } = props;
 
   return (
-    <ScrollView
+    <Animated.ScrollView
       horizontal={horizontal}
       keyboardShouldPersistTaps="handled"
       showsHorizontalScrollIndicator={showsHorizontalScrollIndicator}
@@ -101,6 +132,6 @@ export const Block: React.FC<PropsWithChildren<BlockProps>> = ({
       bounces={bounces}
     >
       {element()}
-    </ScrollView>
+    </Animated.ScrollView>
   );
 };

@@ -2,16 +2,16 @@ import { useMemo, useRef } from "react";
 import { Animated, ViewStyle } from "react-native";
 
 /** Any is a hotfix, requires more investigation */
-type Animation<Keys extends keyof Partial<ViewStyle>> = Record<
+export type Animation<Keys extends keyof Partial<ViewStyle>> = Record<
   Keys,
   Animated.AnimatedInterpolation<string | number> | any
 >;
-type Definition<Keys extends keyof Partial<ViewStyle>> = Record<
+export type AnimationDefinition<Keys extends keyof Partial<ViewStyle>> = Record<
   Keys,
   number[] | string[]
 >;
 
-interface Configuration {
+export interface AnimationConfiguration {
   /** In miliseconds */
   duration: number;
   /** Loop will disable native driver because it breaks the loop animation (at least it did last time I tested in 2020.) */
@@ -21,14 +21,14 @@ interface Configuration {
 
 export interface AnimationSet<Keys extends keyof Partial<ViewStyle>> {
   values: Animated.Value[];
-  definitions: Definition<Keys>;
+  definitions: AnimationDefinition<Keys>;
   animations: Animation<Keys>;
-  configuration: Configuration;
+  configuration: AnimationConfiguration;
 }
 
 export function useAnimation<Keys extends keyof Partial<ViewStyle>>(
-  styles: Definition<Keys>,
-  configuration?: Configuration,
+  styles: AnimationDefinition<Keys>,
+  configuration?: AnimationConfiguration
 ): AnimationSet<Keys> {
   const keys = Object.keys(styles).map((key) => key as Keys);
   /** Values always start at 0. These are not output values, more like indexes to output values defined in the array. */
