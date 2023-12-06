@@ -1,9 +1,9 @@
+import { AnimationProperties } from "models";
 import { useEffect, useState } from "react";
 import { Animated, ViewStyle } from "react-native";
-import { AnimationSet } from "./useAnimation";
 
 interface BaseTimelineType {
-  elements: AnimationSet<any>[];
+  elements: AnimationProperties<any>[];
   start: boolean;
   onFinished?: () => void;
   onStarted?: () => void;
@@ -44,13 +44,13 @@ export function useAnimationTimeline(config: TimelineConfiguration): void {
   const [previousParallelStart, setPreviousParallelStart] = useState(false);
 
   function getBaseAnimations(
-    timeline: BaseTimelineType | StaggerTimeline | DelayTimeline,
+    timeline: BaseTimelineType | StaggerTimeline | DelayTimeline
   ) {
     const compositions: Animated.CompositeAnimation[] = [];
     timeline.elements.forEach(
       ({ values, animations, configuration, definitions }) => {
         const keys = Object.keys(animations).map(
-          (key) => key as keyof Partial<ViewStyle>,
+          (key) => key as keyof Partial<ViewStyle>
         );
 
         const elementCompositions = keys.map((key, index) => {
@@ -70,7 +70,7 @@ export function useAnimationTimeline(config: TimelineConfiguration): void {
         });
 
         compositions.push(Animated.parallel(elementCompositions));
-      },
+      }
     );
 
     return compositions;
@@ -95,13 +95,13 @@ export function useAnimationTimeline(config: TimelineConfiguration): void {
       timeline.onStarted();
     }
     Animated.stagger(timeline.stagger, getBaseAnimations(timeline)).start(
-      timeline.onFinished,
+      timeline.onFinished
     );
   }
 
   function setupDelayAnimations(timeline: DelayTimeline) {
     Animated.delay(timeline.delay).start(() =>
-      setupParallelAnimations(timeline),
+      setupParallelAnimations(timeline)
     );
   }
 
