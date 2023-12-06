@@ -5,4 +5,3 @@ export * from "./SkeletorConfig";
 export * from "./Spacing";
 export * from "./Position";
 export * from "./Flex";
-export * from "./Animations";
