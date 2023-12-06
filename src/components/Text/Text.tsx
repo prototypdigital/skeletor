@@ -5,7 +5,7 @@ import {
   TextStyle,
   Animated,
 } from "react-native";
-import { Flex, Position, Size, Spacing } from "../../models";
+import { Animation, Flex, Position, Size, Spacing } from "../../models";
 import {
   extractFlexProperties,
   extractPositionProperties,
@@ -26,7 +26,7 @@ interface OwnProps extends RNTextProps {
   opacity?: TextStyle["opacity"];
 }
 
-export type TextProps = OwnProps & Spacing & Size & Flex & Position;
+export type TextProps = OwnProps & Spacing & Size & Flex & Position & Animation;
 
 /** Create a Font.d.ts type in your typescript types directory and define fonts as follows:
  * @example type Font = "Helvetica" | "Montserrat" ...  */
@@ -42,6 +42,7 @@ export const Text: React.FC<PropsWithChildren<TextProps>> = ({
   opacity,
   margins,
   paddings,
+  animations,
   ...props
 }) => {
   const { defaultFont, defaultFontSize, defaultTextColor } = useSkeletor();
@@ -70,19 +71,20 @@ export const Text: React.FC<PropsWithChildren<TextProps>> = ({
       StyleSheet.flatten([
         {
           color: color || defaultTextColor,
-          ...textSize,
           fontFamily: font || defaultFont,
           opacity,
           textAlign,
           textTransform,
           letterSpacing,
-          ...margins,
-          ...paddings,
-          ...sizeProps,
-          ...flexProps,
-          ...positionProps,
         },
+        textSize,
+        margins,
+        paddings,
+        sizeProps,
+        flexProps,
+        positionProps,
         style,
+        animations,
       ]),
     [
       color,
