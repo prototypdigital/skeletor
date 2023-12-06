@@ -10,5 +10,5 @@ export type FlexAttributes = { [K in FilteredFlexKeys]?: ViewStyle[K] } & {
 };
 
 export interface Flex {
-  flex: ViewStyle["flex"] | FlexAttributes;
+  flex?: ViewStyle["flex"] | FlexAttributes;
 }

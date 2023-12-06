@@ -8,13 +8,13 @@ import {
   TextInputFocusEventData,
   Dimensions,
   TextInput,
-  Animated,
 } from "react-native";
-import { Spacing } from "../../models";
+import { Animation, Spacing } from "../../models";
 
 export interface InputFocusScrollViewProps
   extends Omit<ScrollViewProps, "children">,
-    Spacing {
+    Spacing,
+    Animation {
   /** Percentage of screen to add to element position. Values between 0 and 1. Use this if you want to position the input focus somewhere other than the top of the screen. Defaults to 0.3 */
   focusPositionOffset?: number;
   height?: "full" | "auto";
@@ -38,6 +38,7 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
   focusPositionOffset = 0.3,
   margins,
   paddings,
+  animations,
   ...rest
 }) => {
   const screenHeight = useRef(Dimensions.get("screen").height).current;
@@ -75,7 +76,12 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
     setScrollPosition(null);
   }
 
-  const containerStyles = StyleSheet.flatten([styles[height], margins, style]);
+  const containerStyles = StyleSheet.flatten([
+    styles[height],
+    margins,
+    animations,
+    style,
+  ]);
 
   const contentStyles = StyleSheet.flatten([
     styles.content,
@@ -84,7 +90,7 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
   ]);
 
   return (
-    <Animated.ScrollView
+    <ScrollView
       ref={ref}
       scrollToOverflowEnabled
       scrollEventThrottle={16}
@@ -97,7 +103,7 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
       {...rest}
     >
       {children(onInputFocus)}
-    </Animated.ScrollView>
+    </ScrollView>
   );
 };
 
