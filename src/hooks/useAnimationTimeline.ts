@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Animated, ViewStyle } from "react-native";
-import { Animation } from "./useAnimation";
+import { AnimationLegacy } from "./useAnimation";
 
 interface BaseTimelineType {
-  elements: Animation<any>[];
+  elements: AnimationLegacy<any>[];
   start: boolean;
   onFinished?: () => void;
   onStarted?: () => void;

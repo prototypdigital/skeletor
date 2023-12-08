@@ -2,16 +2,16 @@ import { useMemo, useRef } from "react";
 import { Animated, ViewStyle } from "react-native";
 
 /** Any is a hotfix, requires more investigation */
-export type Animation<Keys extends keyof Partial<ViewStyle>> = Record<
+export type AnimationLegacy<Keys extends keyof Partial<ViewStyle>> = Record<
   Keys,
   Animated.AnimatedInterpolation<string | number> | any
 >;
-export type AnimationDefinition<Keys extends keyof Partial<ViewStyle>> = Record<
+type AnimationDefinition<Keys extends keyof Partial<ViewStyle>> = Record<
   Keys,
   number[] | string[]
 >;
 
-export interface AnimationConfiguration {
+interface AnimationConfiguration {
   /** In miliseconds */
   duration: number;
   /** Loop will disable native driver because it breaks the loop animation (at least it did last time I tested in 2020.) */
@@ -19,10 +19,10 @@ export interface AnimationConfiguration {
   useNativeDriver?: boolean;
 }
 
-export interface AnimationSet<Keys extends keyof Partial<ViewStyle>> {
+interface AnimationSet<Keys extends keyof Partial<ViewStyle>> {
   values: Animated.Value[];
   definitions: AnimationDefinition<Keys>;
-  animations: Animation<Keys>;
+  animations: AnimationLegacy<Keys>;
   configuration: AnimationConfiguration;
 }
 
@@ -35,7 +35,7 @@ export function useAnimation<Keys extends keyof Partial<ViewStyle>>(
   const values = useRef(keys.map(() => new Animated.Value(0))).current;
 
   const animations = useMemo(() => {
-    const result: Partial<Animation<Keys>> = {};
+    const result: Partial<AnimationLegacy<Keys>> = {};
 
     keys.forEach((key, index) => {
       const value = values[index];
@@ -50,7 +50,7 @@ export function useAnimation<Keys extends keyof Partial<ViewStyle>>(
       result[key] = interpolation;
     });
 
-    return result as Animation<Keys>;
+    return result as AnimationLegacy<Keys>;
   }, [styles]);
 
   return {
