@@ -139,8 +139,18 @@ align?: ViewStyle["alignItems"];
 alignSelf?: ViewStyle["alignSelf"];
 justify?: ViewStyle["justifyContent"];
 flexDirection?: ViewStyle["flexDirection"];
-flexWrap?: ViewStyle["flexWrap"];
-flex?: number;
+flex?:
+	| number
+	| {
+			columnGap?: ViewStyle["columnGap"],
+      flex?: ViewStyle["flex"],
+      flexBasis?: ViewStyle["flexBasis"],
+      flexGrow?: ViewStyle["flexGrow"],
+      flexShrink?: ViewStyle["flexShrink"],
+      flexWrap?: ViewStyle["flexWrap"],
+      gap?: ViewStyle["gap"],
+      rowGap?: ViewStyle["rowGap"]
+		};
 width?: number | string;
 height?: number | string;
 minHeight?: number | string;
@@ -177,6 +187,7 @@ border?: {
 	borderTopRightRadius?: number;
 	borderBottomLeftRadius?: number;
 	borderBottomRightRadius?: number;
+	...allOtherBorderProperties
 };
 
 ```

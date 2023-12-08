@@ -5,7 +5,7 @@ import {
   TextStyle,
   Animated,
 } from "react-native";
-import { Flex, Position, Size, Spacing } from "../../models";
+import { Animations, Flex, Position, Size, Spacing } from "../../models";
 import {
   extractFlexProperties,
   extractPositionProperties,
