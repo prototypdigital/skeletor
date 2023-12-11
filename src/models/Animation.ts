@@ -14,7 +14,7 @@ export type AnimationStyle<Keys extends keyof ViewStyle> = {
   [K in Keys | keyof ViewStyle]?: string[] | number[];
 };
 
-export type Animation<Keys extends keyof ViewStyle> = {
+export type Animation<Keys extends keyof ViewStyle = keyof ViewStyle> = {
   [K in Keys]: Animated.AnimatedInterpolation<string | number>;
 };
 
@@ -25,6 +25,6 @@ export type ElementAnimation<Keys extends keyof ViewStyle> = {
   reset: Animated.CompositeAnimation["reset"];
 };
 
-export interface Animations<T extends keyof ViewStyle = keyof ViewStyle> {
-  animations?: Animation<T>;
+export interface Animations<T extends keyof ViewStyle> {
+  animations?: Partial<Animation<T>>;
 }
