@@ -1,11 +1,12 @@
+import { Animated, Easing, ViewStyle } from "react-native";
+
 import {
   Animation,
   AnimationConfiguration,
   AnimationStyle,
   ElementAnimation,
   StaggerAnimationConfiguration,
-} from "models";
-import { Animated, Easing, ViewStyle } from "react-native";
+} from "../models";
 
 function processStyles<Keys extends keyof ViewStyle>(
   styles: AnimationStyle<Keys>,
