@@ -10,7 +10,7 @@ type Offsets =
       ViewStyle["top"],
       ViewStyle["left"],
       ViewStyle["bottom"],
-      ViewStyle["right"]
+      ViewStyle["right"],
     ]
   | {
       top?: ViewStyle["top"];

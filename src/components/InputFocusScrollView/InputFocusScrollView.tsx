@@ -1,14 +1,15 @@
 import React, { useRef, useState } from "react";
 import {
-  Platform,
+  Dimensions,
   NativeSyntheticEvent,
+  Platform,
   ScrollView,
   ScrollViewProps,
   StyleSheet,
-  TextInputFocusEventData,
-  Dimensions,
   TextInput,
+  TextInputFocusEventData,
 } from "react-native";
+
 import { Spacing } from "../../models";
 
 export interface InputFocusScrollViewProps
@@ -18,7 +19,7 @@ export interface InputFocusScrollViewProps
   focusPositionOffset?: number;
   height?: "full" | "auto";
   children: (
-    onInputFocus: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void
+    onInputFocus: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void,
   ) => React.ReactNode;
 }
 
@@ -46,7 +47,9 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
   const [scrollTarget, setScrollTarget] = useState<number | null>(null);
 
   function onInputFocus(e: NativeSyntheticEvent<TextInputFocusEventData>) {
-    if (Platform.OS !== "ios" || !scrollTarget) return;
+    if (Platform.OS !== "ios" || !scrollTarget) {
+      return;
+    }
 
     (e.currentTarget as unknown as TextInput).measureLayout(
       scrollTarget,
@@ -61,7 +64,7 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
         // Scroll to input position
         ref.current?.scrollTo({ y: scrollY });
       },
-      () => console.error("failed to measure layout")
+      () => console.error("failed to measure layout"),
     );
   }
 
@@ -87,7 +90,7 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
       ref={ref}
       scrollToOverflowEnabled
       scrollEventThrottle={16}
-      onLayout={(e) => setScrollTarget(e.currentTarget)}
+      onLayout={e => setScrollTarget(e.currentTarget)}
       onContentSizeChange={onContentSizeChange}
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}

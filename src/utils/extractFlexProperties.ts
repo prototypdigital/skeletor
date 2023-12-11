@@ -1,9 +1,11 @@
 import { Flex, FlexAttributes } from "models";
 
 export function extractFlexProperties<Props extends Flex>(
-  props: Props
+  props: Props,
 ): FlexAttributes {
-  if (!props.flex) return { flex: undefined };
+  if (!props.flex) {
+    return { flex: undefined };
+  }
   if (typeof props.flex === "number") {
     return { flex: props.flex };
   } else {

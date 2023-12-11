@@ -1,13 +1,14 @@
 import React, { PropsWithChildren } from "react";
 import {
+  Dimensions,
+  Platform,
   SafeAreaView,
+  StatusBar,
+  StyleSheet,
   View,
   ViewProps,
-  StyleSheet,
-  StatusBar,
-  Platform,
-  Dimensions,
 } from "react-native";
+
 import { useSkeletor } from "../../hooks";
 import { Block } from "../Block";
 

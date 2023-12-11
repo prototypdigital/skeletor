@@ -1,2 +1,2 @@
-export * from "./SkeletorProvider";
 export * from "./SkeletorContext";
+export * from "./SkeletorProvider";
