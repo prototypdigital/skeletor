@@ -1,4 +1,5 @@
 import React, { PropsWithChildren } from "react";
+
 import { SkeletorConfig } from "../../models";
 import { SkeletorContext, SkeletorDefaults } from "./SkeletorContext";
 

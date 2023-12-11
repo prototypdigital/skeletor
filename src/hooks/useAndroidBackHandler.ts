@@ -20,7 +20,7 @@ export type AndroidBackHandlerConfig = WithCallback | WithDisable;
 function isWithCallback(
   props: AndroidBackHandlerConfig,
 ): props is WithCallback {
-  return Object.keys(props).some((key) => key === "handlePress");
+  return Object.keys(props).some(key => key === "handlePress");
 }
 
 export function useAndroidBackHandler(props: AndroidBackHandlerConfig) {
@@ -41,5 +41,5 @@ export function useAndroidBackHandler(props: AndroidBackHandlerConfig) {
     });
 
     return handler.remove;
-  }, [enabled]);
+  }, [enabled, props]);
 }

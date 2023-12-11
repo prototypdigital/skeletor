@@ -11,7 +11,7 @@ type ReturnProps = {
 };
 
 export function extractPositionProperties<Props extends Position>(
-  props: Props
+  props: Props,
 ): ReturnProps {
   function getOffsetValue(from: "top" | "left" | "bottom" | "right") {
     const fromIndex = ["top", "left", "bottom", "right"].indexOf(from);

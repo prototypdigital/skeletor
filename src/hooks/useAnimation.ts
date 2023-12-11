@@ -28,9 +28,9 @@ interface AnimationSet<Keys extends keyof Partial<ViewStyle>> {
 
 export function useAnimation<Keys extends keyof Partial<ViewStyle>>(
   styles: AnimationDefinition<Keys>,
-  configuration?: AnimationConfiguration
+  configuration?: AnimationConfiguration,
 ): AnimationSet<Keys> {
-  const keys = Object.keys(styles).map((key) => key as Keys);
+  const keys = Object.keys(styles).map(key => key as Keys);
   /** Values always start at 0. These are not output values, more like indexes to output values defined in the array. */
   const values = useRef(keys.map(() => new Animated.Value(0))).current;
 

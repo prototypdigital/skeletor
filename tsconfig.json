@@ -9,7 +9,7 @@
     "baseUrl": "src",
     "rootDirs": ["src"],
     "typeRoots": ["./src/types"],
-    "lib": ["es2016"],
+    "lib": ["ESNext"],
     "jsx": "react-native",
     "noEmit": false
   }

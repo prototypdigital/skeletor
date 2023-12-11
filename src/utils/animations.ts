@@ -3,15 +3,13 @@ import {
   AnimationConfiguration,
   AnimationStyle,
   ElementAnimation,
-  ElementStyle,
   StaggerAnimationConfiguration,
 } from "models";
-import { useEffect } from "react";
-import { Animated, Easing } from "react-native";
+import { Animated, Easing, ViewStyle } from "react-native";
 
-function processStyles<Keys extends keyof ElementStyle>(
+function processStyles<Keys extends keyof ViewStyle>(
   styles: AnimationStyle<Keys>,
-  config: AnimationConfiguration
+  config: AnimationConfiguration,
 ) {
   const keys = Object.keys(styles) as Keys[];
   const values = keys.map(() => new Animated.Value(0));
@@ -48,27 +46,31 @@ function processStyles<Keys extends keyof ElementStyle>(
   };
 }
 
-export function delayAnimation<Styles extends keyof ElementStyle>(
+export function delayAnimation<Styles extends keyof ViewStyle>(
   delay: number,
-  next: ElementAnimation<Styles>
+  next: ElementAnimation<Styles>,
 ) {
   Animated.delay(delay).start(({ finished }) => {
-    if (finished) next.start();
+    if (finished) {
+      next.start();
+    }
   });
 }
 
 /** Animate styles in parallel.
- * Example: if you define @param opacity and @param top styles, this will start the @param opacity animation and the @param top animation at the same time. */
-export function animateParallel<Styles extends keyof ElementStyle>(
+ * Example: if you define opacity and top styles, this will start the opacity animation and the top animation at the same time. */
+export function animateParallel<Styles extends keyof ViewStyle>(
   styles: AnimationStyle<Styles>,
-  config: AnimationConfiguration = { duration: 800 }
+  config: AnimationConfiguration = { duration: 800 },
 ): ElementAnimation<Styles> {
   const { animations, compositions } = processStyles(styles, config);
   const trigger = Animated.parallel(compositions);
 
   function start(onFinished?: () => void) {
     trigger.start(({ finished }) => {
-      if (finished) onFinished?.();
+      if (finished) {
+        onFinished?.();
+      }
     });
   }
 
@@ -76,17 +78,19 @@ export function animateParallel<Styles extends keyof ElementStyle>(
 }
 
 /** Stagger defined styles animations.
- * Example: if you define @param opacity and @param top styles, this will start the @param opacity animation and stagger the @param top animation by @param stagger amount. */
-export function animateStagger<Styles extends keyof ElementStyle>(
+ * Example: if you define opacity and top styles, this will start the opacity animation and stagger the top animation by stagger amount. */
+export function animateStagger<Styles extends keyof ViewStyle>(
   styles: AnimationStyle<Styles>,
-  config: StaggerAnimationConfiguration = { duration: 800, stagger: 400 }
+  config: StaggerAnimationConfiguration = { duration: 800, stagger: 400 },
 ): ElementAnimation<Styles> {
   const { animations, compositions } = processStyles(styles, config);
   const trigger = Animated.stagger(config.stagger, compositions);
 
   function start(onFinished?: () => void) {
     trigger.start(({ finished }) => {
-      if (finished) onFinished?.();
+      if (finished) {
+        onFinished?.();
+      }
     });
   }
 
@@ -94,16 +98,18 @@ export function animateStagger<Styles extends keyof ElementStyle>(
 }
 
 /** This will animate the passed in styles in sequence.
- * Example: if you define @param opacity and @param top styles, this will start the @param opacity animation and then start the @param top animation when the opacity animation finishes. */
-export function animateSequence<Styles extends keyof ElementStyle>(
+ * Example: if you define opacity and top styles, this will start the opacity animation and then start the top animation when the opacity animation finishes. */
+export function animateSequence<Styles extends keyof ViewStyle>(
   styles: AnimationStyle<Styles>,
-  config: AnimationConfiguration = { duration: 800 }
+  config: AnimationConfiguration = { duration: 800 },
 ): ElementAnimation<Styles> {
   const { animations, compositions } = processStyles(styles, config);
   const trigger = Animated.sequence(compositions);
   function start(onFinished?: () => void) {
     trigger.start(({ finished }) => {
-      if (finished) onFinished?.();
+      if (finished) {
+        onFinished?.();
+      }
     });
   }
   return { ...trigger, start, animations };

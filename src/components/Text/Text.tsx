@@ -1,17 +1,18 @@
 import React, { PropsWithChildren, useMemo } from "react";
 import {
+  Animated,
   StyleSheet,
   TextProps as RNTextProps,
   TextStyle,
-  Animated,
 } from "react-native";
-import { Animations, Flex, Position, Size, Spacing } from "../../models";
+
+import { useSkeletor } from "../../hooks";
+import { Flex, Position, Size, Spacing } from "../../models";
 import {
   extractFlexProperties,
   extractPositionProperties,
   extractSizeProperties,
 } from "../../utils";
-import { useSkeletor } from "../../hooks";
 
 interface OwnProps extends RNTextProps {
   /** Create a Font.d.ts type in your typescript types directory and define fonts as follows:
@@ -47,7 +48,7 @@ export const Text: React.FC<PropsWithChildren<TextProps>> = ({
   const { defaultFont, defaultFontSize, defaultTextColor } = useSkeletor();
   const positionProps = useMemo(
     () => extractPositionProperties(props),
-    [props]
+    [props],
   );
   const flexProps = useMemo(() => extractFlexProperties(props), [props]);
   const sizeProps = useMemo(() => extractSizeProperties(props), [props]);
@@ -97,7 +98,10 @@ export const Text: React.FC<PropsWithChildren<TextProps>> = ({
       positionProps,
       sizeProps,
       flexProps,
-    ]
+      defaultTextColor,
+      defaultFont,
+      letterSpacing,
+    ],
   );
 
   return (

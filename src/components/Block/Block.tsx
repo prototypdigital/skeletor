@@ -1,13 +1,14 @@
 import React, { PropsWithChildren, useMemo } from "react";
 import {
+  Animated,
+  ScrollView,
+  ScrollViewProps,
   StyleProp,
   StyleSheet,
   ViewProps,
   ViewStyle,
-  Animated,
-  ScrollViewProps,
-  ScrollView,
 } from "react-native";
+
 import {
   Alignment,
   Animations,
@@ -72,11 +73,11 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
   const sizeProps = useMemo(() => extractSizeProperties(props), [props]);
   const positionProps = useMemo(
     () => extractPositionProperties(props),
-    [props]
+    [props],
   );
   const alignmentProps = useMemo(
     () => extractAlignmentProperties(props),
-    [props]
+    [props],
   );
 
   const styles = useMemo(
@@ -105,7 +106,8 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
       paddings,
       positionProps,
       flexProps,
-    ]
+      border,
+    ],
   );
 
   return (

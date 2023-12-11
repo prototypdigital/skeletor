@@ -1,4 +1,5 @@
 import { ViewStyle } from "react-native";
+
 import { Alignment } from "../models";
 
 type ReturnProps = {
@@ -9,7 +10,7 @@ type ReturnProps = {
 };
 
 export function extractAlignmentProperties<Props extends Alignment>(
-  props: Props
+  props: Props,
 ): ReturnProps {
   return {
     alignItems: props.align,
