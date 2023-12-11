@@ -20,6 +20,7 @@ export type Animation<Keys extends keyof ViewStyle = keyof ViewStyle> = {
 
 export type ElementAnimation<Keys extends keyof ViewStyle> = {
   animations: Animation<Keys>;
+  composition: Animated.CompositeAnimation;
   start(onFinished?: () => void): void;
   stop: Animated.CompositeAnimation["stop"];
   reset: Animated.CompositeAnimation["reset"];

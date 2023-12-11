@@ -75,7 +75,7 @@ export function animateParallel<Styles extends keyof ViewStyle>(
     });
   }
 
-  return { ...trigger, start, animations };
+  return { ...trigger, composition: trigger, start, animations };
 }
 
 /** Stagger defined styles animations.
@@ -95,7 +95,7 @@ export function animateStagger<Styles extends keyof ViewStyle>(
     });
   }
 
-  return { ...trigger, start, animations };
+  return { ...trigger, composition: trigger, start, animations };
 }
 
 /** This will animate the passed in styles in sequence.
@@ -113,5 +113,5 @@ export function animateSequence<Styles extends keyof ViewStyle>(
       }
     });
   }
-  return { ...trigger, start, animations };
+  return { ...trigger, composition: trigger, start, animations };
 }
