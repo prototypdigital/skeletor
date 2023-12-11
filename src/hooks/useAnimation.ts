@@ -2,16 +2,17 @@ import { useMemo, useRef } from "react";
 import { Animated, ViewStyle } from "react-native";
 
 /** Any is a hotfix, requires more investigation */
-export type AnimationLegacy<Keys extends keyof Partial<ViewStyle>> = Record<
+export type UseAnimation<Keys extends keyof Partial<ViewStyle>> = Record<
   Keys,
   Animated.AnimatedInterpolation<string | number> | any
 >;
-type AnimationDefinition<Keys extends keyof Partial<ViewStyle>> = Record<
+
+type UseAnimationDefinition<Keys extends keyof Partial<ViewStyle>> = Record<
   Keys,
   number[] | string[]
 >;
 
-interface AnimationConfiguration {
+interface UseAnimationConfiguration {
   /** In miliseconds */
   duration: number;
   /** Loop will disable native driver because it breaks the loop animation (at least it did last time I tested in 2020.) */
@@ -19,23 +20,23 @@ interface AnimationConfiguration {
   useNativeDriver?: boolean;
 }
 
-interface AnimationSet<Keys extends keyof Partial<ViewStyle>> {
+interface UseAnimationSet<Keys extends keyof Partial<ViewStyle>> {
   values: Animated.Value[];
-  definitions: AnimationDefinition<Keys>;
-  animations: AnimationLegacy<Keys>;
-  configuration: AnimationConfiguration;
+  definitions: UseAnimationDefinition<Keys>;
+  animations: UseAnimation<Keys>;
+  configuration: UseAnimationConfiguration;
 }
 
 export function useAnimation<Keys extends keyof Partial<ViewStyle>>(
-  styles: AnimationDefinition<Keys>,
-  configuration?: AnimationConfiguration,
-): AnimationSet<Keys> {
+  styles: UseAnimationDefinition<Keys>,
+  configuration?: UseAnimationConfiguration,
+): UseAnimationSet<Keys> {
   const keys = Object.keys(styles).map(key => key as Keys);
   /** Values always start at 0. These are not output values, more like indexes to output values defined in the array. */
   const values = useRef(keys.map(() => new Animated.Value(0))).current;
 
   const animations = useMemo(() => {
-    const result: Partial<AnimationLegacy<Keys>> = {};
+    const result: Partial<UseAnimation<Keys>> = {};
 
     keys.forEach((key, index) => {
       const value = values[index];
@@ -50,7 +51,7 @@ export function useAnimation<Keys extends keyof Partial<ViewStyle>>(
       result[key] = interpolation;
     });
 
-    return result as AnimationLegacy<Keys>;
+    return result as UseAnimation<Keys>;
   }, [styles]);
 
   return {
