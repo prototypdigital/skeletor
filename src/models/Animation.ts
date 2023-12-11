@@ -25,6 +25,6 @@ export type ElementAnimation<Keys extends keyof ViewStyle> = {
   reset: Animated.CompositeAnimation["reset"];
 };
 
-export interface Animations<T extends keyof ViewStyle> {
-  animations?: Partial<Animation<T>>;
+export interface Animations {
+  animations?: Partial<ViewStyle>;
 }

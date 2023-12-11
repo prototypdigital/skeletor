@@ -52,7 +52,7 @@ type BlockElementProps = SharedProps &
   Border &
   Flex &
   Position &
-  Animations<keyof ViewStyle>;
+  Animations;
 
 const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
   children,
@@ -123,7 +123,7 @@ type BaseProps = Alignment &
   Border &
   Flex &
   Position &
-  Animations<keyof ViewStyle>;
+  Animations;
 
 export type BlockProps = (BlockViewProps | BlockScrollViewProps) & BaseProps;
 
