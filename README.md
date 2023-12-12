@@ -64,7 +64,7 @@ Use this as the top-level wrapper for every screen you navigate to. Is not inten
 
 #### Props
 
-```
+```javascript
 /** Pass a specific background view (gradients, animated backgrounds etc) OR just a background color value. Custom components should be 100% height and width to span the full screen area. */
 background?: JSX.Element | string;
 hideTopSafeArea?: boolean;
@@ -80,7 +80,7 @@ isLandscape?: boolean;
 
 #### Usage
 
-```typescript
+```javascript
 function Component: React.FC = () => {
 	return <Screen background={<GradientBackground />} statusBarType="dark-content">
 	 ...
@@ -96,7 +96,7 @@ Will detect configured Font type, built with the ability to easily customize the
 
 #### Props
 
-```typescript
+```javascript
 /** Inferred from @types/Font.d.ts */
 font?: Font;
 /** Either define [fontSize, lineHeight] or just one size applied to both fontSize and lineHeight */
@@ -112,7 +112,7 @@ opacity?: TextStyle["opacity"];
 
 To use the `Text` component, simply import it and pass in the desired props.
 
-```typescript
+```javascript
 import { Text } from "./Text";
 
 function MyComponent() {
@@ -132,9 +132,25 @@ This is a flexible and customizable React Native component that can be used as e
 
 #### Props
 
-```typescript
+```javascript
 /** Determine if Block is scrollable or not. If scrollable, extends ScrollView props. */
 scrollable?: boolean;
+/** Whether the element is absolutely positioned. */
+absolute?: boolean;
+zIndex?: number;
+overflow?: ViewStyle["overflow"];
+/** Offsets to use in combination with position. Can be defined as [top, left?, bottom?, right?] or as an object **/
+offsets?:
+	| [ViewStyle["top"]]
+  | [ViewStyle["top"], ViewStyle["left"]]
+  | [ViewStyle["top"], ViewStyle["left"], ViewStyle["bottom"]]
+  | [ViewStyle["top"], ViewStyle["left"], ViewStyle["bottom"], ViewStyle["right"]]
+  | {
+      top?: ViewStyle["top"];
+      bottom?: ViewStyle["bottom"];
+      left?: ViewStyle["left"];
+      right?: ViewStyle["right"];
+    };
 align?: ViewStyle["alignItems"];
 alignSelf?: ViewStyle["alignSelf"];
 justify?: ViewStyle["justifyContent"];
@@ -186,8 +202,7 @@ border?: {
 	borderTopLeftRadius?: number;
 	borderTopRightRadius?: number;
 	borderBottomLeftRadius?: number;
-	borderBottomRightRadius?: number;
-	...allOtherBorderProperties
+	... // all other border-related properties
 };
 
 ```
@@ -196,7 +211,7 @@ border?: {
 
 Use cases are many, but simple. This component is intended to be used as a building block for your layout. One example is:
 
-```typescript
+```javascript
 <Block
   maxHeight="75%"
   flexDirection="row"
@@ -217,7 +232,7 @@ This scroll view will automatically scroll to an active input field rendered ins
 
 #### Props
 
-```typescript
+```javascript
 /** Decimal value of screen height percentage the input will be positioned at. */
 /** Defaults to 0.3, just above the keyboard. */
 focusPositionOffset?: number;
@@ -227,7 +242,7 @@ height?: "full" | "auto";
 
 #### Usage
 
-```typescript
+```javascript
 <InputFocusScrollView  focusPositionOffset={0.1}>
 	{(onInputFocus) => (
 		...
@@ -249,13 +264,106 @@ height?: "full" | "auto";
 </InputFocusScrollView>
 ```
 
+## Animations (>=v1.0.10)
+
+New utilities have been created to reduce boilerplate when using animations Animated from react-native. The previous hook-based approach is still available.
+
+### Overview
+
+The concept behind this approach is to:
+
+1. Define element animations and how they are triggered via `animateParallel`, `animateSequence` or `animateStagger`.
+2. Place compiled element animations on an animation timeline OR trigger element animations separately.
+
+### Defining element animations using animateParallel, animateStagger, animateSequence
+
+Use these methods to construct <b>element</b> animations in a super simple way. Create these animations outside the component body to avoid unnecessary re-renders and other lifecycle related issues. All animations are done via native driver, <i>except if the animation loops to avoid issues with the animation itself.</i>
+
+`animateParallel` will animate all of the defined element styles in parallel (meaning they will all start animating at the same time). In the example below, this means that opacity, translateY and translateX will all start animating at once. Additional configuration is possible as a second parameter, where you can define the animation `duration`, `loop` and `easing`. The default configuration is `{ duration: 800, easing: Easing.ease(Easing.quad) }`.
+
+Usage
+
+```javascript
+const element1 = animateParallel({
+  opacity: [0, 1],
+  translateX: [20, 0],
+  translateY: [20, 0],
+});
+```
+
+`animateSequence` will animate all of the defined element styles in sequence (meaning every property will start animating only when the previous property has finished animating). In the example below, that means that opacity, translateY and translateX will animate in sequence as they are defined - opacity first, translateX second, translateY last. Additional configuration is possible as a second parameter, where you can define the animation `duration`, `loop` and `easing`. The default configuration is `{ duration: 800, easing: Easing.ease(Easing.quad) }`.
+
+Usage
+
+```javascript
+const element1 = animateSequence({
+  opacity: [0, 1],
+  translateX: [20, 0],
+  translateY: [20, 0],
+});
+```
+
+`animateStagger` will animate all of the defined elements in the order they are defined at a staggered pace defined in the configuration object (meaning every property will start animating after an X amount of miliseconds between animation starts, in the order they are defined in). In the example below, that means that opacity, translateY and translateX will animate in sequence with a 400ms delay between them. Additional configuration is possible as a second parameter, where you can define the animation `duration`, `stagger`, `loop` and `easing`. The default configuration is `{ duration: 800, stagger: 400, easing: Easing.ease(Easing.quad) }`.
+
+Usage
+
+```javascript
+const element1 = animateStagger({
+  opacity: [0, 1],
+  translateX: [20, 0],
+  translateY: [20, 0],
+});
+```
+
+### Defining element animation timeline
+
+Once defined, the animations can be layed out on a timeline using the `createAnimationTimeline` function. The return value of the `createAnimationTimeline` is an `Animated.CompositeAnimation` wrapping all defined animations on the timeline, giving you a single start/stop function to trigger all animations wrapped in the timeline.
+
+The configuration object is of type `{ [ms: number]: ElementAnimation<K>[]; }`, with the key of the object representing the point-in-time in ms when the associated animation array will trigger. In the following example, this means that, once started, at 0ms (without delay) the `element1` animation set will start, and at 2000ms the `element2` animation will start.
+
+### Everything combined
+
+Usage
+
+```javascript
+const element1 = animateParallel({ opacity: [0, 1] }, { duration: 400 });
+const element2 = animateStagger(
+  {
+    opacity: [0, 1],
+    translateX: [20, 0],
+    translateY: [20, 0],
+  },
+  { stagger: 1200, duration: 800 },
+);
+
+const timeline = createAnimationTimeline({
+  0: [element1],
+  2000: [element2],
+});
+
+export const Component: React.FC = () => {
+	...
+	useEffect(() => {
+		if(startAnimation) {
+			timeline.start();
+		} else {
+			timeline.reset();
+		}
+	}, [startAnimation])
+
+	return <Block animations={element1.animations}>...</Block>
+}
+```
+
 ## Hooks
 
 ### useForm & useFormUtils
 
 Read documentation about useForm here: https://github.com/prototypdigital/skeleform
 
-### useAnimation & useAnimationTimeline
+### LEGACY: useAnimation & useAnimationTimeline
+
+This approach is not going to be maintained anymore starting from version 1.0.10. New utilities have been created that are more performant and more flexible, but the following hooks will still be available for the foreseeable future. For more information on the new approach, see <b>Animations</b> above.
 
 ---
 
@@ -267,7 +375,7 @@ Read documentation about useForm here: https://github.com/prototypdigital/skelef
 
 ```javascript
 const inputs = useAnimation(...);
-const  heading  =  useAnimation(
+const heading  =  useAnimation(
 	{opacity: [0, 1], translateY: [20, 0]},
 	{duration: 400},
 );
@@ -283,8 +391,10 @@ useAnimTimeline({
 
 ...
 
-// Transformations cannot be applied outside the transform style.
-// so translateY has to be passed in through the transform style prop.
+// Animations can be passed directly into the Block component without any particular modification
+<Block animations={heading.animations}>...</Block>
+
+// If not using Block, transformations (scale, rotate, translate) cannot be applied outside the transform style - translateY has to be passed in through the transform style prop.
 <Animated.View
 	style={{
 		...heading.animations,
