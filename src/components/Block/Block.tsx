@@ -20,6 +20,7 @@ import {
 } from "../../models";
 import {
   extractAlignmentProperties,
+  extractAnimationProperties,
   extractFlexProperties,
   extractPositionProperties,
   extractSizeProperties,
@@ -69,6 +70,10 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
     ...view
   } = props;
 
+  const animationProps = useMemo(
+    () => extractAnimationProperties(animations),
+    [animations],
+  );
   const flexProps = useMemo(() => extractFlexProperties(props), [props]);
   const sizeProps = useMemo(() => extractSizeProperties(props), [props]);
   const positionProps = useMemo(
@@ -111,7 +116,7 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
   );
 
   return (
-    <Animated.View {...view} style={[styles, animations]}>
+    <Animated.View {...view} style={[styles, animationProps]}>
       {children}
     </Animated.View>
   );
