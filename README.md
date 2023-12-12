@@ -375,7 +375,7 @@ This approach is not going to be maintained anymore starting from version 1.0.10
 
 ```javascript
 const inputs = useAnimation(...);
-const heading  =  useAnimation(
+const heading = useAnimation(
 	{opacity: [0, 1], translateY: [20, 0]},
 	{duration: 400},
 );
