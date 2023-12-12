@@ -1,7 +1,5 @@
 import { ViewStyle } from "react-native";
 
-// type Offsets = ;
-
 type Offsets =
   | [ViewStyle["top"]]
   | [ViewStyle["top"], ViewStyle["left"]]
@@ -22,7 +20,6 @@ type Offsets =
 export interface Position {
   absolute?: boolean;
   zIndex?: number;
-  /** top, left?, bottom?, right? */
   offsets?: Offsets;
   overflow?: ViewStyle["overflow"];
 }

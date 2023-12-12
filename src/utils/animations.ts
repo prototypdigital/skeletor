@@ -47,17 +47,6 @@ function processStyles<Keys extends keyof ViewStyle>(
   };
 }
 
-export function delayAnimation<Styles extends keyof ViewStyle>(
-  delay: number,
-  next: ElementAnimation<Styles>,
-) {
-  Animated.delay(delay).start(({ finished }) => {
-    if (finished) {
-      next.start();
-    }
-  });
-}
-
 /** Animate styles in parallel.
  * Example: if you define opacity and top styles, this will start the opacity animation and the top animation at the same time. */
 export function animateParallel<Styles extends keyof ViewStyle>(
@@ -130,9 +119,9 @@ export function createAnimationTimeline<K extends keyof ViewStyle>(
       const elements = timeline[ms];
       const trigger = Animated.parallel(elements.map(e => e.composition));
       if (!ms) return trigger;
-      return [Animated.delay(ms), trigger];
+      return Animated.sequence([Animated.delay(ms), trigger]);
     })
     .flat();
 
-  return Animated.sequence(compositions);
+  return Animated.parallel(compositions);
 }
