@@ -115,3 +115,24 @@ export function animateSequence<Styles extends keyof ViewStyle>(
   }
   return { ...trigger, composition: trigger, start, animations };
 }
+
+interface AnimationTimelineConfiguration<K extends keyof ViewStyle> {
+  [ms: number]: ElementAnimation<K>[];
+}
+
+export function createAnimationTimeline<K extends keyof ViewStyle>(
+  timeline: AnimationTimelineConfiguration<K>,
+) {
+  const times = Object.keys(timeline).map(ms => Number(ms));
+
+  const compositions = times
+    .map(ms => {
+      const elements = timeline[ms];
+      const trigger = Animated.parallel(elements.map(e => e.composition));
+      if (!ms) return trigger;
+      return [Animated.delay(ms), trigger];
+    })
+    .flat();
+
+  return Animated.sequence(compositions);
+}
