@@ -7,8 +7,9 @@ import {
 } from "react-native";
 
 import { useSkeletor } from "../../hooks";
-import { Flex, Position, Size, Spacing } from "../../models";
+import { Animations, Flex, Position, Size, Spacing } from "../../models";
 import {
+  extractAnimationProperties,
   extractFlexProperties,
   extractPositionProperties,
   extractSizeProperties,
@@ -27,7 +28,12 @@ interface OwnProps extends RNTextProps {
   opacity?: TextStyle["opacity"];
 }
 
-export type TextProps = OwnProps & Spacing & Size & Flex & Position;
+export type TextProps = OwnProps &
+  Spacing &
+  Size &
+  Flex &
+  Position &
+  Animations;
 
 /** Create a Font.d.ts type in your typescript types directory and define fonts as follows:
  * @example type Font = "Helvetica" | "Montserrat" ...  */
@@ -43,9 +49,14 @@ export const Text: React.FC<PropsWithChildren<TextProps>> = ({
   opacity,
   margins,
   paddings,
+  animations,
   ...props
 }) => {
   const { defaultFont, defaultFontSize, defaultTextColor } = useSkeletor();
+  const animationProps = useMemo(
+    () => extractAnimationProperties(animations),
+    [animations],
+  );
   const positionProps = useMemo(
     () => extractPositionProperties(props),
     [props],
@@ -106,7 +117,7 @@ export const Text: React.FC<PropsWithChildren<TextProps>> = ({
 
   return (
     <Animated.Text
-      style={styles}
+      style={[styles, animationProps]}
       allowFontScaling={false}
       maxFontSizeMultiplier={1}
       {...props}
