@@ -42,6 +42,7 @@ function processStyles<Keys extends keyof ViewStyle>(
   });
 
   return {
+    values,
     compositions,
     animations: animations as Animation<Keys>,
   };
@@ -53,7 +54,7 @@ export function animateParallel<Styles extends keyof ViewStyle>(
   styles: AnimationStyle<Styles>,
   config: AnimationConfiguration = { duration: 800 },
 ): ElementAnimation<Styles> {
-  const { animations, compositions } = processStyles(styles, config);
+  const { animations, values, compositions } = processStyles(styles, config);
   const trigger = Animated.parallel(compositions);
 
   function start(onFinished?: () => void) {
@@ -64,7 +65,30 @@ export function animateParallel<Styles extends keyof ViewStyle>(
     });
   }
 
-  return { ...trigger, composition: trigger, start, animations };
+  function reverse() {
+    const reversedCompositions = values.map((_, index) => {
+      const value = values[index];
+      let composition = Animated.timing(value, {
+        toValue: 0,
+        duration: config.duration,
+        useNativeDriver: !config.loop,
+        easing: config.easing || Easing.inOut(Easing.quad),
+      });
+
+      return composition;
+    });
+
+    const reversedTrigger = Animated.parallel(reversedCompositions);
+    reversedTrigger.start();
+  }
+
+  return {
+    start,
+    reverse,
+    reset: trigger.reset,
+    composition: trigger,
+    animations,
+  };
 }
 
 /** Stagger defined styles animations.
@@ -73,7 +97,7 @@ export function animateStagger<Styles extends keyof ViewStyle>(
   styles: AnimationStyle<Styles>,
   config: StaggerAnimationConfiguration = { duration: 800, stagger: 400 },
 ): ElementAnimation<Styles> {
-  const { animations, compositions } = processStyles(styles, config);
+  const { animations, values, compositions } = processStyles(styles, config);
   const trigger = Animated.stagger(config.stagger, compositions);
 
   function start(onFinished?: () => void) {
@@ -84,7 +108,34 @@ export function animateStagger<Styles extends keyof ViewStyle>(
     });
   }
 
-  return { ...trigger, composition: trigger, start, animations };
+  function reverse() {
+    const reversedCompositions = values.map((_, index) => {
+      const value = values[index];
+      let composition = Animated.timing(value, {
+        toValue: 0,
+        duration: config.duration,
+        useNativeDriver: !config.loop,
+        easing: config.easing || Easing.inOut(Easing.quad),
+      });
+
+      return composition;
+    });
+
+    const reversedTrigger = Animated.stagger(
+      config.stagger,
+      reversedCompositions,
+    );
+
+    reversedTrigger.start();
+  }
+
+  return {
+    start,
+    reverse,
+    reset: trigger.reset,
+    composition: trigger,
+    animations,
+  };
 }
 
 /** This will animate the passed in styles in sequence.
@@ -93,7 +144,7 @@ export function animateSequence<Styles extends keyof ViewStyle>(
   styles: AnimationStyle<Styles>,
   config: AnimationConfiguration = { duration: 800 },
 ): ElementAnimation<Styles> {
-  const { animations, compositions } = processStyles(styles, config);
+  const { animations, values, compositions } = processStyles(styles, config);
   const trigger = Animated.sequence(compositions);
   function start(onFinished?: () => void) {
     trigger.start(({ finished }) => {
@@ -102,7 +153,31 @@ export function animateSequence<Styles extends keyof ViewStyle>(
       }
     });
   }
-  return { ...trigger, composition: trigger, start, animations };
+
+  function reverse() {
+    const reversedCompositions = values.map((_, index) => {
+      const value = values[index];
+      let composition = Animated.timing(value, {
+        toValue: 0,
+        duration: config.duration,
+        useNativeDriver: !config.loop,
+        easing: config.easing || Easing.inOut(Easing.quad),
+      });
+
+      return composition;
+    });
+
+    const reversedTrigger = Animated.sequence(reversedCompositions);
+    reversedTrigger.start();
+  }
+
+  return {
+    start,
+    reverse,
+    reset: trigger.reset,
+    composition: trigger,
+    animations,
+  };
 }
 
 interface AnimationTimelineConfiguration<K extends keyof ViewStyle> {
