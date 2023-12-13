@@ -15,6 +15,7 @@ function processStyles<Keys extends keyof ViewStyle>(
   const keys = Object.keys(styles) as Keys[];
   const values = keys.map(() => new Animated.Value(0));
   const compositions: Animated.CompositeAnimation[] = [];
+  const reverseCompositions: Animated.CompositeAnimation[] = [];
   const animations: Partial<Animation<Keys>> = {};
 
   keys.forEach((key, index) => {
@@ -37,13 +38,22 @@ function processStyles<Keys extends keyof ViewStyle>(
       composition = Animated.loop(composition);
     }
 
+    const reverseComposition = Animated.timing(value, {
+      toValue: 0,
+      duration: config.duration,
+      useNativeDriver: !config.loop,
+      easing: config.easing || Easing.inOut(Easing.quad),
+    });
+
     animations[key] = animation;
     compositions.push(composition);
+    reverseCompositions.push(reverseComposition);
   });
 
   return {
     values,
     compositions,
+    reverseCompositions: reverseCompositions.reverse(),
     animations: animations as Animation<Keys>,
   };
 }
@@ -54,8 +64,12 @@ export function animateParallel<Styles extends keyof ViewStyle>(
   styles: AnimationStyle<Styles>,
   config: AnimationConfiguration = { duration: 800 },
 ): ElementAnimation<Styles> {
-  const { animations, values, compositions } = processStyles(styles, config);
+  const { animations, reverseCompositions, compositions } = processStyles(
+    styles,
+    config,
+  );
   const trigger = Animated.parallel(compositions);
+  const reverseTrigger = Animated.parallel(reverseCompositions);
 
   function start(onFinished?: () => void) {
     trigger.start(({ finished }) => {
@@ -65,29 +79,34 @@ export function animateParallel<Styles extends keyof ViewStyle>(
     });
   }
 
-  function reverse() {
-    const reversedCompositions = values.map((_, index) => {
-      const value = values[index];
-      let composition = Animated.timing(value, {
-        toValue: 0,
-        duration: config.duration,
-        useNativeDriver: !config.loop,
-        easing: config.easing || Easing.inOut(Easing.quad),
-      });
-
-      return composition;
-    });
-
-    const reversedTrigger = Animated.parallel(reversedCompositions);
-    reversedTrigger.start();
-  }
-
   return {
     start,
-    reverse,
+    reverse: reverseTrigger.start,
     reset: trigger.reset,
-    composition: trigger,
+    forward: trigger,
+    backward: reverseTrigger,
     animations,
+  };
+}
+
+function createStaggerComposition(
+  compositions: Animated.CompositeAnimation[],
+  stagger: number,
+): Animated.CompositeAnimation {
+  return {
+    start: (callback?: Animated.EndCallback) => {
+      Animated.parallel(
+        compositions.map((c, i) => {
+          return createSequenceComposition([Animated.delay(stagger * i), c]);
+        }),
+      ).start(callback);
+    },
+    stop: () => {
+      for (const composition of compositions) composition.stop();
+    },
+    reset: () => {
+      for (const composition of compositions) composition.reset();
+    },
   };
 }
 
@@ -97,8 +116,15 @@ export function animateStagger<Styles extends keyof ViewStyle>(
   styles: AnimationStyle<Styles>,
   config: StaggerAnimationConfiguration = { duration: 800, stagger: 400 },
 ): ElementAnimation<Styles> {
-  const { animations, values, compositions } = processStyles(styles, config);
-  const trigger = Animated.stagger(config.stagger, compositions);
+  const { animations, reverseCompositions, compositions } = processStyles(
+    styles,
+    config,
+  );
+  const trigger = createStaggerComposition(compositions, config.stagger);
+  const reverseTrigger = createStaggerComposition(
+    reverseCompositions,
+    config.stagger,
+  );
 
   function start(onFinished?: () => void) {
     trigger.start(({ finished }) => {
@@ -108,33 +134,43 @@ export function animateStagger<Styles extends keyof ViewStyle>(
     });
   }
 
-  function reverse() {
-    const reversedCompositions = values.map((_, index) => {
-      const value = values[index];
-      let composition = Animated.timing(value, {
-        toValue: 0,
-        duration: config.duration,
-        useNativeDriver: !config.loop,
-        easing: config.easing || Easing.inOut(Easing.quad),
-      });
-
-      return composition;
-    });
-
-    const reversedTrigger = Animated.stagger(
-      config.stagger,
-      reversedCompositions,
-    );
-
-    reversedTrigger.start();
-  }
-
   return {
     start,
-    reverse,
+    reverse: reverseTrigger.start,
     reset: trigger.reset,
-    composition: trigger,
+    forward: trigger,
+    backward: reverseTrigger,
     animations,
+  };
+}
+
+function createSequenceComposition(
+  compositions: Animated.CompositeAnimation[],
+): Animated.CompositeAnimation {
+  return {
+    start: (callback?: Animated.EndCallback) => {
+      function startComposition(index: number) {
+        const composition = compositions[index];
+        composition.start(({ finished }) => {
+          if (finished) {
+            const nextIndex = index + 1;
+            if (nextIndex < compositions.length) {
+              startComposition(nextIndex);
+            } else {
+              callback?.({ finished: true });
+            }
+          }
+        });
+      }
+
+      startComposition(0);
+    },
+    stop: () => {
+      for (const composition of compositions) composition.stop();
+    },
+    reset: () => {
+      for (const composition of compositions) composition.reset();
+    },
   };
 }
 
@@ -144,8 +180,13 @@ export function animateSequence<Styles extends keyof ViewStyle>(
   styles: AnimationStyle<Styles>,
   config: AnimationConfiguration = { duration: 800 },
 ): ElementAnimation<Styles> {
-  const { animations, values, compositions } = processStyles(styles, config);
-  const trigger = Animated.sequence(compositions);
+  const { animations, reverseCompositions, compositions } = processStyles(
+    styles,
+    config,
+  );
+  const trigger = createSequenceComposition(compositions);
+  const reverseTrigger = createSequenceComposition(reverseCompositions);
+
   function start(onFinished?: () => void) {
     trigger.start(({ finished }) => {
       if (finished) {
@@ -154,28 +195,12 @@ export function animateSequence<Styles extends keyof ViewStyle>(
     });
   }
 
-  function reverse() {
-    const reversedCompositions = values.map((_, index) => {
-      const value = values[index];
-      let composition = Animated.timing(value, {
-        toValue: 0,
-        duration: config.duration,
-        useNativeDriver: !config.loop,
-        easing: config.easing || Easing.inOut(Easing.quad),
-      });
-
-      return composition;
-    });
-
-    const reversedTrigger = Animated.sequence(reversedCompositions);
-    reversedTrigger.start();
-  }
-
   return {
     start,
-    reverse,
+    reverse: reverseTrigger.start,
     reset: trigger.reset,
-    composition: trigger,
+    forward: trigger,
+    backward: reverseTrigger,
     animations,
   };
 }
@@ -192,11 +217,27 @@ export function createAnimationTimeline<K extends keyof ViewStyle>(
   const compositions = times
     .map(ms => {
       const elements = timeline[ms];
-      const trigger = Animated.parallel(elements.map(e => e.composition));
+      const trigger = Animated.parallel(elements.map(e => e.forward));
       if (!ms) return trigger;
-      return Animated.sequence([Animated.delay(ms), trigger]);
+      return createSequenceComposition([Animated.delay(ms), trigger]);
     })
     .flat();
 
-  return Animated.parallel(compositions);
+  let lastTime = times[times.length - 1];
+  const reverseCompositions = times.reverse().map(ms => {
+    const delay = lastTime - ms;
+    const elements = timeline[ms];
+    const trigger = Animated.parallel(elements.map(e => e.backward));
+    if (!delay) return trigger;
+    return createSequenceComposition([Animated.delay(delay), trigger]);
+  });
+
+  const forward = Animated.parallel(compositions);
+  const backward = Animated.parallel(reverseCompositions);
+
+  return {
+    start: forward.start,
+    reverse: backward.start,
+    reset: forward.reset,
+  };
 }

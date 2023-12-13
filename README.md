@@ -106,6 +106,7 @@ letterSpacing?: TextStyle["letterSpacing"];
 color?: string;
 textAlign?: TextStyle["textAlign"];
 opacity?: TextStyle["opacity"];
+animations?: Partial<ViewStyle>;
 ```
 
 #### Usage
@@ -135,6 +136,7 @@ This is a flexible and customizable React Native component that can be used as e
 ```javascript
 /** Determine if Block is scrollable or not. If scrollable, extends ScrollView props. */
 scrollable?: boolean;
+animations?: Partial<ViewStyle>;
 /** Whether the element is absolutely positioned. */
 absolute?: boolean;
 zIndex?: number;
@@ -353,6 +355,34 @@ export const Component: React.FC = () => {
 
 	return <Block animations={element1.animations}>...</Block>
 }
+```
+
+### Reversing element animations.
+
+Instead of just reseting the animation, which does not play the animation back in reverse, the utility also exposes a `reverse` function which will animate the element back to it's initial values.
+Instead of `element.reset()`, use `element.reverse()`. This can also be used on timelines.
+
+Usage
+
+```javascript
+const element = animateStagger(
+  {
+    opacity: [0, 1],
+    translateX: [20, 0],
+    translateY: [20, 0],
+  },
+  { stagger: 1200, duration: 800 },
+);
+
+...
+
+useEffect(() => {
+  if (startAnimation) {
+    element.start();
+  } else {
+    element.reverse();
+  }
+}, [startAnimation]);
 ```
 
 ## Hooks
