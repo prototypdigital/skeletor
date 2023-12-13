@@ -22,7 +22,8 @@ export type ElementAnimation<Keys extends keyof ViewStyle> = {
   animations: Animation<Keys>;
   composition: Animated.CompositeAnimation;
   start(onFinished?: () => void): void;
-  stop: Animated.CompositeAnimation["stop"];
+  /** Reverse all animation values to initial value and reset main trigger. */
+  reverse: () => void;
   reset: Animated.CompositeAnimation["reset"];
 };
 
