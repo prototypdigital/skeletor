@@ -20,10 +20,13 @@ export type Animation<Keys extends keyof ViewStyle = keyof ViewStyle> = {
 
 export type ElementAnimation<Keys extends keyof ViewStyle> = {
   animations: Animation<Keys>;
-  composition: Animated.CompositeAnimation;
+  forward: Animated.CompositeAnimation;
+  backward: Animated.CompositeAnimation;
+  /** Start animation with onFinished callback. Using forward.start() */
   start(onFinished?: () => void): void;
-  /** Reverse all animation values to initial value and reset main trigger. */
+  /** Reverse all animation values to initial value and reset main trigger. Using backward.start() */
   reverse: () => void;
+  /** Reset animation to initial value. Using forward.reset() */
   reset: Animated.CompositeAnimation["reset"];
 };
 
