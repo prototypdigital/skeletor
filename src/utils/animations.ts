@@ -205,12 +205,12 @@ export function animateSequence<Styles extends keyof ViewStyle>(
   };
 }
 
-interface AnimationTimelineConfiguration<K extends keyof ViewStyle> {
-  [ms: number]: ElementAnimation<K>[];
+interface AnimationTimelineConfiguration {
+  [ms: number]: ElementAnimation<any>[];
 }
 
-export function createAnimationTimeline<K extends keyof ViewStyle>(
-  timeline: AnimationTimelineConfiguration<K>,
+export function createAnimationTimeline(
+  timeline: AnimationTimelineConfiguration,
 ) {
   const times = Object.keys(timeline).map(ms => Number(ms));
 
