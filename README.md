@@ -134,8 +134,9 @@ This is a flexible and customizable React Native component that can be used as e
 #### Props
 
 ```javascript
-/** Determine if Block is scrollable or not. If scrollable, extends ScrollView props. */
+/** Determine if Block is scrollable or not. If scrollable, extends ScrollView props. To render as ScrollView and disable scrolling, use @param scrollEnabled */
 scrollable?: boolean;
+opacity?: ViewStyle["opacity"];
 animations?: Partial<ViewStyle>;
 /** Whether the element is absolutely positioned. */
 absolute?: boolean;
