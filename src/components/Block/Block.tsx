@@ -28,6 +28,7 @@ import {
 
 interface SharedProps {
   background?: string;
+  opacity?: ViewStyle["opacity"];
 }
 
 export type BlockScrollViewProps = SharedProps &
@@ -67,6 +68,7 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
     style,
     overflow,
     animations,
+    opacity,
     ...view
   } = props;
 
@@ -91,6 +93,7 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
         {
           backgroundColor: background,
           overflow,
+          opacity,
         },
         alignmentProps,
         margins,
@@ -112,6 +115,7 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
       positionProps,
       flexProps,
       border,
+      opacity,
     ],
   );
 
