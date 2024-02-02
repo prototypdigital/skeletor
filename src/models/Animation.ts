@@ -29,8 +29,8 @@ export type ElementAnimation<Keys extends keyof ViewStyle> = {
   /** Start animation with onFinished callback. Using forward.start() */
   start(onFinished?: () => void): void;
   /** Reverse all animation values to initial value and reset main trigger. Using backward.start() */
-  reverse: () => void;
-  /** Reset animation to initial value. Using forward.reset() */
+  reverse: (onFinished?: () => void) => void;
+  /** Reset animations to initial value. Using forward.reset() */
   reset: Animated.CompositeAnimation["reset"];
 };
 
