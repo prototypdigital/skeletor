@@ -2,7 +2,11 @@ import { Animated, EasingFunction, ViewStyle } from "react-native";
 
 export type AnimationConfiguration = {
   duration: number;
+  /** Note:  Disables native driver. */
   loop?: boolean;
+  /** Enables or disables native driver. Defaults to true. */
+  native?: boolean;
+  /** Defaults to Easing.inOut(Easing.ease) */
   easing?: EasingFunction;
 };
 

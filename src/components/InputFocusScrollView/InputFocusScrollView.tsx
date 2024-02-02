@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import {
   Dimensions,
   NativeSyntheticEvent,
@@ -9,6 +9,7 @@ import {
   TextInput,
   TextInputFocusEventData,
 } from "react-native";
+import { extractGapProperties } from "utils";
 
 import { Spacing } from "../../models";
 
@@ -38,6 +39,7 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
   focusPositionOffset = 0.3,
   margins,
   paddings,
+  gap,
   ...rest
 }) => {
   const screenHeight = useRef(Dimensions.get("screen").height).current;
@@ -77,11 +79,13 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
     setScrollPosition(null);
   }
 
+  const gapProps = useMemo(() => extractGapProperties({ gap }), [gap]);
   const containerStyles = StyleSheet.flatten([styles[height], margins, style]);
 
   const contentStyles = StyleSheet.flatten([
     styles.content,
-    { ...paddings },
+    paddings,
+    gapProps,
     contentContainerStyle,
   ]);
 
@@ -89,7 +93,7 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
     <ScrollView
       ref={ref}
       scrollToOverflowEnabled
-      scrollEventThrottle={16}
+      scrollEventThrottle={33}
       onLayout={e => setScrollTarget(e.currentTarget)}
       onContentSizeChange={onContentSizeChange}
       showsVerticalScrollIndicator={false}

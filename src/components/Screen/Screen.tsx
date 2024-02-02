@@ -1,16 +1,14 @@
 import React, { PropsWithChildren } from "react";
 import {
-  Dimensions,
   Platform,
   SafeAreaView,
   StatusBar,
   StyleSheet,
   View,
-  ViewProps,
 } from "react-native";
 
 import { useSkeletor } from "../../hooks";
-import { Block } from "../Block";
+import { Block, BlockProps } from "../Block";
 
 type OwnProps = {
   /** Pass a specific background view OR just a background color value. Custom components should be 100% height and width. */
@@ -20,10 +18,9 @@ type OwnProps = {
   bottomSafeAreaColor?: string;
   topSafeAreaColor?: string;
   statusBarType?: "default" | "light-content" | "dark-content";
-  isLandscape?: boolean;
 };
 
-export type ScreenProps = OwnProps & ViewProps;
+export type ScreenProps = OwnProps & BlockProps;
 
 export const Screen: React.FC<PropsWithChildren<ScreenProps>> = ({
   background,
@@ -32,10 +29,12 @@ export const Screen: React.FC<PropsWithChildren<ScreenProps>> = ({
   hideTopSafeArea,
   bottomSafeAreaColor,
   topSafeAreaColor,
-  style,
   statusBarType,
-  isLandscape,
-  ...rest
+  paddings = {
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
+  flex = 1,
+  ...blockProps
 }) => {
   const { defaultStatusBarType } = useSkeletor();
 
@@ -43,9 +42,11 @@ export const Screen: React.FC<PropsWithChildren<ScreenProps>> = ({
     <>
       {background &&
         (typeof background === "string" ? (
-          <View style={[styles.container, { backgroundColor: background }]} />
+          <View
+            style={[StyleSheet.absoluteFill, { backgroundColor: background }]}
+          />
         ) : (
-          <View style={styles.container}>{background}</View>
+          <View style={StyleSheet.absoluteFill}>{background}</View>
         ))}
 
       {!hideTopSafeArea && (
@@ -58,17 +59,7 @@ export const Screen: React.FC<PropsWithChildren<ScreenProps>> = ({
         barStyle={statusBarType || defaultStatusBarType}
       />
 
-      <Block
-        paddings={{
-          paddingTop:
-            Platform.OS === "android" && !isLandscape
-              ? StatusBar.currentHeight || 24
-              : 0,
-        }}
-        flex={1}
-        style={style}
-        {...rest}
-      >
+      <Block flex={flex} paddings={paddings} {...blockProps}>
         {children}
       </Block>
 
@@ -82,11 +73,3 @@ export const Screen: React.FC<PropsWithChildren<ScreenProps>> = ({
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    position: "absolute",
-    height: Dimensions.get("screen").height,
-    width: Dimensions.get("screen").width,
-  },
-});
