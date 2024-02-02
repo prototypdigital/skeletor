@@ -67,11 +67,11 @@ function processStyles<Keys extends keyof ViewStyle>(
  * Example: if you define opacity and top styles, this will start the opacity animation and the top animation at the same time. */
 export function animateParallel<Styles extends keyof ViewStyle>(
   styles: AnimationStyle<Styles>,
-  config: AnimationConfiguration = { duration: 800 },
+  config?: AnimationConfiguration,
 ): ElementAnimation<Styles> {
   const { animations, reverseCompositions, compositions } = processStyles(
     styles,
-    config,
+    config || {},
   );
   const trigger = Animated.parallel(compositions);
   const reverseTrigger = Animated.parallel(reverseCompositions);
@@ -132,16 +132,16 @@ function createStaggerComposition(
  * Example: if you define opacity and top styles, this will start the opacity animation and stagger the top animation by stagger amount. */
 export function animateStagger<Styles extends keyof ViewStyle>(
   styles: AnimationStyle<Styles>,
-  config: StaggerAnimationConfiguration = { duration: 800, stagger: 400 },
+  config: StaggerAnimationConfiguration,
 ): ElementAnimation<Styles> {
   const { animations, reverseCompositions, compositions } = processStyles(
     styles,
-    config,
+    config || {},
   );
-  const trigger = createStaggerComposition(compositions, config.stagger);
+  const trigger = createStaggerComposition(compositions, config.stagger || 200);
   const reverseTrigger = createStaggerComposition(
     reverseCompositions,
-    config.stagger,
+    config.stagger || 200,
   );
 
   function start(onFinished?: () => void) {
@@ -209,11 +209,11 @@ function createSequenceComposition(
  * Example: if you define opacity and top styles, this will start the opacity animation and then start the top animation when the opacity animation finishes. */
 export function animateSequence<Styles extends keyof ViewStyle>(
   styles: AnimationStyle<Styles>,
-  config: AnimationConfiguration = { duration: 800 },
+  config?: AnimationConfiguration,
 ): ElementAnimation<Styles> {
   const { animations, reverseCompositions, compositions } = processStyles(
     styles,
-    config,
+    config || {},
   );
   const trigger = createSequenceComposition(compositions);
   const reverseTrigger = createSequenceComposition(reverseCompositions);
