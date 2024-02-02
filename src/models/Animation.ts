@@ -1,7 +1,7 @@
 import { Animated, EasingFunction, ViewStyle } from "react-native";
 
 export type AnimationConfiguration = {
-  duration: number;
+  duration?: number;
   /** Note:  Disables native driver. */
   loop?: boolean;
   /** Enables or disables native driver. Defaults to true. */
@@ -11,7 +11,7 @@ export type AnimationConfiguration = {
 };
 
 export type StaggerAnimationConfiguration = AnimationConfiguration & {
-  stagger: number;
+  stagger?: number;
 };
 
 export type AnimationStyle<Keys extends keyof ViewStyle> = {
