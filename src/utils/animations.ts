@@ -10,7 +10,12 @@ import {
 
 function processStyles<Keys extends keyof ViewStyle>(
   styles: AnimationStyle<Keys>,
-  config: AnimationConfiguration,
+  {
+    duration = 400,
+    easing = Easing.inOut(Easing.ease),
+    loop = false,
+    native = true,
+  }: AnimationConfiguration,
 ) {
   const keys = Object.keys(styles) as Keys[];
   const values = keys.map(() => new Animated.Value(0));
@@ -29,20 +34,20 @@ function processStyles<Keys extends keyof ViewStyle>(
 
     let composition = Animated.timing(value, {
       toValue: definition.length - 1,
-      duration: config.duration,
-      useNativeDriver: !config.loop,
-      easing: config.easing || Easing.inOut(Easing.quad),
+      duration,
+      useNativeDriver: !loop && native,
+      easing,
     });
 
-    if (config.loop) {
+    if (loop) {
       composition = Animated.loop(composition);
     }
 
     const reverseComposition = Animated.timing(value, {
       toValue: 0,
-      duration: config.duration,
-      useNativeDriver: !config.loop,
-      easing: config.easing || Easing.inOut(Easing.quad),
+      duration: duration,
+      useNativeDriver: !loop && !!native,
+      easing,
     });
 
     animations[key] = animation;
@@ -79,10 +84,23 @@ export function animateParallel<Styles extends keyof ViewStyle>(
     });
   }
 
+  function reverse(onFinished?: () => void) {
+    reverseTrigger.start(({ finished }) => {
+      if (finished) {
+        onFinished?.();
+      }
+    });
+  }
+
+  function reset() {
+    trigger.reset();
+    reverseTrigger.reset();
+  }
+
   return {
     start,
-    reverse: reverseTrigger.start,
-    reset: trigger.reset,
+    reverse,
+    reset,
     forward: trigger,
     backward: reverseTrigger,
     animations,
@@ -134,10 +152,23 @@ export function animateStagger<Styles extends keyof ViewStyle>(
     });
   }
 
+  function reverse(onFinished?: () => void) {
+    reverseTrigger.start(({ finished }) => {
+      if (finished) {
+        onFinished?.();
+      }
+    });
+  }
+
+  function reset() {
+    trigger.reset();
+    reverseTrigger.reset();
+  }
+
   return {
     start,
-    reverse: reverseTrigger.start,
-    reset: trigger.reset,
+    reverse,
+    reset,
     forward: trigger,
     backward: reverseTrigger,
     animations,
@@ -195,10 +226,23 @@ export function animateSequence<Styles extends keyof ViewStyle>(
     });
   }
 
+  function reverse(onFinished?: () => void) {
+    reverseTrigger.start(({ finished }) => {
+      if (finished) {
+        onFinished?.();
+      }
+    });
+  }
+
+  function reset() {
+    trigger.reset();
+    reverseTrigger.reset();
+  }
+
   return {
     start,
-    reverse: reverseTrigger.start,
-    reset: trigger.reset,
+    reverse,
+    reset,
     forward: trigger,
     backward: reverseTrigger,
     animations,
@@ -213,31 +257,40 @@ export function createAnimationTimeline(
   timeline: AnimationTimelineConfiguration,
 ) {
   const times = Object.keys(timeline).map(ms => Number(ms));
+  const lastTime = times[times.length - 1];
+  const reverseTimes = times.reverse();
 
-  const compositions = times
-    .map(ms => {
-      const elements = timeline[ms];
-      const trigger = Animated.parallel(elements.map(e => e.forward));
-      if (!ms) return trigger;
-      return createSequenceComposition([Animated.delay(ms), trigger]);
-    })
-    .flat();
+  let compositions: Animated.CompositeAnimation[] = [];
+  let reverseCompositions: Animated.CompositeAnimation[] = [];
 
-  let lastTime = times[times.length - 1];
-  const reverseCompositions = times.reverse().map(ms => {
+  for (const ms of times) {
+    const elements = timeline[ms];
+    const trigger = Animated.parallel(elements.map(e => e.forward));
+    compositions.push(
+      !ms ? trigger : createSequenceComposition([Animated.delay(ms), trigger]),
+    );
+  }
+
+  for (const ms of reverseTimes) {
     const delay = lastTime - ms;
     const elements = timeline[ms];
     const trigger = Animated.parallel(elements.map(e => e.backward));
-    if (!delay) return trigger;
-    return createSequenceComposition([Animated.delay(delay), trigger]);
-  });
+    reverseCompositions.push(
+      !delay
+        ? trigger
+        : createSequenceComposition([Animated.delay(delay), trigger]),
+    );
+  }
 
-  const forward = Animated.parallel(compositions);
-  const backward = Animated.parallel(reverseCompositions);
+  const forward = Animated.parallel(compositions.flat());
+  const backward = Animated.parallel(reverseCompositions.flat());
 
   return {
     start: forward.start,
     reverse: backward.start,
-    reset: forward.reset,
+    reset: () => {
+      forward.reset();
+      backward.reset();
+    },
   };
 }

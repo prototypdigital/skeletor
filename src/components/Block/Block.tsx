@@ -3,7 +3,6 @@ import {
   Animated,
   ScrollView,
   ScrollViewProps,
-  StyleProp,
   StyleSheet,
   ViewProps,
   ViewStyle,
@@ -22,23 +21,27 @@ import {
   extractAlignmentProperties,
   extractAnimationProperties,
   extractFlexProperties,
+  extractGapProperties,
   extractPositionProperties,
   extractSizeProperties,
 } from "../../utils";
 
-interface SharedProps {
+type SkeletorProps = Alignment &
+  Spacing &
+  Size &
+  Border &
+  Flex &
+  Position &
+  Animations;
+
+type SharedProps = SkeletorProps & {
   background?: string;
   opacity?: ViewStyle["opacity"];
-}
+};
 
 export type BlockScrollViewProps = SharedProps &
   ScrollViewProps & {
     scrollable: true;
-    horizontal?: boolean;
-    showsVerticalScrollIndicator?: boolean;
-    showsHorizontalScrollIndicator?: boolean;
-    bounces?: boolean;
-    style?: StyleProp<ViewStyle>;
   };
 
 export type BlockViewProps = SharedProps &
@@ -46,15 +49,9 @@ export type BlockViewProps = SharedProps &
     scrollable?: false | undefined;
   };
 
-type BlockElementProps = SharedProps &
-  ViewProps &
-  Alignment &
-  Spacing &
-  Size &
-  Border &
-  Flex &
-  Position &
-  Animations;
+export type BlockProps = BlockScrollViewProps | BlockViewProps;
+
+type BlockElementProps = SharedProps & ViewProps;
 
 const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
   children,
@@ -69,6 +66,8 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
     overflow,
     animations,
     opacity,
+    flex,
+    gap,
     ...view
   } = props;
 
@@ -76,7 +75,8 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
     () => extractAnimationProperties(animations),
     [animations],
   );
-  const flexProps = useMemo(() => extractFlexProperties(props), [props]);
+  const flexProps = useMemo(() => extractFlexProperties({ flex }), [flex]);
+  const gapProps = useMemo(() => extractGapProperties({ gap }), [gap]);
   const sizeProps = useMemo(() => extractSizeProperties(props), [props]);
   const positionProps = useMemo(
     () => extractPositionProperties(props),
@@ -102,6 +102,7 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
         flexProps,
         sizeProps,
         positionProps,
+        gapProps,
         style,
       ]),
     [
@@ -114,6 +115,7 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
       paddings,
       positionProps,
       flexProps,
+      gapProps,
       border,
       opacity,
     ],
@@ -125,16 +127,6 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
     </Animated.View>
   );
 };
-
-type BaseProps = Alignment &
-  Spacing &
-  Size &
-  Border &
-  Flex &
-  Position &
-  Animations;
-
-export type BlockProps = (BlockViewProps | BlockScrollViewProps) & BaseProps;
 
 export const Block: React.FC<PropsWithChildren<BlockProps>> = ({
   children,
@@ -149,8 +141,8 @@ export const Block: React.FC<PropsWithChildren<BlockProps>> = ({
 
   const {
     horizontal,
-    showsHorizontalScrollIndicator,
-    showsVerticalScrollIndicator,
+    showsHorizontalScrollIndicator = false,
+    showsVerticalScrollIndicator = false,
     bounces,
   } = props;
 
@@ -160,10 +152,10 @@ export const Block: React.FC<PropsWithChildren<BlockProps>> = ({
       keyboardShouldPersistTaps="handled"
       showsHorizontalScrollIndicator={showsHorizontalScrollIndicator}
       showsVerticalScrollIndicator={showsVerticalScrollIndicator}
+      bounces={bounces}
       contentContainerStyle={[
         { flexGrow: 1, backgroundColor: rest.background },
       ]}
-      bounces={bounces}
     >
       {element()}
     </ScrollView>

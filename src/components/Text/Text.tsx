@@ -11,6 +11,7 @@ import { Animations, Flex, Position, Size, Spacing } from "../../models";
 import {
   extractAnimationProperties,
   extractFlexProperties,
+  extractGapProperties,
   extractPositionProperties,
   extractSizeProperties,
 } from "../../utils";
@@ -50,6 +51,7 @@ export const Text: React.FC<PropsWithChildren<TextProps>> = ({
   margins,
   paddings,
   animations,
+  gap,
   ...props
 }) => {
   const { defaultFont, defaultFontSize, defaultTextColor } = useSkeletor();
@@ -63,6 +65,7 @@ export const Text: React.FC<PropsWithChildren<TextProps>> = ({
   );
   const flexProps = useMemo(() => extractFlexProperties(props), [props]);
   const sizeProps = useMemo(() => extractSizeProperties(props), [props]);
+  const gapProps = useMemo(() => extractGapProperties({ gap }), [gap]);
 
   const textSize = useMemo(() => {
     function mapper(value: [number, number] | number) {
@@ -94,6 +97,7 @@ export const Text: React.FC<PropsWithChildren<TextProps>> = ({
         sizeProps,
         flexProps,
         positionProps,
+        gapProps,
         style,
       ]),
     [
@@ -109,6 +113,7 @@ export const Text: React.FC<PropsWithChildren<TextProps>> = ({
       positionProps,
       sizeProps,
       flexProps,
+      gapProps,
       defaultTextColor,
       defaultFont,
       letterSpacing,

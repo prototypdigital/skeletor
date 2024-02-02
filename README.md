@@ -54,6 +54,69 @@ const skeletor = useSkeletor();
 return <SomeComponent style={{ fontFamily: skeletor.defaultFont }} />;
 ```
 
+## Custom types legend
+
+```javascript
+type Spacing = {
+	/** All margin properties from ViewStyle */
+	margins?: {...}
+	/** All padding properties from ViewStyle */
+	paddings?: {...}
+	gap?: { row?: number; col?: number } | [number, number] | number;
+}
+
+type Alignment = {
+	align?: ViewStyle["alignItems"];
+  alignSelf?: ViewStyle["alignSelf"];
+  justify?: ViewStyle["justifyContent"];
+  flexDirection?: ViewStyle["flexDirection"];
+}
+
+type Border = {
+	/** All border properties from ViewStyle */
+	border: {...}
+}
+
+type Flex = {
+	/** Either just a number or all flex properties from ViewStyle + gap, columnGap & rowGap for backwards compatibility */
+	flex?: number | {...}
+}
+
+type Offsets =
+  | [ViewStyle["top"]]
+  | [ViewStyle["top"], ViewStyle["left"]]
+  | [ViewStyle["top"], ViewStyle["left"], ViewStyle["bottom"]]
+  | [
+      ViewStyle["top"],
+      ViewStyle["left"],
+      ViewStyle["bottom"],
+      ViewStyle["right"],
+    ]
+  | {
+      top?: ViewStyle["top"];
+      bottom?: ViewStyle["bottom"];
+      left?: ViewStyle["left"];
+      right?: ViewStyle["right"];
+    };
+
+type Position = {
+  absolute?: boolean;
+  zIndex?: number;
+  offsets?: Offsets;
+  overflow?: ViewStyle["overflow"];
+}
+
+type Size = {
+	width?: DimensionValue;
+  height?: DimensionValue;
+  minHeight?: DimensionValue;
+  minWidth?: DimensionValue;
+  maxHeight?: DimensionValue;
+  maxWidth?: DimensionValue;
+}
+
+```
+
 ## Components
 
 ### Screen
@@ -75,7 +138,6 @@ bottomSafeAreaColor?: string;
 topSafeAreaColor?: string;
 /** Set device status bar color type. */
 statusBarType?: "default" | "light-content" | "dark-content";
-isLandscape?: boolean;
 ```
 
 #### Usage
@@ -106,6 +168,10 @@ letterSpacing?: TextStyle["letterSpacing"];
 color?: string;
 textAlign?: TextStyle["textAlign"];
 opacity?: TextStyle["opacity"];
+...Spacing,
+...Size,
+...Flex,
+...Position,
 animations?: Partial<ViewStyle>;
 ```
 
@@ -138,74 +204,12 @@ This is a flexible and customizable React Native component that can be used as e
 scrollable?: boolean;
 opacity?: ViewStyle["opacity"];
 animations?: Partial<ViewStyle>;
-/** Whether the element is absolutely positioned. */
-absolute?: boolean;
-zIndex?: number;
-overflow?: ViewStyle["overflow"];
-/** Offsets to use in combination with position. Can be defined as [top, left?, bottom?, right?] or as an object **/
-offsets?:
-	| [ViewStyle["top"]]
-  | [ViewStyle["top"], ViewStyle["left"]]
-  | [ViewStyle["top"], ViewStyle["left"], ViewStyle["bottom"]]
-  | [ViewStyle["top"], ViewStyle["left"], ViewStyle["bottom"], ViewStyle["right"]]
-  | {
-      top?: ViewStyle["top"];
-      bottom?: ViewStyle["bottom"];
-      left?: ViewStyle["left"];
-      right?: ViewStyle["right"];
-    };
-align?: ViewStyle["alignItems"];
-alignSelf?: ViewStyle["alignSelf"];
-justify?: ViewStyle["justifyContent"];
-flexDirection?: ViewStyle["flexDirection"];
-flex?:
-	| number
-	| {
-			columnGap?: ViewStyle["columnGap"],
-      flex?: ViewStyle["flex"],
-      flexBasis?: ViewStyle["flexBasis"],
-      flexGrow?: ViewStyle["flexGrow"],
-      flexShrink?: ViewStyle["flexShrink"],
-      flexWrap?: ViewStyle["flexWrap"],
-      gap?: ViewStyle["gap"],
-      rowGap?: ViewStyle["rowGap"]
-		};
-width?: number | string;
-height?: number | string;
-minHeight?: number | string;
-minWidth?: number | string;
-maxHeight?: number | string;
-maxWidth?: number | string;
-margins?: {
-	marginTop?: number | string;
-	marginBottom?: number | string;
-	marginLeft?: number | string;
-	marginRight?: number | string;
-	marginHorizontal?: number | string;
-	marginVertical?: number | string;
-	margin?: number | string;
-};
-paddings?: {
-	paddingTop?: number | string;
-	paddingBottom?: number | string;
-	paddingLeft?: number | string;
-	paddingRight?: number | string;
-	paddingHorizontal?: number | string;
-	paddingVertical?: number | string;
-	padding?: number | string;
-};
-border?: {
-	borderWidth?: number;
-	borderTopWidth?: number;
-	borderBottomWidth?: number;
-	borderLeftWidth?: number;
-	borderRightWidth?: number;
-	borderColor?: string;
-	borderRadius?: number;
-	borderTopLeftRadius?: number;
-	borderTopRightRadius?: number;
-	borderBottomLeftRadius?: number;
-	... // all other border-related properties
+...Position,
+...Alignment,
+...Flex,
+...Size,
+...Spacing,
+...Border,
 };
 
 ```
@@ -241,6 +245,8 @@ This scroll view will automatically scroll to an active input field rendered ins
 focusPositionOffset?: number;
 /** Is the scrollview 100% in height or automatic. Defaults to auto. */
 height?: "full" | "auto";
+/** Margins are applied to ScrollView style, paddings and gap to contentContainerStyle */
+...Spacing,
 ```
 
 #### Usage
