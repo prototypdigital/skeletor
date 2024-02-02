@@ -288,7 +288,7 @@ The concept behind this approach is to:
 
 Use these methods to construct <b>element</b> animations in a super simple way. Create these animations outside the component body to avoid unnecessary re-renders and other lifecycle related issues. All animations are done via native driver, <i>except if the animation loops to avoid issues with the animation itself.</i>
 
-`animateParallel` will animate all of the defined element styles in parallel (meaning they will all start animating at the same time). In the example below, this means that opacity, translateY and translateX will all start animating at once. Additional configuration is possible as a second parameter, where you can define the animation `duration`, `loop` and `easing`. The default configuration is `{ duration: 800, easing: Easing.ease(Easing.quad) }`.
+`animateParallel` will animate all of the defined element styles in parallel (meaning they will all start animating at the same time). In the example below, this means that opacity, translateY and translateX will all start animating at once. Additional configuration is possible as a second parameter, where you can define the animation `duration`, `loop` and `easing`. The default configuration is `{ duration = 400, easing = Easing.inOut(Easing.ease), loop = false, native = true, }`.
 
 Usage
 
@@ -300,7 +300,7 @@ const element1 = animateParallel({
 });
 ```
 
-`animateSequence` will animate all of the defined element styles in sequence (meaning every property will start animating only when the previous property has finished animating). In the example below, that means that opacity, translateY and translateX will animate in sequence as they are defined - opacity first, translateX second, translateY last. Additional configuration is possible as a second parameter, where you can define the animation `duration`, `loop` and `easing`. The default configuration is `{ duration: 800, easing: Easing.ease(Easing.quad) }`.
+`animateSequence` will animate all of the defined element styles in sequence (meaning every property will start animating only when the previous property has finished animating). In the example below, that means that opacity, translateY and translateX will animate in sequence as they are defined - opacity first, translateX second, translateY last. Additional configuration is possible as a second parameter, where you can define the animation `duration`, `loop` and `easing`. The default configuration is `{ duration = 400, easing = Easing.inOut(Easing.ease), loop = false, native = true, }`.
 
 Usage
 
@@ -312,7 +312,7 @@ const element1 = animateSequence({
 });
 ```
 
-`animateStagger` will animate all of the defined elements in the order they are defined at a staggered pace defined in the configuration object (meaning every property will start animating after an X amount of miliseconds between animation starts, in the order they are defined in). In the example below, that means that opacity, translateY and translateX will animate in sequence with a 400ms delay between them. Additional configuration is possible as a second parameter, where you can define the animation `duration`, `stagger`, `loop` and `easing`. The default configuration is `{ duration: 800, stagger: 400, easing: Easing.ease(Easing.quad) }`.
+`animateStagger` will animate all of the defined elements in the order they are defined at a staggered pace defined in the configuration object (meaning every property will start animating after an X amount of miliseconds between animation starts, in the order they are defined in). In the example below, that means that opacity, translateY and translateX will animate in sequence with a 400ms delay between them. Additional configuration is possible as a second parameter, where you can define the animation `duration`, `stagger`, `loop` and `easing`. The default configuration is `{ duration = 400, stagger = 200, easing = Easing.inOut(Easing.ease), loop = false, native = true, }`.
 
 Usage
 
