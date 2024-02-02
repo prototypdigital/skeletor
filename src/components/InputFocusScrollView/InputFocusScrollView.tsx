@@ -9,9 +9,9 @@ import {
   TextInput,
   TextInputFocusEventData,
 } from "react-native";
-import { extractGapProperties } from "utils";
 
 import { Spacing } from "../../models";
+import { extractGapProperties } from "../../utils";
 
 export interface InputFocusScrollViewProps
   extends Omit<ScrollViewProps, "children">,
