@@ -133,17 +133,16 @@ export const Block: React.FC<PropsWithChildren<BlockProps>> = ({
   ...props
 }) => {
   const { scrollable, ...rest } = props;
-  const element = () => <BlockElement {...rest}>{children}</BlockElement>;
 
   if (!scrollable) {
-    return element();
+    return <BlockElement {...rest}>{children}</BlockElement>;
   }
 
   const {
     horizontal,
     showsHorizontalScrollIndicator = false,
     showsVerticalScrollIndicator = false,
-    bounces,
+    bounces = false,
   } = props;
 
   return (
@@ -157,7 +156,7 @@ export const Block: React.FC<PropsWithChildren<BlockProps>> = ({
         { flexGrow: 1, backgroundColor: rest.background },
       ]}
     >
-      {element()}
+      <BlockElement {...rest}>{children}</BlockElement>;
     </ScrollView>
   );
 };
