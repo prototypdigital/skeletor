@@ -25,11 +25,19 @@ export interface InputFocusScrollViewProps
 }
 
 /**
- * This scroll view will automatically scroll to an active input field rendered within it, provided you attach the onInputFocus callback to the input onFocus prop.
+ * This scroll view will automatically scroll to an active input field rendered within it, provided you attach the `onInputFocus` callback to the input onFocus prop.
  *
  * The return value is a lambda component, returning a callback which you attach to input fields rendered within it.
  * @example <InputFocusScrollView>{(onInputFocus) => <TextInput onFocus={onInputFocus} ... />}</InputFocusScrollView>
  * NOTE: This works on iOS only, Android does this by default with @param android:windowSoftInputMode
+ *
+ * Default props are:
+ * @param height `full`
+ * @param focusPositionOffset `0.3`
+ * @param showsVerticalScrollIndicator `false`
+ * @param showsHorizontalScrollIndicator `false`
+ * @param bounces `false`
+ * @param contentContainerStyle `{flexGrow: 1, paddingBottom: 30}`
  */
 export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
   children,
