@@ -195,13 +195,15 @@ function MyComponent() {
 
 ---
 
-This is a flexible and customizable React Native component that can be used as either a `View` or a `ScrollView`. The `Block` component allows you to add paddings, margins, sizes, alignments, and borders to your layout. Extends `ScrollViewProps` or `ViewProps` depending on the value of the `scrollable` prop.
+This is a flexible and customizable React Native component that can be used as either a `View` or a `ScrollView`. The `Block` component allows you to add paddings, margins, sizes, alignments, and borders to your layout. Can be turned into a ScrollView by passing in `scrollable`. ScrollView props can be updated through `scrollProps`.
 
 #### Props
 
 ```javascript
-/** Determine if Block is scrollable or not. If scrollable, extends ScrollView props. To render as ScrollView and disable scrolling, use @param scrollEnabled */
+/** Determine if Block is scrollable or not.*/
 scrollable?: boolean;
+/** If scrollable, used to control ScrollView props. Some default props are applied, check JSDOC of component by hovering over it in your IDE. */
+scrollProps?: ScrollViewProps
 opacity?: ViewStyle["opacity"];
 animations?: Partial<ViewStyle>;
 ...Position,
@@ -210,7 +212,6 @@ animations?: Partial<ViewStyle>;
 ...Size,
 ...Spacing,
 ...Border,
-};
 
 ```
 
@@ -236,6 +237,8 @@ Use cases are many, but simple. This component is intended to be used as a build
 This scroll view will automatically scroll to an active input field rendered inside it, provided you attach the `onInputFocus` callback to the input `onFocus` prop. This is a lambda component, returning a callback which you attach to input fields rendered within it.
 
 <b>NOTE</b> &mdash; This works on iOS only, Android does this by default with `android:windowSoftInputMode`
+
+Some default props are applied, check JSDOC of component by hovering over it in your IDE.
 
 #### Props
 
