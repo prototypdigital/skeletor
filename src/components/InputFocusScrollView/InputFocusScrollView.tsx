@@ -40,6 +40,9 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
   margins,
   paddings,
   gap,
+  showsVerticalScrollIndicator = false,
+  showsHorizontalScrollIndicator = false,
+  bounces = false,
   ...rest
 }) => {
   const screenHeight = useRef(Dimensions.get("screen").height).current;
@@ -96,8 +99,9 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
       scrollEventThrottle={33}
       onLayout={e => setScrollTarget(e.currentTarget)}
       onContentSizeChange={onContentSizeChange}
-      showsVerticalScrollIndicator={false}
-      showsHorizontalScrollIndicator={false}
+      showsVerticalScrollIndicator={showsVerticalScrollIndicator}
+      showsHorizontalScrollIndicator={showsHorizontalScrollIndicator}
+      bounces={bounces}
       style={containerStyles}
       contentContainerStyle={contentStyles}
       {...rest}
