@@ -40,8 +40,9 @@ type SharedProps = SkeletorProps & {
 };
 
 export type BlockScrollViewProps = SharedProps &
-  ScrollViewProps & {
+  ViewProps & {
     scrollable: true;
+    scrollProps?: ScrollViewProps;
   };
 
 export type BlockViewProps = SharedProps &
@@ -128,33 +129,40 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
   );
 };
 
+function isScrollable(props: BlockProps): props is BlockScrollViewProps {
+  return !!props.scrollable;
+}
+
 export const Block: React.FC<PropsWithChildren<BlockProps>> = ({
   children,
   ...props
 }) => {
-  const { scrollable, ...rest } = props;
-
-  if (!scrollable) {
-    return <BlockElement {...rest}>{children}</BlockElement>;
+  if (!isScrollable(props)) {
+    return <BlockElement {...props}>{children}</BlockElement>;
   }
 
+  const { scrollProps, ...rest } = props;
   const {
     horizontal,
-    showsHorizontalScrollIndicator = false,
+    keyboardShouldPersistTaps = "handled",
     showsVerticalScrollIndicator = false,
+    showsHorizontalScrollIndicator = false,
     bounces = false,
-  } = props;
+    contentContainerStyle,
+  } = scrollProps || {};
 
   return (
     <ScrollView
       horizontal={horizontal}
-      keyboardShouldPersistTaps="handled"
+      keyboardShouldPersistTaps={keyboardShouldPersistTaps}
       showsHorizontalScrollIndicator={showsHorizontalScrollIndicator}
       showsVerticalScrollIndicator={showsVerticalScrollIndicator}
       bounces={bounces}
       contentContainerStyle={[
         { flexGrow: 1, backgroundColor: rest.background },
+        contentContainerStyle,
       ]}
+      {...scrollProps}
     >
       <BlockElement {...rest}>{children}</BlockElement>;
     </ScrollView>
