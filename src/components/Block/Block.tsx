@@ -133,6 +133,12 @@ function isScrollable(props: BlockProps): props is BlockScrollViewProps {
   return !!props.scrollable;
 }
 
+/** Can be switched to a scrollable view by passing in `scrollable`. When scrollable, control ScrollView related parameters through `scrollProps`. Default values for `scrollProps` are:
+ * @param keyboardShouldPersistTaps `handled`
+ * @param showsVerticalScrollIndicator `false`
+ * @param showsHorizontalScrollIndicator `false`
+ * @param bounces `false`
+ * @param contentContainerStyle `{ flexGrow: 1, backgroundColor: rest.background }` */
 export const Block: React.FC<PropsWithChildren<BlockProps>> = ({
   children,
   ...props
