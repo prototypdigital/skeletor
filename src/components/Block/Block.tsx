@@ -170,7 +170,7 @@ export const Block: React.FC<PropsWithChildren<BlockProps>> = ({
       ]}
       {...scrollProps}
     >
-      <BlockElement {...rest}>{children}</BlockElement>;
+      <BlockElement {...rest}>{children}</BlockElement>
     </ScrollView>
   );
 };
