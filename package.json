@@ -49,6 +49,7 @@
   },
   "keywords": [
     "react-native",
+    "toolkit",
     "ui",
     "kit",
     "form",
@@ -60,9 +61,7 @@
     "utils"
   ],
   "files": [
-    "lib",
-    "README.md",
-    "package.json"
+    "lib"
   ],
   "react-native-builder-bob": {
     "source": "src",
