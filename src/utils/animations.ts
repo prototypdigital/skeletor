@@ -35,20 +35,20 @@ function processStyles<Keys extends keyof ViewStyle>(
     let composition = Animated.timing(value, {
       toValue: definition.length - 1,
       duration,
-      useNativeDriver: !loop && native,
+      useNativeDriver: !loop && !!native,
+      easing,
+    });
+
+    const reverseComposition = Animated.timing(value, {
+      toValue: 0,
+      duration,
+      useNativeDriver: !loop && !!native,
       easing,
     });
 
     if (loop) {
       composition = Animated.loop(composition);
     }
-
-    const reverseComposition = Animated.timing(value, {
-      toValue: 0,
-      duration: duration,
-      useNativeDriver: !loop && !!native,
-      easing,
-    });
 
     animations[key] = animation;
     compositions.push(composition);
@@ -60,6 +60,40 @@ function processStyles<Keys extends keyof ViewStyle>(
     compositions,
     reverseCompositions: reverseCompositions.reverse(),
     animations: animations as Animation<Keys>,
+  };
+}
+
+function getAnimationTriggers(
+  forward: Animated.CompositeAnimation,
+  backward: Animated.CompositeAnimation,
+) {
+  function start(onFinished?: () => void) {
+    forward.start(({ finished }) => {
+      if (finished) {
+        onFinished?.();
+      }
+    });
+  }
+
+  function reverse(onFinished?: () => void) {
+    backward.start(({ finished }) => {
+      if (finished) {
+        onFinished?.();
+      }
+    });
+  }
+
+  function reset() {
+    forward.reset();
+  }
+
+  return {
+    /** Will start the animation and interpolate the value as defined in the animation style configuration object. */
+    start,
+    /** Should only be triggered when `start()` has already been called. This will interpolate the Animated.Value back to the initial value defined in the animation from whatever value it is currently at. If the current value is already the initial value, reverse does nothing. */
+    reverse,
+    /** Reset only resets the forward trigger (called with start()). Both triggers are attached to the same Animated.Value, so resetting the forward one resets the value to the true initial value defined in the animation. */
+    reset,
   };
 }
 
@@ -76,33 +110,8 @@ export function animateParallel<Styles extends keyof ViewStyle>(
   const trigger = Animated.parallel(compositions);
   const reverseTrigger = Animated.parallel(reverseCompositions);
 
-  function start(onFinished?: () => void) {
-    trigger.start(({ finished }) => {
-      if (finished) {
-        onFinished?.();
-        reverseTrigger.reset();
-      }
-    });
-  }
-
-  function reverse(onFinished?: () => void) {
-    reverseTrigger.start(({ finished }) => {
-      if (finished) {
-        onFinished?.();
-        trigger.reset();
-      }
-    });
-  }
-
-  function reset() {
-    trigger.reset();
-    reverseTrigger.reset();
-  }
-
   return {
-    start,
-    reverse,
-    reset,
+    ...getAnimationTriggers(trigger, reverseTrigger),
     forward: trigger,
     backward: reverseTrigger,
     animations,
@@ -146,33 +155,8 @@ export function animateStagger<Styles extends keyof ViewStyle>(
     config.stagger || 200,
   );
 
-  function start(onFinished?: () => void) {
-    trigger.start(({ finished }) => {
-      if (finished) {
-        onFinished?.();
-        reverseTrigger.reset();
-      }
-    });
-  }
-
-  function reverse(onFinished?: () => void) {
-    reverseTrigger.start(({ finished }) => {
-      if (finished) {
-        onFinished?.();
-        trigger.reset();
-      }
-    });
-  }
-
-  function reset() {
-    trigger.reset();
-    reverseTrigger.reset();
-  }
-
   return {
-    start,
-    reverse,
-    reset,
+    ...getAnimationTriggers(trigger, reverseTrigger),
     forward: trigger,
     backward: reverseTrigger,
     animations,
@@ -222,33 +206,8 @@ export function animateSequence<Styles extends keyof ViewStyle>(
   const trigger = createSequenceComposition(compositions);
   const reverseTrigger = createSequenceComposition(reverseCompositions);
 
-  function start(onFinished?: () => void) {
-    trigger.start(({ finished }) => {
-      if (finished) {
-        onFinished?.();
-        reverseTrigger.reset();
-      }
-    });
-  }
-
-  function reverse(onFinished?: () => void) {
-    reverseTrigger.start(({ finished }) => {
-      if (finished) {
-        onFinished?.();
-        trigger.reset();
-      }
-    });
-  }
-
-  function reset() {
-    trigger.reset();
-    reverseTrigger.reset();
-  }
-
   return {
-    start,
-    reverse,
-    reset,
+    ...getAnimationTriggers(trigger, reverseTrigger),
     forward: trigger,
     backward: reverseTrigger,
     animations,
@@ -294,9 +253,6 @@ export function createAnimationTimeline(
   return {
     start: forward.start,
     reverse: backward.start,
-    reset: () => {
-      forward.reset();
-      backward.reset();
-    },
+    reset: forward.reset,
   };
 }
