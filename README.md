@@ -478,8 +478,3 @@ useAppState({ onForeground: () => Alert.alert("Foreground") });
 ## Contributions
 
 Suggestions and requests welcome, contributions appreciated but will be reviewed.
-
-## Disclaimer
-
-Parts of this readme file were generated with ChatGPT.
-Thank you for making documentation easy for a lazy programmer.
