@@ -8,7 +8,7 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
     "baseUrl": "src",
     "rootDirs": ["src"],
-    "typeRoots": ["./src/types"],
+    "typeRoots": ["./src/types", "node_modules/"],
     "lib": ["ESNext"],
     "jsx": "react-native",
     "noEmit": false
