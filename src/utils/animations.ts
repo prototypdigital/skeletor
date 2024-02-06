@@ -80,6 +80,7 @@ export function animateParallel<Styles extends keyof ViewStyle>(
     trigger.start(({ finished }) => {
       if (finished) {
         onFinished?.();
+        reverseTrigger.reset();
       }
     });
   }
@@ -88,6 +89,7 @@ export function animateParallel<Styles extends keyof ViewStyle>(
     reverseTrigger.start(({ finished }) => {
       if (finished) {
         onFinished?.();
+        trigger.reset();
       }
     });
   }
@@ -148,6 +150,7 @@ export function animateStagger<Styles extends keyof ViewStyle>(
     trigger.start(({ finished }) => {
       if (finished) {
         onFinished?.();
+        reverseTrigger.reset();
       }
     });
   }
@@ -156,6 +159,7 @@ export function animateStagger<Styles extends keyof ViewStyle>(
     reverseTrigger.start(({ finished }) => {
       if (finished) {
         onFinished?.();
+        trigger.reset();
       }
     });
   }
@@ -222,6 +226,7 @@ export function animateSequence<Styles extends keyof ViewStyle>(
     trigger.start(({ finished }) => {
       if (finished) {
         onFinished?.();
+        reverseTrigger.reset();
       }
     });
   }
@@ -230,6 +235,7 @@ export function animateSequence<Styles extends keyof ViewStyle>(
     reverseTrigger.start(({ finished }) => {
       if (finished) {
         onFinished?.();
+        trigger.reset();
       }
     });
   }
