@@ -20,7 +20,7 @@ type OwnProps = {
   statusBarType?: "default" | "light-content" | "dark-content";
 };
 
-export type ScreenProps = OwnProps & BlockProps;
+export type ScreenProps = OwnProps & Omit<BlockProps, "background">;
 
 export const Screen: React.FC<PropsWithChildren<ScreenProps>> = ({
   background,
