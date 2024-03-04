@@ -1,6 +1,6 @@
-import { ViewStyle } from "react-native";
+import { AnimationsProp } from "models";
 
-function hasTransformProperties(props: Partial<ViewStyle>) {
+function hasTransformProperties(props: AnimationsProp) {
   return (
     props.translateX ||
     props.translateY ||
@@ -11,9 +11,7 @@ function hasTransformProperties(props: Partial<ViewStyle>) {
   );
 }
 
-export function extractAnimationProperties(
-  props: Partial<ViewStyle> | undefined,
-) {
+export function extractAnimationProperties(props: AnimationsProp | undefined) {
   if (!props) return undefined;
 
   const mapped = { ...props };

@@ -34,6 +34,19 @@ export type ElementAnimation<Keys extends keyof ViewStyle> = {
   reset: Animated.CompositeAnimation["reset"];
 };
 
+type ColorKeys = Extract<keyof ViewStyle, `${string}Color`>;
+type ExcludeColorKeys = Exclude<keyof ViewStyle, `${string}Color`>;
+
+type ColorValueAnimation<Keys extends ColorKeys = ColorKeys> = {
+  [K in Keys]?: ViewStyle[K] | Animated.AnimatedInterpolation<string | number>;
+};
+
+type ViewAnimation<Keys extends ExcludeColorKeys = ExcludeColorKeys> = {
+  [K in Keys]?: ViewStyle[K];
+};
+
+export type AnimationsProp = ColorValueAnimation & ViewAnimation;
+
 export interface Animations {
-  animations?: Partial<ViewStyle>;
+  animations?: AnimationsProp;
 }
