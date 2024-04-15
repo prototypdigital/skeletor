@@ -206,6 +206,7 @@ scrollable?: boolean;
 scrollProps?: ScrollViewProps
 opacity?: ViewStyle["opacity"];
 animations?: Partial<ViewStyle>;
+background?: JSX.Element | string;
 ...Position,
 ...Alignment,
 ...Flex,

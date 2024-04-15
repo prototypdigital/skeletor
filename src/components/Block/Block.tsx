@@ -35,7 +35,7 @@ type SkeletorProps = Alignment &
   Animations;
 
 type SharedProps = SkeletorProps & {
-  background?: string;
+  background?: JSX.Element | string;
   opacity?: ViewStyle["opacity"];
 };
 
@@ -92,7 +92,8 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
     () =>
       StyleSheet.flatten([
         {
-          backgroundColor: background,
+          backgroundColor:
+            typeof background === "string" ? background : undefined,
           overflow,
           opacity,
         },
@@ -144,7 +145,20 @@ export const Block: React.FC<PropsWithChildren<BlockProps>> = ({
   ...props
 }) => {
   if (!isScrollable(props)) {
-    return <BlockElement {...props}>{children}</BlockElement>;
+    return (
+      <BlockElement {...props}>
+        {props.background && typeof props.background !== "string" && (
+          <BlockElement
+            absolute
+            zIndex={-1}
+            offsets={{ top: 0, bottom: 0, left: 0, right: 0 }}
+          >
+            {props.background}
+          </BlockElement>
+        )}
+        {children}
+      </BlockElement>
+    );
   }
 
   const { scrollProps, ...rest } = props;
@@ -165,12 +179,27 @@ export const Block: React.FC<PropsWithChildren<BlockProps>> = ({
       showsVerticalScrollIndicator={showsVerticalScrollIndicator}
       bounces={bounces}
       contentContainerStyle={[
-        { flexGrow: 1, backgroundColor: rest.background },
+        {
+          flexGrow: 1,
+          backgroundColor:
+            typeof rest.background === "string" ? rest.background : undefined,
+        },
         contentContainerStyle,
       ]}
       {...scrollProps}
     >
-      <BlockElement {...rest}>{children}</BlockElement>
+      <BlockElement {...rest}>
+        {rest.background && typeof rest.background !== "string" && (
+          <BlockElement
+            absolute
+            zIndex={-1}
+            offsets={{ top: 0, bottom: 0, left: 0, right: 0 }}
+          >
+            {rest.background}
+          </BlockElement>
+        )}
+        {children}
+      </BlockElement>
     </ScrollView>
   );
 };

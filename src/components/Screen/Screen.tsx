@@ -8,7 +8,7 @@ import {
 } from "react-native";
 
 import { useSkeletor } from "../../hooks";
-import { Block, BlockProps } from "../Block";
+import { Block, BlockScrollViewProps, BlockViewProps } from "../Block";
 
 type OwnProps = {
   /** Pass a specific background view OR just a background color value. Custom components should be 100% height and width. */
@@ -20,7 +20,7 @@ type OwnProps = {
   statusBarType?: "default" | "light-content" | "dark-content";
 };
 
-export type ScreenProps = OwnProps & Omit<BlockProps, "background">;
+export type ScreenProps = OwnProps & (BlockScrollViewProps | BlockViewProps);
 
 export const Screen: React.FC<PropsWithChildren<ScreenProps>> = ({
   background,
