@@ -8,6 +8,27 @@ import {
   StaggerAnimationConfiguration,
 } from "../models";
 
+function isValidRotateFormat(value: string): boolean {
+  const roationValuesRegex = /^-?\d+(\.\d+)?(deg|rad)$/;
+  return roationValuesRegex.test(value);
+}
+
+/** Transforms an array of rotation values. If a value is a number, it appends 'deg'. If it's a string and a valid rotation value, it leaves it as is.*/
+function transformRotation(values?: number[] | string[]): string[] | undefined {
+  return values?.map(value => {
+    if (typeof value === "number") {
+      return `${value}deg`;
+    }
+    if (typeof value === "string" && isValidRotateFormat(value)) {
+      return value;
+    }
+
+    throw new Error(
+      "Invalid value for rotation. Expected number or string with format deg, rad, turn, or grad.",
+    );
+  });
+}
+
 function processStyles<Keys extends keyof ViewStyle>(
   styles: AnimationStyle<Keys>,
   {
@@ -25,7 +46,14 @@ function processStyles<Keys extends keyof ViewStyle>(
 
   keys.forEach((key, index) => {
     const value = values[index];
-    const definition = styles[key]!;
+    let definition = styles[key]!;
+
+    /** Rotation is a special case and needs to be transformed to the correct format */
+    if (key === "rotation") {
+      const rotationDefinition = transformRotation(definition);
+      if (!rotationDefinition) return;
+      definition = rotationDefinition;
+    }
 
     const animation = value.interpolate({
       inputRange: definition.map((_, i) => i),

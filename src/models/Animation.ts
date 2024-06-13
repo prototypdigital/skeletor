@@ -1,4 +1,9 @@
-import { Animated, EasingFunction, ViewStyle } from "react-native";
+import {
+  AnimatableStringValue,
+  Animated,
+  EasingFunction,
+  ViewStyle,
+} from "react-native";
 
 export type AnimationConfiguration = {
   duration?: number;
@@ -35,14 +40,21 @@ export type ElementAnimation<Keys extends keyof ViewStyle> = {
 };
 
 type ColorKeys = Extract<keyof ViewStyle, `${string}Color`>;
-type ExcludeColorKeys = Exclude<keyof ViewStyle, `${string}Color`>;
+type ExcludeColorAndRotationKey = Exclude<
+  keyof ViewStyle,
+  `${string}Color` | "rotation"
+>;
 
 type ColorValueAnimation<Keys extends ColorKeys = ColorKeys> = {
   [K in Keys]?: ViewStyle[K] | Animated.AnimatedInterpolation<string | number>;
 };
 
-type ViewAnimation<Keys extends ExcludeColorKeys = ExcludeColorKeys> = {
+type ViewAnimation<
+  Keys extends ExcludeColorAndRotationKey = ExcludeColorAndRotationKey,
+> = {
   [K in Keys]?: ViewStyle[K];
+} & {
+  rotation?: AnimatableStringValue;
 };
 
 export type AnimationsProp = ColorValueAnimation & ViewAnimation;

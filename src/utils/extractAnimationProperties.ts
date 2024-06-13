@@ -40,7 +40,7 @@ export function extractAnimationProperties(props: AnimationsProp | undefined) {
     }
 
     if (props.rotation) {
-      mapped.transform.push({ rotate: `${props.rotation}deg` });
+      mapped.transform.push({ rotate: props.rotation });
       delete mapped.rotation;
     }
   }
