@@ -69,7 +69,9 @@ export type ElementAnimation<Keys extends keyof AnimationViewStyle> = {
 };
 
 export type ViewAnimation<Keys extends keyof AnimationViewStyle> = {
-	[K in Keys | keyof AnimationViewStyle]?: AnimationViewStyle[K];
+	[K in Keys | keyof AnimationViewStyle]?:
+		| AnimationViewStyle[K]
+		| Animated.AnimatedInterpolation<string | number>;
 };
 
 export interface Animations {

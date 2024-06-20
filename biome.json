@@ -3,6 +3,9 @@
 	"organizeImports": {
 		"enabled": true
 	},
+	"formatter": {
+		"enabled": true
+	},
 	"linter": {
 		"enabled": true,
 		"ignore": ["./lib/**"],
