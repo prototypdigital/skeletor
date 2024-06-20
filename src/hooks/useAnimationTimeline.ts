@@ -4,24 +4,24 @@ import { Animated, type ViewStyle } from "react-native";
 import type { UseAnimation } from "./useAnimation";
 
 interface BaseTimelineType {
-	elements: UseAnimation<any>[];
-	start: boolean;
-	onFinished?: () => void;
-	onStarted?: () => void;
+  elements: UseAnimation<any>[];
+  start: boolean;
+  onFinished?: () => void;
+  onStarted?: () => void;
 }
 
 type DelayTimeline = BaseTimelineType & {
-	delay: number;
+  delay: number;
 };
 type StaggerTimeline = BaseTimelineType & {
-	stagger: number;
+  stagger: number;
 };
 
 interface TimelineConfiguration {
-	delay?: DelayTimeline;
-	parallel?: BaseTimelineType;
-	sequence?: BaseTimelineType;
-	stagger?: StaggerTimeline;
+  delay?: DelayTimeline;
+  parallel?: BaseTimelineType;
+  sequence?: BaseTimelineType;
+  stagger?: StaggerTimeline;
 }
 
 /** Used to layout animated values on a timeline and handle starting/reversing the animations.
@@ -33,108 +33,108 @@ interface TimelineConfiguration {
   });
 */
 export function useAnimationTimeline(config: TimelineConfiguration): void {
-	const { delay, parallel, sequence, stagger } = config;
-	const staggerStart = Boolean(stagger?.start);
-	const delayStart = Boolean(delay?.start);
-	const sequenceStart = Boolean(sequence?.start);
-	const parallelStart = Boolean(parallel?.start);
+  const { delay, parallel, sequence, stagger } = config;
+  const staggerStart = Boolean(stagger?.start);
+  const delayStart = Boolean(delay?.start);
+  const sequenceStart = Boolean(sequence?.start);
+  const parallelStart = Boolean(parallel?.start);
 
-	const [previousDelayStart, setPreviousDelayStart] = useState(false);
-	const [previousStaggerStart, setPreviousStaggerStart] = useState(false);
-	const [previousSequenceStart, setPreviousSequenceStart] = useState(false);
-	const [previousParallelStart, setPreviousParallelStart] = useState(false);
+  const [previousDelayStart, setPreviousDelayStart] = useState(false);
+  const [previousStaggerStart, setPreviousStaggerStart] = useState(false);
+  const [previousSequenceStart, setPreviousSequenceStart] = useState(false);
+  const [previousParallelStart, setPreviousParallelStart] = useState(false);
 
-	function getBaseAnimations(
-		timeline: BaseTimelineType | StaggerTimeline | DelayTimeline,
-	) {
-		const compositions: Animated.CompositeAnimation[] = [];
-		timeline.elements.forEach(
-			({ values, animations, configuration, definitions }) => {
-				const keys = Object.keys(animations).map(
-					(key) => key as keyof Partial<ViewStyle>,
-				);
+  function getBaseAnimations(
+    timeline: BaseTimelineType | StaggerTimeline | DelayTimeline,
+  ) {
+    const compositions: Animated.CompositeAnimation[] = [];
+    timeline.elements.forEach(
+      ({ values, animations, configuration, definitions }) => {
+        const keys = Object.keys(animations).map(
+          (key) => key as keyof Partial<ViewStyle>,
+        );
 
-				const elementCompositions = keys.map((key, index) => {
-					const value = values[index];
-					const lastValue = definitions[key]!.length - 1;
-					const nativeAnimation = configuration.loop
-						? false
-						: configuration.useNativeDriver || false;
+        const elementCompositions = keys.map((key, index) => {
+          const value = values[index];
+          const lastValue = definitions[key]!.length - 1;
+          const nativeAnimation = configuration.loop
+            ? false
+            : configuration.useNativeDriver || false;
 
-					const base = Animated.timing(value, {
-						toValue: timeline.start ? lastValue : 0,
-						duration: configuration.duration,
-						useNativeDriver: nativeAnimation,
-					});
+          const base = Animated.timing(value, {
+            toValue: timeline.start ? lastValue : 0,
+            duration: configuration.duration,
+            useNativeDriver: nativeAnimation,
+          });
 
-					return configuration.loop ? Animated.loop(base) : base;
-				});
+          return configuration.loop ? Animated.loop(base) : base;
+        });
 
-				compositions.push(Animated.parallel(elementCompositions));
-			},
-		);
+        compositions.push(Animated.parallel(elementCompositions));
+      },
+    );
 
-		return compositions;
-	}
+    return compositions;
+  }
 
-	function setupParallelAnimations(timeline: BaseTimelineType) {
-		if (timeline.onStarted) {
-			timeline.onStarted();
-		}
-		Animated.parallel(getBaseAnimations(timeline)).start(timeline.onFinished);
-	}
+  function setupParallelAnimations(timeline: BaseTimelineType) {
+    if (timeline.onStarted) {
+      timeline.onStarted();
+    }
+    Animated.parallel(getBaseAnimations(timeline)).start(timeline.onFinished);
+  }
 
-	function setupSequenceAnimations(timeline: BaseTimelineType) {
-		if (timeline.onStarted) {
-			timeline.onStarted();
-		}
-		Animated.sequence(getBaseAnimations(timeline)).start(timeline.onFinished);
-	}
+  function setupSequenceAnimations(timeline: BaseTimelineType) {
+    if (timeline.onStarted) {
+      timeline.onStarted();
+    }
+    Animated.sequence(getBaseAnimations(timeline)).start(timeline.onFinished);
+  }
 
-	function setupStaggerAnimations(timeline: StaggerTimeline) {
-		if (timeline.onStarted) {
-			timeline.onStarted();
-		}
-		Animated.stagger(timeline.stagger, getBaseAnimations(timeline)).start(
-			timeline.onFinished,
-		);
-	}
+  function setupStaggerAnimations(timeline: StaggerTimeline) {
+    if (timeline.onStarted) {
+      timeline.onStarted();
+    }
+    Animated.stagger(timeline.stagger, getBaseAnimations(timeline)).start(
+      timeline.onFinished,
+    );
+  }
 
-	function setupDelayAnimations(timeline: DelayTimeline) {
-		Animated.delay(timeline.delay).start(() =>
-			setupParallelAnimations(timeline),
-		);
-	}
+  function setupDelayAnimations(timeline: DelayTimeline) {
+    Animated.delay(timeline.delay).start(() =>
+      setupParallelAnimations(timeline),
+    );
+  }
 
-	useEffect(() => {
-		if (stagger && previousStaggerStart !== staggerStart) {
-			setupStaggerAnimations(stagger);
-		}
+  useEffect(() => {
+    if (stagger && previousStaggerStart !== staggerStart) {
+      setupStaggerAnimations(stagger);
+    }
 
-		setPreviousStaggerStart(staggerStart);
-	}, [previousStaggerStart, staggerStart, stagger]);
+    setPreviousStaggerStart(staggerStart);
+  }, [previousStaggerStart, staggerStart, stagger]);
 
-	useEffect(() => {
-		if (parallel && previousParallelStart !== parallelStart) {
-			setupParallelAnimations(parallel);
-		}
+  useEffect(() => {
+    if (parallel && previousParallelStart !== parallelStart) {
+      setupParallelAnimations(parallel);
+    }
 
-		setPreviousParallelStart(parallelStart);
-	}, [previousParallelStart, parallelStart, parallel]);
+    setPreviousParallelStart(parallelStart);
+  }, [previousParallelStart, parallelStart, parallel]);
 
-	useEffect(() => {
-		if (sequence && previousSequenceStart !== sequenceStart) {
-			setupSequenceAnimations(sequence);
-		}
+  useEffect(() => {
+    if (sequence && previousSequenceStart !== sequenceStart) {
+      setupSequenceAnimations(sequence);
+    }
 
-		setPreviousSequenceStart(sequenceStart);
-	}, [previousSequenceStart, sequenceStart, sequence]);
+    setPreviousSequenceStart(sequenceStart);
+  }, [previousSequenceStart, sequenceStart, sequence]);
 
-	useEffect(() => {
-		if (delay && previousDelayStart !== delayStart) {
-			setupDelayAnimations(delay);
-		}
+  useEffect(() => {
+    if (delay && previousDelayStart !== delayStart) {
+      setupDelayAnimations(delay);
+    }
 
-		setPreviousDelayStart(delayStart);
-	}, [previousDelayStart, delayStart, delay]);
+    setPreviousDelayStart(delayStart);
+  }, [previousDelayStart, delayStart, delay]);
 }
