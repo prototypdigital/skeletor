@@ -1,52 +1,79 @@
-import { Animated, EasingFunction, ViewStyle } from "react-native";
+import type { Animated, EasingFunction, ViewStyle } from "react-native";
 
 export type AnimationConfiguration = {
-  duration?: number;
-  /** Note:  Disables native driver. */
-  loop?: boolean;
-  /** Enables or disables native driver. Defaults to true. */
-  native?: boolean;
-  /** Defaults to Easing.inOut(Easing.ease) */
-  easing?: EasingFunction;
+	duration?: number;
+	/** Note:  Disables native driver. */
+	loop?: boolean;
+	/** Enables or disables native driver. Defaults to true. */
+	native?: boolean;
+	/** Defaults to Easing.inOut(Easing.ease) */
+	easing?: EasingFunction;
 };
 
 export type StaggerAnimationConfiguration = AnimationConfiguration & {
-  stagger?: number;
+	stagger?: number;
 };
 
-export type AnimationStyle<Keys extends keyof ViewStyle> = {
-  [K in Keys | keyof ViewStyle]?: string[] | number[];
+type NonAnimatableKeys =
+	| "rotation"
+	| "alignItems"
+	| "alignContent"
+	| "alignSelf"
+	| "justifyContent"
+	| "display"
+	| "flexDirection"
+	| "flexWrap"
+	| "overflow"
+	| "position"
+	| "zIndex"
+	| "elevation"
+	| "direction"
+	| "backfaceVisibility"
+	| "borderCurve"
+	| "borderStyle"
+	| "pointerEvents"
+	| "overflow"
+	| "transform";
+
+export type CleanViewStyle = Omit<ViewStyle, NonAnimatableKeys> & {
+	rotation?: `${number}deg` | `${number}rad`;
 };
 
-export type Animation<Keys extends keyof ViewStyle = keyof ViewStyle> = {
-  [K in Keys]: Animated.AnimatedInterpolation<string | number>;
+export type AnimationViewStyle = {
+	[K in keyof CleanViewStyle]: Exclude<
+		CleanViewStyle[K],
+		Animated.AnimatedNode
+	>;
 };
 
-export type ElementAnimation<Keys extends keyof ViewStyle> = {
-  animations: Animation<Keys>;
-  forward: Animated.CompositeAnimation;
-  backward: Animated.CompositeAnimation;
-  /** Start animation with onFinished callback. Using forward.start() */
-  start(onFinished?: () => void): void;
-  /** Reverse all animation values to initial value and reset main trigger. Using backward.start() */
-  reverse: (onFinished?: () => void) => void;
-  /** Reset animations to initial value. Using forward.reset() */
-  reset: Animated.CompositeAnimation["reset"];
+export type AnimationStyle<Keys extends keyof AnimationViewStyle> = {
+	[K in Keys | keyof AnimationViewStyle]?: AnimationViewStyle[K][];
 };
 
-type ColorKeys = Extract<keyof ViewStyle, `${string}Color`>;
-type ExcludeColorKeys = Exclude<keyof ViewStyle, `${string}Color`>;
-
-type ColorValueAnimation<Keys extends ColorKeys = ColorKeys> = {
-  [K in Keys]?: ViewStyle[K] | Animated.AnimatedInterpolation<string | number>;
+export type Animation<
+	Keys extends keyof AnimationViewStyle = keyof AnimationViewStyle,
+> = {
+	[K in Keys]: Animated.AnimatedInterpolation<string | number>;
 };
 
-type ViewAnimation<Keys extends ExcludeColorKeys = ExcludeColorKeys> = {
-  [K in Keys]?: ViewStyle[K];
+export type ElementAnimation<Keys extends keyof AnimationViewStyle> = {
+	animations: Animation<Keys>;
+	forward: Animated.CompositeAnimation;
+	backward: Animated.CompositeAnimation;
+	/** Start animation with onFinished callback. Using forward.start() */
+	start(onFinished?: () => void): void;
+	/** Reverse all animation values to initial value and reset main trigger. Using backward.start() */
+	reverse: (onFinished?: () => void) => void;
+	/** Reset animations to initial value. Using forward.reset() */
+	reset: Animated.CompositeAnimation["reset"];
 };
 
-export type AnimationsProp = ColorValueAnimation & ViewAnimation;
+export type ViewAnimation<Keys extends keyof AnimationViewStyle> = {
+	[K in Keys | keyof AnimationViewStyle]?:
+		| AnimationViewStyle[K]
+		| Animated.AnimatedInterpolation<string | number>;
+};
 
 export interface Animations {
-  animations?: AnimationsProp;
+	animations?: ViewAnimation<keyof AnimationViewStyle>;
 }
