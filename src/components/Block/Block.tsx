@@ -1,5 +1,4 @@
-import type React from "react";
-import { useMemo, type PropsWithChildren } from "react";
+import React, { useMemo, type PropsWithChildren } from "react";
 import {
 	Animated,
 	ScrollView,

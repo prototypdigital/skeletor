@@ -1,12 +1,11 @@
-import type React from "react";
-import { useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import {
 	Dimensions,
-	type NativeSyntheticEvent,
 	Platform,
 	ScrollView,
-	type ScrollViewProps,
 	StyleSheet,
+	type NativeSyntheticEvent,
+	type ScrollViewProps,
 	type TextInput,
 	type TextInputFocusEventData,
 } from "react-native";
