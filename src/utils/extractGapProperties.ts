@@ -1,31 +1,31 @@
-import { Spacing } from "models";
-import { ViewStyle } from "react-native";
+import type { Spacing } from "models";
+import type { ViewStyle } from "react-native";
 
 export function extractGapProperties<Props extends Spacing>(
-  props: Props,
+	props: Props,
 ): {
-  gap?: ViewStyle["gap"];
-  columnGap?: ViewStyle["columnGap"];
-  rowGap?: ViewStyle["rowGap"];
+	gap?: ViewStyle["gap"];
+	columnGap?: ViewStyle["columnGap"];
+	rowGap?: ViewStyle["rowGap"];
 } {
-  const value = props.gap;
-  if (!value) return {};
+	const value = props.gap;
+	if (!value) return {};
 
-  if (Array.isArray(value)) {
-    return {
-      columnGap: value[0],
-      rowGap: value[1],
-    };
-  }
+	if (Array.isArray(value)) {
+		return {
+			columnGap: value[0],
+			rowGap: value[1],
+		};
+	}
 
-  if (typeof value === "number") {
-    return {
-      gap: value,
-    };
-  }
+	if (typeof value === "number") {
+		return {
+			gap: value,
+		};
+	}
 
-  return {
-    columnGap: value.col,
-    rowGap: value.row,
-  };
+	return {
+		columnGap: value.col,
+		rowGap: value.row,
+	};
 }
