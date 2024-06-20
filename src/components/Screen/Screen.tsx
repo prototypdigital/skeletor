@@ -8,7 +8,6 @@ import {
 	View,
 } from "react-native";
 
-import { animateParallel } from "utils";
 import { useSkeletor } from "../../hooks";
 import {
 	Block,
@@ -79,6 +78,3 @@ export const Screen: React.FC<PropsWithChildren<ScreenProps>> = ({
 		</>
 	);
 };
-
-const test = animateParallel({ backgroundColor: ["#fff", "#ccc"] });
-<Block animations={test.animations} />;
