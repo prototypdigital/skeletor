@@ -3,4 +3,6 @@ export interface SkeletorConfig {
   defaultFontSize: [number, number] | number;
   defaultStatusBarType: "dark-content" | "light-content" | "default";
   defaultTextColor: string;
+  allowFontScaling: boolean;
+  maxFontSizeMultiplier: number;
 }
