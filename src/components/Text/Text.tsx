@@ -52,9 +52,11 @@ export const Text: React.FC<PropsWithChildren<TextProps>> = ({
   paddings,
   animations,
   gap,
+  allowFontScaling,
+  maxFontSizeMultiplier,
   ...props
 }) => {
-  const { defaultFont, defaultFontSize, defaultTextColor } = useSkeletor();
+  const skeletor = useSkeletor();
   const animationProps = useMemo(
     () => extractAnimationProperties(animations),
     [animations],
@@ -73,15 +75,15 @@ export const Text: React.FC<PropsWithChildren<TextProps>> = ({
       return { fontSize: value, lineHeight: value };
     }
 
-    return mapper(size || defaultFontSize);
-  }, [size, defaultFontSize]);
+    return mapper(size || skeletor.defaultFontSize);
+  }, [size, skeletor.defaultFontSize]);
 
   const styles = useMemo(
     () =>
       StyleSheet.flatten([
         {
-          color: color || defaultTextColor,
-          fontFamily: font || defaultFont,
+          color: color || skeletor.defaultTextColor,
+          fontFamily: font || skeletor.defaultFont,
           opacity,
           textAlign,
           textTransform,
@@ -110,8 +112,8 @@ export const Text: React.FC<PropsWithChildren<TextProps>> = ({
       sizeProps,
       flexProps,
       gapProps,
-      defaultTextColor,
-      defaultFont,
+      skeletor.defaultTextColor,
+      skeletor.defaultFont,
       letterSpacing,
     ],
   );
@@ -119,8 +121,10 @@ export const Text: React.FC<PropsWithChildren<TextProps>> = ({
   return (
     <Animated.Text
       style={[styles, animationProps]}
-      allowFontScaling={false}
-      maxFontSizeMultiplier={1}
+      allowFontScaling={allowFontScaling || skeletor.allowFontScaling}
+      maxFontSizeMultiplier={
+        maxFontSizeMultiplier || skeletor.maxFontSizeMultiplier
+      }
       {...props}
     >
       {children}
