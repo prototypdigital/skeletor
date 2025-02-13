@@ -8,6 +8,8 @@ export type AnimationConfiguration = {
   native?: boolean;
   /** Defaults to Easing.inOut(Easing.ease) */
   easing?: EasingFunction;
+  /** Defaults to false to prevent unintended issues with VirtualizedLists */
+  isInteraction?: boolean;
 };
 
 export type StaggerAnimationConfiguration = AnimationConfiguration & {
@@ -51,7 +53,7 @@ export type AnimationStyle<Keys extends keyof AnimationViewStyle> = {
 };
 
 export type Animation<
-  Keys extends keyof AnimationViewStyle = keyof AnimationViewStyle,
+  Keys extends keyof AnimationViewStyle = keyof AnimationViewStyle
 > = {
   [K in Keys]: Animated.AnimatedInterpolation<string | number>;
 };

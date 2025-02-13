@@ -16,7 +16,8 @@ function processStyles<Keys extends keyof CleanViewStyle>(
     easing = Easing.inOut(Easing.ease),
     loop = false,
     native = true,
-  }: AnimationConfiguration,
+    isInteraction = false,
+  }: AnimationConfiguration
 ) {
   const keys = Object.keys(styles) as Keys[];
   const values = keys.map(() => new Animated.Value(0));
@@ -39,6 +40,7 @@ function processStyles<Keys extends keyof CleanViewStyle>(
       duration,
       useNativeDriver: !loop && !!native,
       easing,
+      isInteraction,
     });
 
     const reverseComposition = Animated.timing(value, {
@@ -46,6 +48,7 @@ function processStyles<Keys extends keyof CleanViewStyle>(
       duration,
       useNativeDriver: !loop && !!native,
       easing,
+      isInteraction,
     });
 
     if (loop) {
@@ -67,7 +70,7 @@ function processStyles<Keys extends keyof CleanViewStyle>(
 
 function getAnimationTriggers(
   forward: Animated.CompositeAnimation,
-  backward: Animated.CompositeAnimation,
+  backward: Animated.CompositeAnimation
 ) {
   function start(onFinished?: () => void) {
     forward.start(({ finished }) => {
@@ -103,11 +106,11 @@ function getAnimationTriggers(
  * Example: if you define opacity and top styles, this will start the opacity animation and the top animation at the same time. */
 export function animateParallel<Styles extends keyof CleanViewStyle>(
   styles: AnimationStyle<Styles>,
-  config?: AnimationConfiguration,
+  config?: AnimationConfiguration
 ): ElementAnimation<Styles> {
   const { animations, reverseCompositions, compositions } = processStyles(
     styles,
-    config || {},
+    config || {}
   );
   const trigger = Animated.parallel(compositions);
   const reverseTrigger = Animated.parallel(reverseCompositions);
@@ -122,14 +125,14 @@ export function animateParallel<Styles extends keyof CleanViewStyle>(
 
 function createStaggerComposition(
   compositions: Animated.CompositeAnimation[],
-  stagger: number,
+  stagger: number
 ): Animated.CompositeAnimation {
   return {
     start: (callback?: Animated.EndCallback) => {
       Animated.parallel(
         compositions.map((c, i) => {
           return createSequenceComposition([Animated.delay(stagger * i), c]);
-        }),
+        })
       ).start(callback);
     },
     stop: () => {
@@ -145,16 +148,16 @@ function createStaggerComposition(
  * Example: if you define opacity and top styles, this will start the opacity animation and stagger the top animation by stagger amount. */
 export function animateStagger<Styles extends keyof CleanViewStyle>(
   styles: AnimationStyle<Styles>,
-  config: StaggerAnimationConfiguration,
+  config: StaggerAnimationConfiguration
 ): ElementAnimation<Styles> {
   const { animations, reverseCompositions, compositions } = processStyles(
     styles,
-    config || {},
+    config || {}
   );
   const trigger = createStaggerComposition(compositions, config.stagger || 200);
   const reverseTrigger = createStaggerComposition(
     reverseCompositions,
-    config.stagger || 200,
+    config.stagger || 200
   );
 
   return {
@@ -166,7 +169,7 @@ export function animateStagger<Styles extends keyof CleanViewStyle>(
 }
 
 function createSequenceComposition(
-  compositions: Animated.CompositeAnimation[],
+  compositions: Animated.CompositeAnimation[]
 ): Animated.CompositeAnimation {
   return {
     start: (callback?: Animated.EndCallback) => {
@@ -199,11 +202,11 @@ function createSequenceComposition(
  * Example: if you define opacity and top styles, this will start the opacity animation and then start the top animation when the opacity animation finishes. */
 export function animateSequence<Styles extends keyof CleanViewStyle>(
   styles: AnimationStyle<Styles>,
-  config?: AnimationConfiguration,
+  config?: AnimationConfiguration
 ): ElementAnimation<Styles> {
   const { animations, reverseCompositions, compositions } = processStyles(
     styles,
-    config || {},
+    config || {}
   );
   const trigger = createSequenceComposition(compositions);
   const reverseTrigger = createSequenceComposition(reverseCompositions);
@@ -221,7 +224,7 @@ interface AnimationTimelineConfiguration {
 }
 
 export function createAnimationTimeline(
-  timeline: AnimationTimelineConfiguration,
+  timeline: AnimationTimelineConfiguration
 ) {
   const times = Object.keys(timeline).map((ms) => Number(ms));
   const lastTime = times[times.length - 1];
@@ -234,7 +237,7 @@ export function createAnimationTimeline(
     const elements = timeline[ms];
     const trigger = Animated.parallel(elements.map((e) => e.forward));
     compositions.push(
-      !ms ? trigger : createSequenceComposition([Animated.delay(ms), trigger]),
+      !ms ? trigger : createSequenceComposition([Animated.delay(ms), trigger])
     );
   }
 
@@ -245,7 +248,7 @@ export function createAnimationTimeline(
     reverseCompositions.push(
       !delay
         ? trigger
-        : createSequenceComposition([Animated.delay(delay), trigger]),
+        : createSequenceComposition([Animated.delay(delay), trigger])
     );
   }
 
