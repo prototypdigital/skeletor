@@ -1,9 +1,9 @@
-import React, { useMemo, type PropsWithChildren } from "react";
+import React, { type PropsWithChildren, useMemo } from "react";
 import {
   Animated,
   ScrollView,
-  StyleSheet,
   type ScrollViewProps,
+  StyleSheet,
   type ViewProps,
   type ViewStyle,
 } from "react-native";
@@ -24,6 +24,8 @@ import {
   extractGapProperties,
   extractPositionProperties,
   extractSizeProperties,
+  normalizeMarginValues,
+  normalizePaddingValues,
 } from "../../utils";
 
 type SkeletorProps = Alignment &
@@ -72,50 +74,40 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
     ...view
   } = props;
 
-  const animationProps = useMemo(
-    () => extractAnimationProperties(animations),
-    [animations],
-  );
-  const flexProps = useMemo(() => extractFlexProperties({ flex }), [flex]);
-  const gapProps = useMemo(() => extractGapProperties({ gap }), [gap]);
   const sizeProps = extractSizeProperties(props);
   const positionProps = extractPositionProperties(props);
   const alignmentProps = extractAlignmentProperties(props);
-
-  const styles = useMemo(
-    () =>
-      StyleSheet.flatten([
-        {
-          backgroundColor:
-            typeof background === "string" ? background : undefined,
-          overflow,
-          opacity,
-        },
-        alignmentProps,
-        margins,
-        paddings,
-        border,
-        flexProps,
-        sizeProps,
-        positionProps,
-        gapProps,
-        style,
-      ]),
-    [
-      alignmentProps,
-      sizeProps,
-      background,
-      style,
-      overflow,
-      margins,
-      paddings,
-      positionProps,
-      flexProps,
-      gapProps,
-      border,
-      opacity,
-    ],
+  const flexProps = useMemo(() => extractFlexProperties({ flex }), [flex]);
+  const gapProps = useMemo(() => extractGapProperties({ gap }), [gap]);
+  const animationProps = useMemo(
+    () => extractAnimationProperties(animations),
+    [animations]
   );
+  const normalizedMargins = useMemo(
+    () => normalizeMarginValues(margins),
+    [margins]
+  );
+  const normalizedPaddings = useMemo(
+    () => normalizePaddingValues(paddings),
+    [paddings]
+  );
+
+  const styles = StyleSheet.flatten([
+    {
+      backgroundColor: typeof background === "string" ? background : undefined,
+      overflow,
+      opacity,
+    },
+    alignmentProps,
+    normalizedMargins,
+    normalizedPaddings,
+    border,
+    flexProps,
+    sizeProps,
+    positionProps,
+    gapProps,
+    style,
+  ]);
 
   return (
     <Animated.View {...view} style={[styles, animationProps]}>
@@ -184,11 +176,7 @@ export const Block: React.FC<PropsWithChildren<BlockProps>> = ({
     >
       <BlockElement {...rest}>
         {rest.background && typeof rest.background !== "string" && (
-          <BlockElement
-            absolute
-            zIndex={-1}
-            offsets={{ top: 0, bottom: 0, left: 0, right: 0 }}
-          >
+          <BlockElement absolute zIndex={-1} offsets={[0, 0, 0, 0]}>
             {rest.background}
           </BlockElement>
         )}

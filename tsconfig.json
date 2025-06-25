@@ -1,16 +1,13 @@
 {
-  "extends": "@tsconfig/react-native/tsconfig.json" /* Recommended React Native TSConfig base */,
-  "include": ["src"],
-  "compilerOptions": {
-    /* Visit https://aka.ms/tsconfig.json to read more about this file */
+	"extends": "@tsconfig/react-native/tsconfig.json" /* Recommended React Native TSConfig base */,
+	"include": ["./src"],
+	"compilerOptions": {
+		/* Visit https://aka.ms/tsconfig.json to read more about this file */
 
-    /* Completeness */
-    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
-    "baseUrl": "src",
-    "rootDirs": ["src"],
-    "typeRoots": ["./src/types", "node_modules/"],
-    "lib": ["ESNext"],
-    "jsx": "react-native",
-    "noEmit": false
-  }
+		/* Completeness */
+		"skipLibCheck": true /* Skip type checking all .d.ts files. */,
+		"baseUrl": "src",
+		"jsx": "react-jsx",
+		"noEmit": false
+	}
 }
