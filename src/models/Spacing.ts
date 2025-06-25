@@ -1,4 +1,4 @@
-import type { Animated, ViewStyle } from "react-native";
+import type { ViewStyle } from "react-native";
 import type { NonAnimatedDimensionValue } from "./NonAnimatedDimensionValue";
 import type { FourSideTuple } from "./TupleTypes";
 
@@ -25,8 +25,8 @@ export type PaddingStyles =
 type GapType = { row?: number; col?: number } | [number, number] | number;
 
 export interface Spacing {
-	margins?: Exclude<MarginStyles, Animated.AnimatedNode>;
-	paddings?: Exclude<PaddingStyles, Animated.AnimatedNode>;
+	margins?: MarginStyles;
+	paddings?: PaddingStyles;
 	/** Possible value formats are { row, col } or [col, row] or just a number applied to both column and row gap. */
 	gap?: GapType;
 }
