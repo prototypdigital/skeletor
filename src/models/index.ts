@@ -2,6 +2,7 @@ export * from "./Alignment";
 export * from "./Animation";
 export * from "./Border";
 export * from "./Flex";
+export * from "./NonAnimatedDimensionValue";
 export * from "./Position";
 export * from "./Size";
 export * from "./SkeletorConfig";

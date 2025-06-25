@@ -1,27 +1,26 @@
 import type { Animated, ViewStyle } from "react-native";
+import type { NonAnimatedDimensionValue } from "./NonAnimatedDimensionValue";
 import type { FourSideTuple } from "./TupleTypes";
 
 type MarginKey = Extract<keyof ViewStyle, `margin${string}`>;
 type PaddingKey = Extract<keyof ViewStyle, `padding${string}`>;
-// Created to remove callback listeners from style properties autocomplete.
-type NonAnimatedStyle<Type> = Exclude<Type, Animated.AnimatedNode>;
 
 export type MarginStylesBase = {
-	[K in MarginKey]?: NonAnimatedStyle<ViewStyle[K]>;
+	[K in MarginKey]?: NonAnimatedDimensionValue<ViewStyle[K]>;
 };
 export type PaddingStylesBase = {
-	[K in PaddingKey]?: NonAnimatedStyle<ViewStyle[K]>;
+	[K in PaddingKey]?: NonAnimatedDimensionValue<ViewStyle[K]>;
 };
 
 export type MarginStyles =
 	| MarginStylesBase
-	| FourSideTuple<NonAnimatedStyle<ViewStyle["margin"]>>
-	| NonAnimatedStyle<ViewStyle["margin"]>;
+	| FourSideTuple<NonAnimatedDimensionValue<ViewStyle["margin"]>>
+	| NonAnimatedDimensionValue<ViewStyle["margin"]>;
 
 export type PaddingStyles =
 	| PaddingStylesBase
-	| FourSideTuple<NonAnimatedStyle<ViewStyle["padding"]>>
-	| NonAnimatedStyle<ViewStyle["padding"]>;
+	| FourSideTuple<NonAnimatedDimensionValue<ViewStyle["padding"]>>
+	| NonAnimatedDimensionValue<ViewStyle["padding"]>;
 
 type GapType = { row?: number; col?: number } | [number, number] | number;
 

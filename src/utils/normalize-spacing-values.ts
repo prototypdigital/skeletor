@@ -1,6 +1,7 @@
 import type {
 	MarginStyles,
 	MarginStylesBase,
+	NonAnimatedDimensionValue,
 	PaddingStyles,
 	PaddingStylesBase,
 } from "models";
@@ -26,7 +27,7 @@ export function normalizeMarginValues(margin: MarginStyles) {
 }
 
 function extractFourSideTuplePadding(
-	values: FourSideTuple<ViewStyle["padding"]>,
+	values: FourSideTuple<NonAnimatedDimensionValue<ViewStyle["padding"]>>,
 ): PaddingStylesBase {
 	switch (values.length) {
 		case 1: {
@@ -60,7 +61,7 @@ function extractFourSideTuplePadding(
 }
 
 function extractFourSideTupleMargin(
-	values: FourSideTuple<ViewStyle["margin"]>,
+	values: FourSideTuple<NonAnimatedDimensionValue<ViewStyle["margin"]>>,
 ): MarginStylesBase {
 	switch (values.length) {
 		case 1: {
