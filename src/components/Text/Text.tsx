@@ -1,8 +1,8 @@
-import React, { useMemo, type PropsWithChildren } from "react";
+import React, { type PropsWithChildren, useMemo } from "react";
 import {
   Animated,
-  StyleSheet,
   type TextProps as RNTextProps,
+  StyleSheet,
   type TextStyle,
 } from "react-native";
 
@@ -14,6 +14,8 @@ import {
   extractGapProperties,
   extractPositionProperties,
   extractSizeProperties,
+  normalizeMarginValues,
+  normalizePaddingValues,
 } from "../../utils";
 
 interface OwnProps extends RNTextProps {
@@ -59,71 +61,55 @@ export const Text: React.FC<PropsWithChildren<TextProps>> = ({
   const skeletor = useSkeletor();
   const animationProps = useMemo(
     () => extractAnimationProperties(animations),
-    [animations],
+    [animations]
   );
-  const positionProps = extractPositionProperties(props);
-  const flexProps = extractFlexProperties(props);
-  const sizeProps = extractSizeProperties(props);
+  const positionProps = useMemo(
+    () => extractPositionProperties(props),
+    [props]
+  );
+  const flexProps = useMemo(() => extractFlexProperties(props), [props]);
+  const sizeProps = useMemo(() => extractSizeProperties(props), [props]);
   const gapProps = useMemo(() => extractGapProperties({ gap }), [gap]);
+  const normalizedPaddings = useMemo(
+    () => normalizePaddingValues(paddings),
+    [paddings]
+  );
+  const normalizedMargins = useMemo(
+    () => normalizeMarginValues(margins),
+    [margins]
+  );
 
-  const textSize = useMemo(() => {
-    function mapper(value: [number, number] | number) {
-      if (Array.isArray(value)) {
-        const [fontSize, lineHeight] = value;
-        return { fontSize, lineHeight };
-      }
-      return { fontSize: value, lineHeight: value };
-    }
+  const textSize = size ?? skeletor.defaultFontSize;
+  const { fontSize, lineHeight } = Array.isArray(textSize)
+    ? { fontSize: textSize[0], lineHeight: textSize[1] }
+    : { fontSize: textSize, lineHeight: textSize };
 
-    return mapper(size || skeletor.defaultFontSize);
-  }, [size, skeletor.defaultFontSize]);
-
-  const styles = useMemo(
-    () =>
-      StyleSheet.flatten([
-        {
-          color: color || skeletor.defaultTextColor,
-          fontFamily: font || skeletor.defaultFont,
-          opacity,
-          textAlign,
-          textTransform,
-          letterSpacing,
-        },
-        textSize,
-        margins,
-        paddings,
-        sizeProps,
-        flexProps,
-        positionProps,
-        gapProps,
-        style,
-      ]),
-    [
-      color,
-      font,
+  const styles = StyleSheet.flatten([
+    {
+      color: color || skeletor.defaultTextColor,
+      fontFamily: font || skeletor.defaultFont,
+      fontSize,
+      lineHeight,
       opacity,
       textAlign,
       textTransform,
-      textSize,
-      margins,
-      paddings,
-      style,
-      positionProps,
-      sizeProps,
-      flexProps,
-      gapProps,
-      skeletor.defaultTextColor,
-      skeletor.defaultFont,
       letterSpacing,
-    ],
-  );
+    },
+    normalizedMargins,
+    normalizedPaddings,
+    sizeProps,
+    flexProps,
+    positionProps,
+    gapProps,
+    style,
+  ]);
 
   return (
     <Animated.Text
       style={[styles, animationProps]}
       allowFontScaling={allowFontScaling || skeletor.allowFontScaling}
       maxFontSizeMultiplier={
-        maxFontSizeMultiplier || skeletor.maxFontSizeMultiplier
+        maxFontSizeMultiplier || skeletor.defaultMaxFontSizeMultiplier
       }
       {...props}
     >

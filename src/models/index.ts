@@ -6,3 +6,4 @@ export * from "./Position";
 export * from "./Size";
 export * from "./SkeletorConfig";
 export * from "./Spacing";
+export * from "./TupleTypes";

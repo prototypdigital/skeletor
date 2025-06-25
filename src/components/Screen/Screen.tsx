@@ -1,30 +1,30 @@
-import React, { type PropsWithChildren } from "react";
+import type { PropsWithChildren } from "react";
 import {
-  Platform,
+  type ColorValue,
   SafeAreaView,
   StatusBar,
+  type StatusBarProps,
+  type StatusBarStyle,
   StyleSheet,
-  View,
 } from "react-native";
 
 import { useSkeletor } from "../../hooks";
-import {
-  Block,
-  type BlockScrollViewProps,
-  type BlockViewProps,
-} from "../Block";
+import { Block, type BlockProps } from "../Block";
 
 type OwnProps = {
   /** Pass a specific background view OR just a background color value. Custom components should be 100% height and width. */
-  background?: JSX.Element | string;
+  background?: React.ReactNode | ColorValue;
   hideTopSafeArea?: boolean;
   hideBottomSafeArea?: boolean;
-  bottomSafeAreaColor?: string;
-  topSafeAreaColor?: string;
-  statusBarType?: "default" | "light-content" | "dark-content";
+  bottomSafeAreaColor?: ColorValue;
+  topSafeAreaColor?: ColorValue;
+  statusBarType?: StatusBarStyle;
+  statusBarBackground?: ColorValue;
+  /** When set to true, the application will draw under the status bar. */
+  statusBarTranslucent?: StatusBarProps["translucent"];
 };
 
-export type ScreenProps = OwnProps & (BlockScrollViewProps | BlockViewProps);
+export type ScreenProps = OwnProps & Omit<BlockProps, "flex">;
 
 export const Screen: React.FC<PropsWithChildren<ScreenProps>> = ({
   background,
@@ -34,36 +34,43 @@ export const Screen: React.FC<PropsWithChildren<ScreenProps>> = ({
   bottomSafeAreaColor,
   topSafeAreaColor,
   statusBarType,
-  paddings = {
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-  },
-  flex = 1,
+  statusBarBackground,
+  statusBarTranslucent,
+  paddings,
   ...blockProps
 }) => {
-  const { defaultStatusBarType } = useSkeletor();
+  const {
+    defaultStatusBarType,
+    defaultStatusBarBackground,
+    defaultStatusBarTranslucent,
+  } = useSkeletor();
 
   return (
     <>
       {background &&
         (typeof background === "string" ? (
-          <View
+          <Block
             style={[StyleSheet.absoluteFill, { backgroundColor: background }]}
           />
         ) : (
-          <View style={StyleSheet.absoluteFill}>{background}</View>
+          <Block style={StyleSheet.absoluteFill}>{background}</Block>
         ))}
+
+      <StatusBar
+        translucent={
+          statusBarTranslucent || defaultStatusBarTranslucent || false
+        }
+        barStyle={statusBarType || defaultStatusBarType}
+        backgroundColor={
+          statusBarBackground || defaultStatusBarBackground || "transparent"
+        }
+      />
 
       {!hideTopSafeArea && (
         <SafeAreaView style={{ backgroundColor: topSafeAreaColor }} />
       )}
 
-      <StatusBar
-        translucent
-        backgroundColor="transparent"
-        barStyle={statusBarType || defaultStatusBarType}
-      />
-
-      <Block flex={flex} paddings={paddings} {...blockProps}>
+      <Block flex={1} paddings={paddings} {...blockProps}>
         {children}
       </Block>
 
