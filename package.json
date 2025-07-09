@@ -6,7 +6,7 @@
 		"Luka Buljan <luka@prototyp.digital>",
 		"Vlatko Vlahek <vlatko@prototyp.digital>"
 	],
-	"version": "1.0.20",
+	"version": "1.1.0",
 	"license": "MIT",
 	"main": "./lib/commonjs/index.js",
 	"module": "./lib/module/index.js",
@@ -21,7 +21,7 @@
 		"prepare": "bob build"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.0.5",
+		"@biomejs/biome": "2.1.1",
 		"@react-native-community/eslint-config": "3.2.0",
 		"@react-native/eslint-config": "^0.72.2",
 		"@react-native/metro-config": "^0.72.9",
@@ -54,7 +54,6 @@
 		"utilities",
 		"utils"
 	],
-
 	"exports": {
 		".": {
 			"source": "./src/index.ts",
