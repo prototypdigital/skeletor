@@ -29,12 +29,20 @@ Configure the SkeletorProvider properties with whatever you desire. Here is the 
 interface SkeletorConfig {
   defaultFont: Font | undefined;
   defaultFontSize: [number, number] | number;
-  defaultStatusBarType: "dark-content" | "light-content" | "default";
-  defaultTextColor: string;
-  /** Defaults to false */
+  defaultStatusBarType: StatusBarStyle;
+  /** Defaults to transparent if not set.
+   * Can be overriden via the Screen component per-screen. */
+  defaultStatusBarBackground?: ColorValue;
+  /** When set to true, the application will draw under the status bar.
+   * Defaults to false if not set.
+   * Can be overriden via the Screen component per-screen. */
+  defaultStatusBarTranslucent?: boolean;
+  defaultTextColor: ColorValue;
+  /** When set to true, font size will scale based on the user's device settings.
+   * Defaults to false */
   allowFontScaling: boolean;
-  /** Defaults to 1 */
-  maxFontSizeMultiplier: number;
+  /** Clamp the maximum font size multiplier that can be applied to the original scale. */
+  defaultMaxFontSizeMultiplier?: number;
 }
 ```
 
@@ -62,63 +70,46 @@ return <SomeComponent style={{ fontFamily: skeletor.defaultFont }} />;
 
 ```javascript
 type Spacing = {
-	/** All margin properties from ViewStyle */
-	margins?: {...}
-	/** All padding properties from ViewStyle */
-	paddings?: {...}
-	gap?: { row?: number; col?: number } | [number, number] | number;
-}
+  /** Supports CSS-like shorthands as well as ViewStyle object - 20, [0, 20], [20, 0, 30], [20, 0, 10, 40], { marginLeft: 20 } */
+  margins?: MarginStyles,
+  /** Supports CSS-like shorthands as well as ViewStyle object - 20, [0, 20], [20, 0, 30], [20, 0, 10, 40], { paddingLeft: 20 } */
+  paddings?: PaddingStyles,
+  gap?: { row?: number, col?: number } | [number, number] | number,
+};
 
 type Alignment = {
-	align?: ViewStyle["alignItems"];
-  alignSelf?: ViewStyle["alignSelf"];
-  justify?: ViewStyle["justifyContent"];
-  flexDirection?: ViewStyle["flexDirection"];
-}
+  align?: ViewStyle["alignItems"],
+  alignSelf?: ViewStyle["alignSelf"],
+  justify?: ViewStyle["justifyContent"],
+  flexDirection?: ViewStyle["flexDirection"],
+};
 
 type Border = {
-	/** All border properties from ViewStyle */
-	border: {...}
-}
+  /** All border properties from ViewStyle */
+  border: { ... },
+};
 
 type Flex = {
-	/** Either just a number or all flex properties from ViewStyle + gap, columnGap & rowGap for backwards compatibility */
-	flex?: number | {...}
-}
-
-type Offsets =
-  | [ViewStyle["top"]]
-  | [ViewStyle["top"], ViewStyle["left"]]
-  | [ViewStyle["top"], ViewStyle["left"], ViewStyle["bottom"]]
-  | [
-      ViewStyle["top"],
-      ViewStyle["left"],
-      ViewStyle["bottom"],
-      ViewStyle["right"],
-    ]
-  | {
-      top?: ViewStyle["top"];
-      bottom?: ViewStyle["bottom"];
-      left?: ViewStyle["left"];
-      right?: ViewStyle["right"];
-    };
+  /** Either just a number or all flex properties from ViewStyle + gap, columnGap & rowGap for backwards compatibility */
+  flex?: number | { ... },
+};
 
 type Position = {
-  absolute?: boolean;
-  zIndex?: number;
-  offsets?: Offsets;
-  overflow?: ViewStyle["overflow"];
-}
+  absolute?: boolean,
+  zIndex?: number,
+  /** Supports CSS-like shorthands as well as a ViewStyle object - [20], [0, 20], [10, 0, 20], [10, 0, 20, 40], { top: 20, bottom: 20, left: 20, right: 20} */
+  offsets?: Offsets,
+  overflow?: ViewStyle["overflow"],
+};
 
 type Size = {
-	width?: DimensionValue;
-  height?: DimensionValue;
-  minHeight?: DimensionValue;
-  minWidth?: DimensionValue;
-  maxHeight?: DimensionValue;
-  maxWidth?: DimensionValue;
-}
-
+  width?: DimensionValue,
+  height?: DimensionValue,
+  minHeight?: DimensionValue,
+  minWidth?: DimensionValue,
+  maxHeight?: DimensionValue,
+  maxWidth?: DimensionValue,
+};
 ```
 
 ## Components
@@ -132,16 +123,16 @@ Use this as the top-level wrapper for every screen you navigate to. Is not inten
 #### Props
 
 ```javascript
-/** Pass a specific background view (gradients, animated backgrounds etc) OR just a background color value. Custom components should be 100% height and width to span the full screen area. */
-background?: JSX.Element | string;
-hideTopSafeArea?: boolean;
-hideBottomSafeArea?: boolean;
-/** Set bottom safe area background color */
-bottomSafeAreaColor?: string;
-/** Set top safe area background color */
-topSafeAreaColor?: string;
-/** Set device status bar color type. */
-statusBarType?: "default" | "light-content" | "dark-content";
+/** Pass a specific background view OR just a background color value. Custom components should be 100% height and width. */
+  background?: React.ReactNode | ColorValue;
+  hideTopSafeArea?: boolean;
+  hideBottomSafeArea?: boolean;
+  bottomSafeAreaColor?: ColorValue;
+  topSafeAreaColor?: ColorValue;
+  statusBarType?: StatusBarStyle;
+  statusBarBackground?: ColorValue;
+  /** When set to true, the application will draw under the status bar. */
+  statusBarTranslucent?: StatusBarProps["translucent"];
 ```
 
 #### Usage
@@ -285,6 +276,24 @@ height?: "full" | "auto";
 
 New utilities have been created to reduce boilerplate when using animations Animated from react-native. The previous hook-based approach is still available.
 
+### Breaking change >1.1.0
+
+Looped animations are no longer configured when creating the animation due to a performance issue associated with using Animated.loop, especially when the app is backgrounded or the phone is locked.
+
+Starting with 1.1.0, use the `loopAnimation` function to create a looped animation. The function blueprint is the same as the regular animation, except this one does not support an `onFinished` handler on the `start` call for obvious reasons.
+
+Usage
+
+```javascript
+const element1 = loopAnimation(
+  animateParallel({
+    opacity: [0, 1],
+    translateX: [20, 0],
+    translateY: [20, 0],
+  })
+);
+```
+
 ### Overview
 
 The concept behind this approach is to:
@@ -406,7 +415,7 @@ useEffect(() => {
 
 Read documentation about useForm here: https://github.com/prototypdigital/skeleform
 
-### LEGACY: useAnimation & useAnimationTimeline
+### DEPRECATED (<1.0.10): useAnimation & useAnimationTimeline
 
 This approach is not going to be maintained anymore starting from version 1.0.10. New utilities have been created that are more performant and more flexible, but the following hooks will still be available for the foreseeable future. For more information on the new approach, see <b>Animations</b> above.
 
