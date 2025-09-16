@@ -1,5 +1,32 @@
 import type { AnimationViewStyle, ViewAnimation } from "models";
-import type { TransformsStyle } from "react-native";
+import type {
+	MatrixTransform,
+	RotateTransform,
+	RotateXTransform,
+	RotateYTransform,
+	RotateZTransform,
+	ScaleTransform,
+	ScaleXTransform,
+	ScaleYTransform,
+	SkewXTransform,
+	SkewYTransform,
+	TranslateXTransform,
+	TranslateYTransform,
+} from "react-native";
+
+type BaseTransformStyles =
+	| RotateTransform
+	| RotateXTransform
+	| RotateYTransform
+	| RotateZTransform
+	| ScaleTransform
+	| ScaleXTransform
+	| ScaleYTransform
+	| TranslateXTransform
+	| TranslateYTransform
+	| SkewXTransform
+	| SkewYTransform
+	| MatrixTransform;
 
 function hasTransformProperties<Keys extends keyof AnimationViewStyle>(
 	props: ViewAnimation<Keys>,
@@ -20,9 +47,10 @@ export function extractAnimationProperties<
 	if (!props) return undefined;
 
 	const mapped: ViewAnimation<Keys> & {
-		transform?: TransformsStyle["transform"];
+		transform: BaseTransformStyles[];
 	} = {
 		...props,
+		transform: [],
 	};
 
 	// Map translate

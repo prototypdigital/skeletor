@@ -2,13 +2,14 @@ import { useEffect, useMemo, useRef } from "react";
 import {
 	Dimensions,
 	Keyboard,
+	type NativeMethods,
 	type NativeSyntheticEvent,
 	Platform,
 	ScrollView,
 	type ScrollViewProps,
 	StyleSheet,
+	type TargetedEvent,
 	type TextInput,
-	type TextInputFocusEventData,
 } from "react-native";
 
 import type { Spacing } from "../../models";
@@ -18,6 +19,10 @@ import {
 	normalizePaddingValues,
 } from "../../utils";
 
+type PatchedFocusEvent = NativeSyntheticEvent<TargetedEvent> & {
+	currentTarget: TextInput;
+};
+
 export interface InputFocusScrollViewProps
 	extends Omit<ScrollViewProps, "children">,
 		Spacing {
@@ -26,7 +31,7 @@ export interface InputFocusScrollViewProps
 	offsetFromKeyboard?: number;
 	height?: "full" | "auto";
 	children: (
-		onInputFocus: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void,
+		onInputFocus: (e: NativeSyntheticEvent<TargetedEvent>) => void,
 	) => React.ReactNode;
 }
 
@@ -60,19 +65,22 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
 	...rest
 }) => {
 	const ref = useRef<ScrollView>(null);
-	const scrollTarget = useRef<number | undefined>();
+	const scrollTarget = useRef<
+		React.Component<unknown> & Readonly<NativeMethods>
+	>();
+
 	const elementOffset = useRef(0);
 	const contentHeight = useRef(0);
 	/** Cached scroll position to keep focus on input if layout shifts. */
 	const scrollPosition = useRef(0);
 	const focusOffset = useRef(0);
 
-	function onInputFocus(e: NativeSyntheticEvent<TextInputFocusEventData>) {
+	function onInputFocus(e: NativeSyntheticEvent<TargetedEvent>) {
 		if (Platform.OS !== "ios" || !scrollTarget.current) {
 			return;
 		}
 
-		(e.currentTarget as unknown as TextInput).measureLayout(
+		(e as PatchedFocusEvent).currentTarget.measureLayout(
 			scrollTarget.current,
 			(_nope, top, _nuuh, elementHeight) => {
 				focusOffset.current =
