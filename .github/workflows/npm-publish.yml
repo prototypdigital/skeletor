@@ -10,6 +10,7 @@ on:
 jobs:
   publish-npm:
     runs-on: ubuntu-latest
+    environment: NPM
     steps:
       - uses: actions/checkout@v4
         with:
