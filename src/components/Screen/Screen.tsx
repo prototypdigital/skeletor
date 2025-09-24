@@ -1,13 +1,12 @@
 import type { PropsWithChildren } from "react";
 import {
 	type ColorValue,
-	SafeAreaView,
 	StatusBar,
 	type StatusBarProps,
 	type StatusBarStyle,
 	StyleSheet,
 } from "react-native";
-
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useSkeletor } from "../../hooks";
 import { Block, type BlockProps } from "../Block";
 

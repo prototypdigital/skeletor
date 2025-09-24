@@ -2,6 +2,19 @@
 
 #### Our small in-house react-native toolkit to make your life easier
 
+## Installation
+
+```sh
+yarn add @prototyp/skeletor
+```
+
+** IMPORTANT **
+Version 1.1.2 introduces a peer dependency to <b>react-native-safe-area-context</b>. If you are using this package on RN < 0.81, you'll have to install it manually if you have not already for navigation purposes.
+
+```sh
+yarn add react-native-safe-area-context
+```
+
 ## Project setup
 
 Since this is supposed to be as configurable as possible while still maintaining some form and structure with how things should be done, you'll have to set up a couple things first.

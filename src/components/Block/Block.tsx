@@ -37,7 +37,7 @@ type SkeletorProps = Alignment &
 	Animations;
 
 type SharedProps = SkeletorProps & {
-	background?: JSX.Element | string;
+	background?: React.ReactNode | string;
 	opacity?: ViewStyle["opacity"];
 };
 
