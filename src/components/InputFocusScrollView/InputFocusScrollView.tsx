@@ -9,7 +9,6 @@ import {
 	type ScrollViewProps,
 	StyleSheet,
 	type TargetedEvent,
-	type TextInput,
 } from "react-native";
 
 import type { Spacing } from "../../models";
@@ -18,10 +17,6 @@ import {
 	normalizeMarginValues,
 	normalizePaddingValues,
 } from "../../utils";
-
-type PatchedFocusEvent = NativeSyntheticEvent<TargetedEvent> & {
-	currentTarget: TextInput;
-};
 
 export interface InputFocusScrollViewProps
 	extends Omit<ScrollViewProps, "children">,
@@ -65,9 +60,7 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
 	...rest
 }) => {
 	const ref = useRef<ScrollView>(null);
-	const scrollTarget = useRef<
-		React.Component<unknown> & Readonly<NativeMethods>
-	>();
+	const scrollTarget = useRef<NativeMethods>(null);
 
 	const elementOffset = useRef(0);
 	const contentHeight = useRef(0);
@@ -80,7 +73,7 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
 			return;
 		}
 
-		(e as PatchedFocusEvent).currentTarget.measureLayout(
+		e.currentTarget.measureLayout(
 			scrollTarget.current,
 			(_nope, top, _nuuh, elementHeight) => {
 				focusOffset.current =
