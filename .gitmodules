@@ -1,3 +1,6 @@
 [submodule "src/hooks/skeleform"]
 	path = src/hooks/skeleform
 	url = git@github.com:prototypdigital/skeleform.git
+[submodule "skeletor-documentation"]
+	path = skeletor-documentation
+	url = git@github.com:prototypdigital/skeletor-documentation.git
