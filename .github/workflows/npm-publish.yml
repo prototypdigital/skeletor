@@ -24,4 +24,4 @@ jobs:
       - run: yarn
       - run: yarn publish
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTOMATION_TOKEN}}
+          NPM_TOKEN: ${{secrets.NPM_AUTOMATION_TOKEN}}
