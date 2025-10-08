@@ -93,9 +93,12 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
 	useEffect(() => {
 		const listener = Keyboard.addListener("keyboardWillHide", () => {
 			const keyboardHeight = Keyboard.metrics()?.height || 0;
-			const leftoverSpace = contentHeight.current - elementOffset.current;
-			// If we haven't reached scroll view overflow yet, do nothing
-			if (leftoverSpace < keyboardHeight) ref.current?.scrollToEnd();
+			if (scrollPosition.current < 0) ref.current?.scrollTo({ y: 0 });
+			else {
+				const leftoverSpace = contentHeight.current - elementOffset.current;
+				// If we haven't reached scroll view overflow yet, do nothing
+				if (leftoverSpace < keyboardHeight) ref.current?.scrollToEnd();
+			}
 		});
 
 		return listener.remove;
