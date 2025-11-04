@@ -17,7 +17,7 @@
 		"url": "https://github.com/prototypdigital/skeletor.git"
 	},
 	"engines": {
-		"node": ">=20"
+		"node": ">=18"
 	},
 	"scripts": {
 		"prepack": "bob build",
