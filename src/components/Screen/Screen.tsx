@@ -6,7 +6,7 @@ import {
 	type StatusBarStyle,
 	StyleSheet,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSkeletor } from "../../hooks";
 import { Block, type BlockProps } from "../Block";
 
@@ -38,6 +38,7 @@ export const Screen: React.FC<PropsWithChildren<ScreenProps>> = ({
 	paddings,
 	...blockProps
 }) => {
+	const insets = useSafeAreaInsets();
 	const {
 		defaultStatusBarType,
 		defaultStatusBarBackground,
@@ -65,21 +66,13 @@ export const Screen: React.FC<PropsWithChildren<ScreenProps>> = ({
 				}
 			/>
 
-			{!hideTopSafeArea && (
-				<SafeAreaView style={{ backgroundColor: topSafeAreaColor }} />
-			)}
+			{!hideTopSafeArea && <Block height={insets.top} />}
 
 			<Block flex={1} paddings={paddings} {...blockProps}>
 				{children}
 			</Block>
 
-			{!hideBottomSafeArea && (
-				<SafeAreaView
-					style={{
-						backgroundColor: bottomSafeAreaColor,
-					}}
-				/>
-			)}
+			{!hideBottomSafeArea && <Block height={insets.bottom} />}
 		</>
 	);
 };
