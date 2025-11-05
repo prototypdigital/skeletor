@@ -102,7 +102,7 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
 		});
 
 		return listener.remove;
-	});
+	}, []);
 
 	const gapProps = useMemo(() => extractGapProperties({ gap }), [gap]);
 	const normalizedMargins = useMemo(
