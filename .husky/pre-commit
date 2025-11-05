@@ -1,0 +1,14 @@
+# Step 1: Run Biome and auto-fix issues
+echo "🧹 Running Biome..."
+yarn biome check --write ./src
+
+# Step 2: Stage any modified files
+echo "📦 Staging Biome fixes..."
+git add ./src
+
+# Step 3: Type check
+echo "🧠 Running TypeScript type check..."
+yarn tsc --noEmit
+
+# Done!
+echo "✅ Pre-commit checks passed."
