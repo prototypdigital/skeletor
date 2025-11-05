@@ -23,7 +23,6 @@ export interface InputFocusScrollViewProps
 		Spacing {
 	/** Percentage of screen to add to element position. Values between 0 and 1. Use this if you want to position the input focus somewhere other than the top of the screen. Defaults to 0.3 */
 	focusPositionOffset?: number;
-	offsetFromKeyboard?: number;
 	height?: "full" | "auto";
 	children: (
 		onInputFocus: (e: NativeSyntheticEvent<TargetedEvent>) => void,
