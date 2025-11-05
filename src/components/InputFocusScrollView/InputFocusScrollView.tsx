@@ -64,6 +64,7 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
 
 	const elementOffset = useRef(0);
 	const contentHeight = useRef(0);
+	const containerHeight = useRef(0);
 	/** Cached scroll position to keep focus on input if layout shifts. */
 	const scrollPosition = useRef(0);
 	const focusOffset = useRef(0);
@@ -86,18 +87,18 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
 				scrollPosition.current = scrollY;
 				ref.current?.scrollTo({ y: scrollY });
 			},
-			() => console.error("failed to measure layout"),
+			() => console.warn("failed to measure layout"),
 		);
 	}
 
 	useEffect(() => {
 		const listener = Keyboard.addListener("keyboardWillHide", () => {
-			const keyboardHeight = Keyboard.metrics()?.height || 0;
 			if (scrollPosition.current < 0) ref.current?.scrollTo({ y: 0 });
 			else {
-				const leftoverSpace = contentHeight.current - elementOffset.current;
-				// If we haven't reached scroll view overflow yet, do nothing
-				if (leftoverSpace < keyboardHeight) ref.current?.scrollToEnd();
+				const remainingSpace = contentHeight.current - scrollPosition.current;
+				if (remainingSpace < containerHeight.current) {
+					ref.current?.scrollToEnd();
+				}
 			}
 		});
 
@@ -132,8 +133,9 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
 			ref={ref}
 			scrollToOverflowEnabled
 			scrollEventThrottle={33}
-			onLayout={({ currentTarget }) => {
+			onLayout={({ currentTarget, nativeEvent }) => {
 				scrollTarget.current = currentTarget;
+				containerHeight.current = nativeEvent.layout.height;
 			}}
 			onContentSizeChange={(_, height) => {
 				contentHeight.current = height;
