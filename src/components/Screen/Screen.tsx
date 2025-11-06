@@ -7,8 +7,8 @@ import {
 	StyleSheet,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { isColorValue } from "utils";
 import { useSkeletor } from "../../hooks";
+import { isColorValue } from "../../utils";
 import { Block, type BlockProps } from "../Block";
 
 type OwnProps = {
