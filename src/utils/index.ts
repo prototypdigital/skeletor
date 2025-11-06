@@ -5,4 +5,5 @@ export * from "./extract-flex-properties";
 export * from "./extract-gap-properties";
 export * from "./extract-position-properties";
 export * from "./extract-size-properties";
+export * from "./is-color-value";
 export * from "./normalize-spacing-values";

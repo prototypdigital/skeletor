@@ -1,6 +1,7 @@
 import React, { type PropsWithChildren, useMemo } from "react";
 import {
 	Animated,
+	type ColorValue,
 	ScrollView,
 	type ScrollViewProps,
 	StyleSheet,
@@ -24,6 +25,7 @@ import {
 	extractGapProperties,
 	extractPositionProperties,
 	extractSizeProperties,
+	isColorValue,
 	normalizeMarginValues,
 	normalizePaddingValues,
 } from "../../utils";
@@ -37,7 +39,7 @@ type SkeletorProps = Alignment &
 	Animations;
 
 type SharedProps = SkeletorProps & {
-	background?: React.ReactNode | string;
+	background?: React.ReactNode | ColorValue;
 	opacity?: ViewStyle["opacity"];
 };
 
@@ -133,7 +135,7 @@ export const Block: React.FC<PropsWithChildren<BlockProps>> = ({
 	if (!isScrollable(props)) {
 		return (
 			<BlockElement {...props}>
-				{props.background && typeof props.background !== "string" && (
+				{!isColorValue(props.background) && (
 					<BlockElement
 						absolute
 						zIndex={-1}
@@ -147,7 +149,7 @@ export const Block: React.FC<PropsWithChildren<BlockProps>> = ({
 		);
 	}
 
-	const { scrollProps, ...rest } = props;
+	const { scrollProps, background, ...rest } = props;
 	const {
 		horizontal,
 		keyboardShouldPersistTaps = "handled",
@@ -168,16 +170,16 @@ export const Block: React.FC<PropsWithChildren<BlockProps>> = ({
 				{
 					flexGrow: 1,
 					backgroundColor:
-						typeof rest.background === "string" ? rest.background : undefined,
+						typeof background === "string" ? background : undefined,
 				},
 				contentContainerStyle,
 			]}
 			{...scrollProps}
 		>
 			<BlockElement {...rest}>
-				{rest.background && typeof rest.background !== "string" && (
+				{background && !isColorValue(background) && (
 					<BlockElement absolute zIndex={-1} offsets={[0, 0, 0, 0]}>
-						{rest.background}
+						{background}
 					</BlockElement>
 				)}
 				{children}

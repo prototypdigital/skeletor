@@ -7,6 +7,7 @@ import {
 	StyleSheet,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { isColorValue } from "utils";
 import { useSkeletor } from "../../hooks";
 import { Block, type BlockProps } from "../Block";
 
@@ -48,10 +49,8 @@ export const Screen: React.FC<PropsWithChildren<ScreenProps>> = ({
 	return (
 		<>
 			{background &&
-				(typeof background === "string" ? (
-					<Block
-						style={[StyleSheet.absoluteFill, { backgroundColor: background }]}
-					/>
+				(isColorValue(background) ? (
+					<Block background={background} style={StyleSheet.absoluteFill} />
 				) : (
 					<Block style={StyleSheet.absoluteFill}>{background}</Block>
 				))}
@@ -66,13 +65,17 @@ export const Screen: React.FC<PropsWithChildren<ScreenProps>> = ({
 				}
 			/>
 
-			{!hideTopSafeArea && <Block height={insets.top} />}
+			{!hideTopSafeArea && (
+				<Block height={insets.top} background={topSafeAreaColor} />
+			)}
 
 			<Block flex={1} paddings={paddings} {...blockProps}>
 				{children}
 			</Block>
 
-			{!hideBottomSafeArea && <Block height={insets.bottom} />}
+			{!hideBottomSafeArea && (
+				<Block height={insets.bottom} background={bottomSafeAreaColor} />
+			)}
 		</>
 	);
 };
