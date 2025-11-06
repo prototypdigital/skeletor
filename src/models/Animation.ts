@@ -14,6 +14,11 @@ export type StaggerAnimationConfiguration = AnimationConfiguration & {
 	stagger?: number;
 };
 
+export type AnimationTimelineConfiguration = {
+	// biome-ignore lint/suspicious/noExplicitAny: Too complex of a generic type to write a proper interface. Can be a union of keyof AnimationViewStyle etc. In any case it's a simple timeline that triggers precomposed animations, doesn't really care about the type.
+	[ms: number]: Array<ElementAnimation<any>>;
+};
+
 type NonAnimatableKeys =
 	| "rotation"
 	| "alignItems"
