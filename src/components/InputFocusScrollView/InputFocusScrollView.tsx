@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
 	Dimensions,
 	Keyboard,
@@ -29,8 +29,12 @@ export interface InputFocusScrollViewProps
 	) => React.ReactNode;
 }
 
+const ScreenHeight = Dimensions.get("screen").height;
+
 /**
  * This scroll view will automatically scroll to an active input field rendered within it, provided you attach the `onInputFocus` callback to the input onFocus prop.
+ *
+ * IMPORTANT: This component is intended to be the wrapper for the full screen where it's being used. You need to wrap everything in it, else its behavior might become unpredictable. Make sure it's vertical offset is 0.
  *
  * The return value is a lambda component, returning a callback which you attach to input fields rendered within it.
  * @example <InputFocusScrollView>{(onInputFocus) => <TextInput onFocus={onInputFocus} ... />}</InputFocusScrollView>
@@ -59,8 +63,9 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
 	...rest
 }) => {
 	const ref = useRef<ScrollView>(null);
-	const scrollTarget = useRef<NativeMethods>(null);
+	const [anchoredToTop, setAnchoredToTop] = useState(true);
 
+	const scrollTarget = useRef<NativeMethods>(null);
 	const elementOffset = useRef(0);
 	const contentHeight = useRef(0);
 	const containerHeight = useRef(0);
@@ -76,10 +81,13 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
 		e.currentTarget.measureLayout(
 			scrollTarget.current,
 			(_nope, top, _nuuh, elementHeight) => {
+				// This is the point on screen where the input should be focused to.
+				// Container is irrelevant here.
 				focusOffset.current =
 					focusPositionOffset !== undefined
-						? Dimensions.get("screen").height * focusPositionOffset
+						? ScreenHeight * focusPositionOffset
 						: 0;
+
 				// bottom of element
 				elementOffset.current = top + elementHeight;
 				const scrollY = elementOffset.current - focusOffset.current;
@@ -103,6 +111,14 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
 
 		return listener.remove;
 	}, []);
+
+	useEffect(() => {
+		if (!__DEV__ || anchoredToTop) return;
+
+		console.warn(
+			"The InputFocusScrollView must be anchored at the top of the screen. Remove any top margins or elements above it to avoid focus issues. Wrap everything inside it if necessary.",
+		);
+	}, [anchoredToTop]);
 
 	const gapProps = useMemo(() => extractGapProperties({ gap }), [gap]);
 	const normalizedMargins = useMemo(
@@ -135,6 +151,7 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
 			onLayout={({ currentTarget, nativeEvent }) => {
 				scrollTarget.current = currentTarget;
 				containerHeight.current = nativeEvent.layout.height;
+				setAnchoredToTop(nativeEvent.layout.y === 0);
 			}}
 			onContentSizeChange={(_, height) => {
 				contentHeight.current = height;
