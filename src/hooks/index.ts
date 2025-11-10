@@ -5,4 +5,5 @@ export * from "./useAnimateSequence";
 export * from "./useAnimateStagger";
 export * from "./useAnimationTimeline";
 export * from "./useAppState";
+export * from "./useLoopAnimation";
 export * from "./useSkeletor";
