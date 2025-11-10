@@ -1,6 +1,6 @@
+import type { AnimationTimelineConfiguration } from "models";
 import { useRef } from "react";
-import type { AnimationTimelineConfiguration } from "../models";
-import { createAnimationTimeline } from "../utils";
+import { createAnimationTimeline } from "utils";
 
 export const useAnimationTimeline = (
 	timeline: AnimationTimelineConfiguration,

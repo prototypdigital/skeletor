@@ -6,4 +6,17 @@ module.exports = {
 			runtime: "automatic", // enables new JSX transform
 		},
 	],
+	plugins: [
+		[
+			"module-resolver",
+			{
+				"alias":{
+					"utils": "./src/utils",
+					"models": "./src/models",
+					"hooks": "./src/hooks",
+					"components": "./src/components",
+				}
+			},
+		],
+	],
 };

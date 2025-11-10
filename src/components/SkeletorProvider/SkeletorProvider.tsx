@@ -1,5 +1,5 @@
+import type { SkeletorConfig } from "models";
 import type { PropsWithChildren } from "react";
-import type { SkeletorConfig } from "../../models";
 import { SkeletorContext, SkeletorDefaults } from "./SkeletorContext";
 
 type Props = Partial<SkeletorConfig>;

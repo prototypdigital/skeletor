@@ -1,11 +1,11 @@
-import { useRef } from "react";
 import type {
 	AnimationStyle,
 	CleanViewStyle,
 	ElementAnimation,
 	StaggerAnimationConfiguration,
-} from "../models";
-import { animateStagger } from "../utils";
+} from "models";
+import { useRef } from "react";
+import { animateStagger } from "utils";
 
 export const useAnimateStagger = <Styles extends keyof CleanViewStyle>(
 	styles: AnimationStyle<Styles>,

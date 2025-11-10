@@ -1,3 +1,4 @@
+import { useSkeletor } from "hooks";
 import type { PropsWithChildren } from "react";
 import {
 	type ColorValue,
@@ -7,8 +8,7 @@ import {
 	StyleSheet,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useSkeletor } from "../../hooks";
-import { isColorValue } from "../../utils";
+import { isColorValue } from "utils";
 import { Block, type BlockProps } from "../Block";
 
 type OwnProps = {

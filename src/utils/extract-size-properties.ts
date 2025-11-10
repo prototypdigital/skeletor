@@ -1,4 +1,4 @@
-import type { Size } from "../models";
+import type { Size } from "models";
 
 export function extractSizeProperties<Props extends Size>(props: Props): Size {
 	return {
