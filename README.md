@@ -446,6 +446,37 @@ useEffect(() => {
 }, [startAnimation]);
 ```
 
+### Loop animations
+
+Loop animations allow you to continuously repeat an animation sequence indefinitely. This is perfect for creating loading spinners, rotating elements, pulsing effects, or any other animation that needs to run continuously. The `useLoopAnimation` hook wraps any animation sequence and automatically restarts it when it completes.
+
+You can pass either a predefined sequence or create the sequence inline:
+
+```javascript
+export const Component: React.FC = () => {
+  // Option 1: Define the sequence separately
+  const sequence = useAnimateSequence(
+    { rotation: ["0deg", "360deg"] },
+    { duration: 1000, easing: Easing.linear },
+  );
+  const rotate = useLoopAnimation(sequence);
+
+  // Option 2: Create the sequence inline
+  const rotate = useLoopAnimation(
+    animateSequence(
+      { rotation: ["0deg", "360deg"] },
+      { duration: 1000, easing: Easing.linear },
+    ),
+  );
+
+  useEffect(() => {
+    rotate.start();
+  }, []);
+
+  return <Block animations={rotate.animations}>...</Block>;
+}
+```
+
 ## Hooks
 
 ### useForm & useFormUtils
