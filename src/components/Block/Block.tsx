@@ -1,12 +1,3 @@
-import type {
-	Alignment,
-	Animations,
-	Border,
-	Flex,
-	Position,
-	Size,
-	Spacing,
-} from "models";
 import React, { type PropsWithChildren, useMemo } from "react";
 import {
 	Animated,
@@ -17,6 +8,15 @@ import {
 	type ViewProps,
 	type ViewStyle,
 } from "react-native";
+import type {
+	Alignment,
+	Animations,
+	Border,
+	Flex,
+	Position,
+	Size,
+	Spacing,
+} from "../../models";
 import {
 	extractAlignmentProperties,
 	extractAnimationProperties,
@@ -27,7 +27,7 @@ import {
 	isColorValue,
 	normalizeMarginValues,
 	normalizePaddingValues,
-} from "utils";
+} from "../../utils";
 
 type SkeletorProps = Alignment &
 	Spacing &

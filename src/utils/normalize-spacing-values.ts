@@ -1,12 +1,12 @@
+import type { ViewStyle } from "react-native";
 import type {
+	FourSideTuple,
 	MarginStyles,
 	MarginStylesBase,
 	NonAnimatedDimensionValue,
 	PaddingStyles,
 	PaddingStylesBase,
-} from "models";
-import type { FourSideTuple } from "models/TupleTypes";
-import type { ViewStyle } from "react-native";
+} from "../models";
 
 export function normalizePaddingValues(padding: PaddingStyles) {
 	if (!padding) return undefined;

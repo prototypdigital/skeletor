@@ -1,5 +1,5 @@
-import type { SkeletorConfig } from "models";
 import React from "react";
+import type { SkeletorConfig } from "../../models";
 
 export const SkeletorDefaults: SkeletorConfig = {
 	defaultFont: undefined,

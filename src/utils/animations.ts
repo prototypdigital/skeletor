@@ -1,3 +1,4 @@
+import { Animated, Easing } from "react-native";
 import type {
 	Animation,
 	AnimationConfiguration,
@@ -6,8 +7,7 @@ import type {
 	CleanViewStyle,
 	ElementAnimation,
 	StaggerAnimationConfiguration,
-} from "models";
-import { Animated, Easing } from "react-native";
+} from "../models";
 
 function processStyles<Keys extends keyof CleanViewStyle>(
 	styles: AnimationStyle<Keys>,

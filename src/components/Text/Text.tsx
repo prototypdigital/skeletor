@@ -1,5 +1,3 @@
-import { useSkeletor } from "hooks";
-import type { Animations, Flex, Position, Size, Spacing } from "models";
 import React, { type PropsWithChildren, useMemo } from "react";
 import {
 	Animated,
@@ -7,6 +5,8 @@ import {
 	StyleSheet,
 	type TextStyle,
 } from "react-native";
+import { useSkeletor } from "../../hooks";
+import type { Animations, Flex, Position, Size, Spacing } from "../../models";
 import {
 	extractAnimationProperties,
 	extractFlexProperties,
@@ -15,7 +15,7 @@ import {
 	extractSizeProperties,
 	normalizeMarginValues,
 	normalizePaddingValues,
-} from "utils";
+} from "../../utils";
 
 interface OwnProps extends RNTextProps {
 	/** Create a Font.d.ts type in your typescript types directory and define fonts as follows:

@@ -1,4 +1,3 @@
-import type { Spacing } from "models";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
 	Dimensions,
@@ -11,11 +10,12 @@ import {
 	StyleSheet,
 	type TargetedEvent,
 } from "react-native";
+import type { Spacing } from "../../models";
 import {
 	extractGapProperties,
 	normalizeMarginValues,
 	normalizePaddingValues,
-} from "utils";
+} from "../../utils";
 
 export interface InputFocusScrollViewProps
 	extends Omit<ScrollViewProps, "children">,

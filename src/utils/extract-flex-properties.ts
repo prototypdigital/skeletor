@@ -1,4 +1,4 @@
-import type { Flex, FlexAttributes } from "models";
+import type { Flex, FlexAttributes } from "../models";
 
 export function extractFlexProperties<Props extends Flex>(
 	props: Props,
