@@ -17,7 +17,18 @@
 		"rules": {
 			"recommended": true,
 			"style": {
-				"useImportType": "info"
+				"useImportType": "info",
+				"noRestrictedImports": {
+					"level": "error",
+					"options": {
+						"paths": {
+							"utils": "Use relative paths only",
+							"models": "Use relative paths only",
+							"components": "Use relative paths only",
+							"hooks": "Use relative paths only"
+						}
+					}
+				}
 			},
 			"correctness": {
 				"useExhaustiveDependencies": "off"

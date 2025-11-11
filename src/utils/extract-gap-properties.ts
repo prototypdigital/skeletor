@@ -1,5 +1,5 @@
-import type { Spacing } from "models";
 import type { ViewStyle } from "react-native";
+import type { Spacing } from "../models";
 
 export function extractGapProperties<Props extends Spacing>(
 	props: Props,

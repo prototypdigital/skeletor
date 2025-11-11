@@ -323,7 +323,15 @@ Use these methods to construct <b>element</b> animations in a super simple way. 
 Usage
 
 ```javascript
+// Use this in the global scope, but make sure to properly reset the animation else it will stay in it's last state and do not reuse it across elements or you'll link the element animations together.
 const element1 = animateParallel({
+  opacity: [0, 1],
+  translateX: [20, 0],
+  translateY: [20, 0],
+});
+
+// When inside a component, you can use the following helper. This will scope the animation to the component it is created in.
+const element = useAnimateParallel({
   opacity: [0, 1],
   translateX: [20, 0],
   translateY: [20, 0],
@@ -335,7 +343,15 @@ const element1 = animateParallel({
 Usage
 
 ```javascript
+// Use this in the global scope, but make sure to properly reset the animation else it will stay in it's last state and do not reuse it across elements or you'll link the element animations together.
 const element1 = animateSequence({
+  opacity: [0, 1],
+  translateX: [20, 0],
+  translateY: [20, 0],
+});
+
+// When inside a component, you can use the following helper. This will scope the animation to the component it is created in.
+const element = useAnimateSequence({
   opacity: [0, 1],
   translateX: [20, 0],
   translateY: [20, 0],
@@ -347,7 +363,15 @@ const element1 = animateSequence({
 Usage
 
 ```javascript
+// Use this in the global scope, but make sure to properly reset the animation else it will stay in it's last state and do not reuse it across elements or you'll link the element animations together.
 const element1 = animateStagger({
+  opacity: [0, 1],
+  translateX: [20, 0],
+  translateY: [20, 0],
+});
+
+// When inside a component, you can use the following helper. This will scope the animation to the component it is created in.
+const element = useAnimateStagger({
   opacity: [0, 1],
   translateX: [20, 0],
   translateY: [20, 0],
@@ -365,22 +389,22 @@ The configuration object is of type `{ [ms: number]: ElementAnimation<K>[]; }`, 
 Usage
 
 ```javascript
-const element1 = animateParallel({ opacity: [0, 1] }, { duration: 400 });
-const element2 = animateStagger(
-  {
-    opacity: [0, 1],
-    translateX: [20, 0],
-    translateY: [20, 0],
-  },
-  { stagger: 1200, duration: 800 },
-);
-
-const timeline = createAnimationTimeline({
-  0: [element1],
-  2000: [element2],
-});
-
 export const Component: React.FC = () => {
+  const element1 = useAnimateParallel({ opacity: [0, 1] }, { duration: 400 });
+  const element2 = useAnimateStagger(
+    {
+      opacity: [0, 1],
+      translateX: [20, 0],
+      translateY: [20, 0],
+    },
+    { stagger: 1200, duration: 800 },
+  );
+
+  const timeline = useAnimationTimeline({
+    0: [element1],
+    2000: [element2],
+  });
+
 	...
 	useEffect(() => {
 		if(startAnimation) {
@@ -402,7 +426,7 @@ Instead of `element.reset()`, use `element.reverse()`. This can also be used on 
 Usage
 
 ```javascript
-const element = animateStagger(
+const element = useAnimateStagger(
   {
     opacity: [0, 1],
     translateX: [20, 0],
@@ -428,7 +452,7 @@ useEffect(() => {
 
 Read documentation about useForm here: https://github.com/prototypdigital/skeleform
 
-### DEPRECATED (<1.0.10): useAnimation & useAnimationTimeline
+### DEPRECATED (<1.0.10) // REMOVED >= 1.1.7: useAnimation & useAnimationTimeline
 
 This approach is not going to be maintained anymore starting from version 1.0.10. New utilities have been created that are more performant and more flexible, but the following hooks will still be available for the foreseeable future. For more information on the new approach, see <b>Animations</b> above.
 

@@ -10,7 +10,6 @@ import {
 	StyleSheet,
 	type TargetedEvent,
 } from "react-native";
-
 import type { Spacing } from "../../models";
 import {
 	extractGapProperties,

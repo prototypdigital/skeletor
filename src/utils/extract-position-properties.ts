@@ -1,5 +1,5 @@
-import type { Position } from "models";
 import type { ViewStyle } from "react-native";
+import type { Position } from "../models";
 
 type ReturnProps = {
 	position: ViewStyle["position"];

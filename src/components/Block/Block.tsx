@@ -8,7 +8,6 @@ import {
 	type ViewProps,
 	type ViewStyle,
 } from "react-native";
-
 import type {
 	Alignment,
 	Animations,

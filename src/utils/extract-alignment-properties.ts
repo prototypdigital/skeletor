@@ -1,5 +1,4 @@
 import type { ViewStyle } from "react-native";
-
 import type { Alignment } from "../models";
 
 type ReturnProps = {

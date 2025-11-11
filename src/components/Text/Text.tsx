@@ -5,7 +5,6 @@ import {
 	StyleSheet,
 	type TextStyle,
 } from "react-native";
-
 import { useSkeletor } from "../../hooks";
 import type { Animations, Flex, Position, Size, Spacing } from "../../models";
 import {

@@ -1,5 +1,4 @@
 import { useContext } from "react";
-
 import { SkeletorContext } from "../components";
 import type { SkeletorConfig } from "../models";
 

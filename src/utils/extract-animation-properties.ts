@@ -1,4 +1,3 @@
-import type { AnimationViewStyle, ViewAnimation } from "models";
 import type {
 	MatrixTransform,
 	RotateTransform,
@@ -13,6 +12,7 @@ import type {
 	TranslateXTransform,
 	TranslateYTransform,
 } from "react-native";
+import type { AnimationViewStyle, ViewAnimation } from "../models";
 
 type BaseTransformStyles =
 	| RotateTransform

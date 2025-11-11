@@ -1,9 +1,9 @@
 import { Animated, Easing } from "react-native";
-
 import type {
 	Animation,
 	AnimationConfiguration,
 	AnimationStyle,
+	AnimationTimelineConfiguration,
 	CleanViewStyle,
 	ElementAnimation,
 	StaggerAnimationConfiguration,
@@ -211,11 +211,6 @@ export function animateSequence<Styles extends keyof CleanViewStyle>(
 		backward: reverseTrigger,
 		animations,
 	};
-}
-
-interface AnimationTimelineConfiguration {
-	// biome-ignore lint/suspicious/noExplicitAny: Too complex of a generic type to write a proper interface. Can be a union of keyof AnimationViewStyle etc. In any case it's a simple timeline that triggers precomposed animations, doesn't really care about the type.
-	[ms: number]: Array<ElementAnimation<any>>;
 }
 
 export function createAnimationTimeline(
