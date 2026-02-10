@@ -1,4 +1,5 @@
 export * from "./animations";
+export * from "./atomic-styles-cache";
 export * from "./extract-alignment-properties";
 export * from "./extract-animation-properties";
 export * from "./extract-flex-properties";

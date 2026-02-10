@@ -1,4 +1,9 @@
-import type { Animated, EasingFunction, ViewStyle } from "react-native";
+import type {
+	Animated,
+	DimensionValue,
+	EasingFunction,
+	ViewStyle,
+} from "react-native";
 
 export type AnimationConfiguration = {
 	duration?: number;
@@ -19,50 +24,43 @@ export type AnimationTimelineConfiguration = {
 	[ms: number]: Array<ElementAnimation<any>>;
 };
 
-type NonAnimatableKeys =
-	| "rotation"
-	| "alignItems"
-	| "alignContent"
-	| "alignSelf"
-	| "justifyContent"
-	| "display"
-	| "flexDirection"
-	| "flexWrap"
-	| "overflow"
-	| "position"
-	| "zIndex"
-	| "elevation"
-	| "direction"
-	| "backfaceVisibility"
-	| "borderCurve"
-	| "borderStyle"
-	| "pointerEvents"
-	| "overflow"
-	| "transform";
+// Everything you actually animate
+export type AnimatableValue =
+	| number
+	| string
+	| DimensionValue
+	| Animated.Value
+	| Animated.AnimatedInterpolation<number | string>;
 
-export type CleanViewStyle = Omit<ViewStyle, NonAnimatableKeys> & {
+export type CustomAnimatableProperties = {
+	translateX?: AnimatableValue;
+	translateY?: AnimatableValue;
+	scaleX?: AnimatableValue;
+	scaleY?: AnimatableValue;
+	scale?: AnimatableValue;
+	skewX?: AnimatableValue;
+	skewY?: AnimatableValue;
 	rotation?: `${number}deg` | `${number}rad`;
 };
 
-export type AnimationViewStyle = {
-	[K in keyof CleanViewStyle]: Exclude<
-		CleanViewStyle[K],
-		Animated.AnimatedNode
-	>;
-};
+// Minimal view style for animation
+export type AnimationViewStyle = Partial<ViewStyle> &
+	CustomAnimatableProperties;
 
-export type AnimationStyle<Keys extends keyof AnimationViewStyle> = {
-	[K in Keys | keyof AnimationViewStyle]?: AnimationViewStyle[K][];
-};
-
-export type Animation<
+// Keyed animation object
+export type ViewAnimation<
 	Keys extends keyof AnimationViewStyle = keyof AnimationViewStyle,
 > = {
-	[K in Keys]: Animated.AnimatedInterpolation<string | number>;
+	[K in Keys]?: AnimationViewStyle[K];
 };
 
+// Container for animations
+export interface Animations {
+	animations?: ViewAnimation;
+}
+
 export type ElementAnimation<Keys extends keyof AnimationViewStyle> = {
-	animations: Animation<Keys>;
+	animations: ViewAnimation<Keys>;
 	forward: Animated.CompositeAnimation;
 	backward: Animated.CompositeAnimation;
 	/** Start animation with onFinished callback. Using forward.start() */
@@ -71,12 +69,6 @@ export type ElementAnimation<Keys extends keyof AnimationViewStyle> = {
 	reverse: (onFinished?: () => void) => void;
 	/** Reset animations to initial value. Using forward.reset() */
 	reset: Animated.CompositeAnimation["reset"];
-};
-
-export type ViewAnimation<Keys extends keyof AnimationViewStyle> = {
-	[K in Keys | keyof AnimationViewStyle]?:
-		| AnimationViewStyle[K]
-		| Animated.AnimatedInterpolation<string | number>;
 };
 
 export interface Animations {

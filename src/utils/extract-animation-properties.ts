@@ -1,43 +1,17 @@
-import type {
-	MatrixTransform,
-	RotateTransform,
-	RotateXTransform,
-	RotateYTransform,
-	RotateZTransform,
-	ScaleTransform,
-	ScaleXTransform,
-	ScaleYTransform,
-	SkewXTransform,
-	SkewYTransform,
-	TranslateXTransform,
-	TranslateYTransform,
-} from "react-native";
 import type { AnimationViewStyle, ViewAnimation } from "../models";
 
-type BaseTransformStyles =
-	| RotateTransform
-	| RotateXTransform
-	| RotateYTransform
-	| RotateZTransform
-	| ScaleTransform
-	| ScaleXTransform
-	| ScaleYTransform
-	| TranslateXTransform
-	| TranslateYTransform
-	| SkewXTransform
-	| SkewYTransform
-	| MatrixTransform;
-
-function hasTransformProperties<Keys extends keyof AnimationViewStyle>(
-	props: ViewAnimation<Keys>,
-) {
+function hasTransformProperties(
+	props: ViewAnimation,
+): props is Partial<AnimationViewStyle> {
 	return (
-		props.translateX ||
-		props.translateY ||
-		props.scaleX ||
-		props.scaleY ||
-		props.scaleY ||
-		props.rotation
+		!!props.translateX ||
+		!!props.translateY ||
+		!!props.scaleX ||
+		!!props.scaleY ||
+		!!props.scale ||
+		!!props.skewX ||
+		!!props.skewY ||
+		!!props.rotation
 	);
 }
 
@@ -46,38 +20,33 @@ export function extractAnimationProperties<
 >(props: ViewAnimation<Keys> | undefined) {
 	if (!props) return undefined;
 
-	const mapped: ViewAnimation<Keys> & {
-		transform: BaseTransformStyles[];
-	} = {
-		...props,
-		transform: [],
-	};
+	const mapped = { ...props };
 
 	// Map translate
-	if (hasTransformProperties(props)) {
-		mapped.transform = [];
-		if (props.translateX) {
-			mapped.transform.push({ translateX: props.translateX });
+	if (hasTransformProperties(mapped)) {
+		const transforms = [];
+		if (mapped.translateX) {
+			transforms.push({ translateX: mapped.translateX });
 			delete mapped.translateX;
 		}
 
-		if (props.translateY) {
-			mapped.transform.push({ translateY: props.translateY });
+		if (mapped.translateY) {
+			transforms.push({ translateY: mapped.translateY });
 			delete mapped.translateY;
 		}
 
-		if (props.scaleX) {
-			mapped.transform.push({ scaleX: props.scaleX });
+		if (mapped.scaleX) {
+			transforms.push({ scaleX: mapped.scaleX });
 			delete mapped.scaleX;
 		}
 
-		if (props.scaleY) {
-			mapped.transform.push({ scaleY: props.scaleY });
+		if (mapped.scaleY) {
+			transforms.push({ scaleY: mapped.scaleY });
 			delete mapped.scaleY;
 		}
 
-		if (props.rotation) {
-			mapped.transform.push({ rotate: props.rotation });
+		if (mapped.rotation) {
+			transforms.push({ rotate: mapped.rotation });
 			delete mapped.rotation;
 		}
 	}

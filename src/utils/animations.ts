@@ -1,16 +1,15 @@
 import { Animated, Easing } from "react-native";
 import type {
-	Animation,
 	AnimationConfiguration,
-	AnimationStyle,
 	AnimationTimelineConfiguration,
-	CleanViewStyle,
+	AnimationViewStyle,
 	ElementAnimation,
 	StaggerAnimationConfiguration,
+	ViewAnimation,
 } from "../models";
 
-function processStyles<Keys extends keyof CleanViewStyle>(
-	styles: AnimationStyle<Keys>,
+function processStyles<Keys extends keyof AnimationViewStyle>(
+	styles: ViewAnimation<Keys>,
 	{
 		duration = 400,
 		easing = Easing.inOut(Easing.ease),
@@ -22,7 +21,7 @@ function processStyles<Keys extends keyof CleanViewStyle>(
 	const values = keys.map(() => new Animated.Value(0));
 	const compositions: Animated.CompositeAnimation[] = [];
 	const reverseCompositions: Animated.CompositeAnimation[] = [];
-	const animations: Partial<Animation<Keys>> = {};
+	const animations: Partial<ViewAnimation<Keys>> = {};
 
 	keys.forEach((key, index) => {
 		const value = values[index];
@@ -49,7 +48,8 @@ function processStyles<Keys extends keyof CleanViewStyle>(
 			isInteraction,
 		});
 
-		animations[key] = animation;
+		// biome-ignore lint/suspicious/noExplicitAny: cba
+		(animations as any)[key] = animation;
 		compositions.push(composition);
 		reverseCompositions.push(reverseComposition);
 	});
@@ -58,7 +58,7 @@ function processStyles<Keys extends keyof CleanViewStyle>(
 		values,
 		compositions,
 		reverseCompositions: reverseCompositions.reverse(),
-		animations: animations as Animation<Keys>,
+		animations: animations as ViewAnimation<Keys>,
 	};
 }
 
@@ -98,8 +98,8 @@ function getAnimationTriggers(
 
 /** Animate styles in parallel.
  * Example: if you define opacity and top styles, this will start the opacity animation and the top animation at the same time. */
-export function animateParallel<Styles extends keyof CleanViewStyle>(
-	styles: AnimationStyle<Styles>,
+export function animateParallel<Styles extends keyof AnimationViewStyle>(
+	styles: ViewAnimation<Styles>,
 	config?: AnimationConfiguration,
 ): ElementAnimation<Styles> {
 	const { animations, reverseCompositions, compositions } = processStyles(
@@ -140,8 +140,8 @@ function createStaggerComposition(
 
 /** Stagger defined styles animations.
  * Example: if you define opacity and top styles, this will start the opacity animation and stagger the top animation by stagger amount. */
-export function animateStagger<Styles extends keyof CleanViewStyle>(
-	styles: AnimationStyle<Styles>,
+export function animateStagger<Styles extends keyof AnimationViewStyle>(
+	styles: ViewAnimation<Styles>,
 	config: StaggerAnimationConfiguration,
 ): ElementAnimation<Styles> {
 	const { animations, reverseCompositions, compositions } = processStyles(
@@ -194,8 +194,8 @@ function createSequenceComposition(
 
 /** This will animate the passed in styles in sequence.
  * Example: if you define opacity and top styles, this will start the opacity animation and then start the top animation when the opacity animation finishes. */
-export function animateSequence<Styles extends keyof CleanViewStyle>(
-	styles: AnimationStyle<Styles>,
+export function animateSequence<Styles extends keyof AnimationViewStyle>(
+	styles: ViewAnimation<Styles>,
 	config?: AnimationConfiguration,
 ): ElementAnimation<Styles> {
 	const { animations, reverseCompositions, compositions } = processStyles(
@@ -253,7 +253,7 @@ export function createAnimationTimeline(
 }
 
 export function loopAnimation<
-	Type extends keyof CleanViewStyle = keyof CleanViewStyle,
+	Type extends keyof AnimationViewStyle = keyof AnimationViewStyle,
 >(animation: ElementAnimation<Type>) {
 	const start = () => {
 		const restart = () => {

@@ -1,10 +1,10 @@
-import React, { type PropsWithChildren, useMemo } from "react";
+import type React from "react";
+import type { PropsWithChildren } from "react";
 import {
 	Animated,
 	type ColorValue,
 	ScrollView,
 	type ScrollViewProps,
-	StyleSheet,
 	type ViewProps,
 	type ViewStyle,
 } from "react-native";
@@ -18,6 +18,7 @@ import type {
 	Spacing,
 } from "../../models";
 import {
+	AtomicStyleCache,
 	extractAlignmentProperties,
 	extractAnimationProperties,
 	extractFlexProperties,
@@ -61,57 +62,12 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
 	children,
 	...props
 }) => {
-	const {
-		border,
-		paddings,
-		margins,
-		background,
-		style,
-		overflow,
-		animations,
-		opacity,
-		flex,
-		gap,
-		...view
-	} = props;
-
-	const sizeProps = extractSizeProperties(props);
-	const positionProps = extractPositionProperties(props);
-	const alignmentProps = extractAlignmentProperties(props);
-	const flexProps = useMemo(() => extractFlexProperties({ flex }), [flex]);
-	const gapProps = useMemo(() => extractGapProperties({ gap }), [gap]);
-	const animationProps = useMemo(
-		() => extractAnimationProperties(animations),
-		[animations],
-	);
-	const normalizedMargins = useMemo(
-		() => normalizeMarginValues(margins),
-		[margins],
-	);
-	const normalizedPaddings = useMemo(
-		() => normalizePaddingValues(paddings),
-		[paddings],
-	);
-
-	const styles = StyleSheet.flatten([
-		{
-			backgroundColor: typeof background === "string" ? background : undefined,
-			overflow,
-			opacity,
-		},
-		alignmentProps,
-		normalizedMargins,
-		normalizedPaddings,
-		border,
-		flexProps,
-		sizeProps,
-		positionProps,
-		gapProps,
-		style,
-	]);
+	const { style, animations, ...rest } = props;
+	const animationProps = extractAnimationProperties(animations);
+	const atomicStyles = buildAtomicStyle(rest);
 
 	return (
-		<Animated.View {...view} style={[styles, animationProps]}>
+		<Animated.View {...rest} style={[atomicStyles, style, animationProps]}>
 			{children}
 		</Animated.View>
 	);
@@ -186,3 +142,35 @@ export const Block: React.FC<PropsWithChildren<BlockProps>> = ({
 		</ScrollView>
 	);
 };
+
+function buildAtomicStyle(props: BlockElementProps): ViewStyle {
+	const {
+		background,
+		opacity,
+		overflow,
+		margins,
+		paddings,
+		border,
+		flex,
+		gap,
+		...rest
+	} = props;
+
+	const base: Partial<ViewStyle> = {
+		backgroundColor: typeof background === "string" ? background : undefined,
+		opacity,
+		overflow,
+		...normalizeMarginValues(margins),
+		...normalizePaddingValues(paddings),
+		...extractSizeProperties(rest),
+		...extractAlignmentProperties(rest),
+		...extractPositionProperties(rest),
+		...(border ?? {}),
+		...(flex ? extractFlexProperties({ flex }) : {}),
+		...(gap ? extractGapProperties({ gap }) : {}),
+	};
+
+	AtomicStyleCache.cacheStyle(base);
+
+	return AtomicStyleCache.resolveAtomic(base);
+}
