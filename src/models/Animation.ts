@@ -1,7 +1,13 @@
 import type {
 	Animated,
-	DimensionValue,
 	EasingFunction,
+	ScaleTransform,
+	ScaleXTransform,
+	ScaleYTransform,
+	SkewXTransform,
+	SkewYTransform,
+	TranslateXTransform,
+	TranslateYTransform,
 	ViewStyle,
 } from "react-native";
 
@@ -20,47 +26,59 @@ export type StaggerAnimationConfiguration = AnimationConfiguration & {
 };
 
 export type AnimationTimelineConfiguration = {
-	// biome-ignore lint/suspicious/noExplicitAny: Too complex of a generic type to write a proper interface. Can be a union of keyof AnimationViewStyle etc. In any case it's a simple timeline that triggers precomposed animations, doesn't really care about the type.
+	// biome-ignore lint/suspicious/noExplicitAny: Too complex of a generic type to write a proper interface. Can be a union of AnimatableStyleKeys etc. In any case it's a simple timeline that triggers precomposed animations, doesn't really care about the type.
 	[ms: number]: Array<ElementAnimation<any>>;
 };
 
-// Everything you actually animate
-export type AnimatableValue =
-	| number
-	| string
-	| DimensionValue
-	| Animated.Value
-	| Animated.AnimatedInterpolation<number | string>;
+type AnimatableValueTypes = string | number;
 
 export type CustomAnimatableProperties = {
-	translateX?: AnimatableValue;
-	translateY?: AnimatableValue;
-	scaleX?: AnimatableValue;
-	scaleY?: AnimatableValue;
-	scale?: AnimatableValue;
-	skewX?: AnimatableValue;
-	skewY?: AnimatableValue;
-	rotation?: `${number}deg` | `${number}rad`;
+	translateX?: TranslateXTransform["translateX"][];
+	translateY?: TranslateYTransform["translateY"][];
+	scaleX?: ScaleXTransform["scaleX"][];
+	scaleY?: ScaleYTransform["scaleY"][];
+	scale?: ScaleTransform["scale"][];
+	skewX?: SkewXTransform["skewX"][];
+	skewY?: SkewYTransform["skewY"][];
+	skew?: SkewXTransform["skewX"][];
+	rotation?: Array<`${number}deg` | `${number}rad`>;
 };
 
-// Minimal view style for animation
-export type AnimationViewStyle = Partial<ViewStyle> &
-	CustomAnimatableProperties;
+export type NonAnimatableKeys =
+	| "alignItems"
+	| "alignContent"
+	| "alignSelf"
+	| "justifyContent"
+	| "display"
+	| "flexDirection"
+	| "flexWrap"
+	| "overflow"
+	| "position"
+	| "zIndex"
+	| "elevation"
+	| "direction"
+	| "backfaceVisibility"
+	| "borderStyle"
+	| "borderCurve"
+	| "pointerEvents"
+	| "shadowOffset"
+	| "textShadowOffset"
+	| "transformMatrix"
+	| "transform";
 
-// Keyed animation object
-export type ViewAnimation<
-	Keys extends keyof AnimationViewStyle = keyof AnimationViewStyle,
-> = {
-	[K in Keys]?: AnimationViewStyle[K];
+export type AnimatableStyleKeys =
+	| keyof Exclude<ViewStyle, NonAnimatableKeys>
+	| keyof CustomAnimatableProperties;
+
+export type AnimationStyle<Keys extends AnimatableStyleKeys> = {
+	[K in Keys]: AnimatableValueTypes[];
 };
 
-// Container for animations
-export interface Animations {
-	animations?: ViewAnimation;
-}
+export type ComposedAnimationInterpolations<Keys extends AnimatableStyleKeys> =
+	Partial<Record<Keys, Animated.AnimatedInterpolation<string | number>>>;
 
-export type ElementAnimation<Keys extends keyof AnimationViewStyle> = {
-	animations: ViewAnimation<Keys>;
+export type ElementAnimation<Keys extends AnimatableStyleKeys> = {
+	animations: Required<ComposedAnimationInterpolations<Keys>>;
 	forward: Animated.CompositeAnimation;
 	backward: Animated.CompositeAnimation;
 	/** Start animation with onFinished callback. Using forward.start() */
@@ -71,6 +89,6 @@ export type ElementAnimation<Keys extends keyof AnimationViewStyle> = {
 	reset: Animated.CompositeAnimation["reset"];
 };
 
-export interface Animations {
-	animations?: ViewAnimation<keyof AnimationViewStyle>;
-}
+export type Animations = {
+	animations?: ComposedAnimationInterpolations<AnimatableStyleKeys>;
+};

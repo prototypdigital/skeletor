@@ -1,14 +1,14 @@
 import { useRef } from "react";
 import type {
+	AnimatableStyleKeys,
 	AnimationConfiguration,
-	AnimationViewStyle,
+	AnimationStyle,
 	ElementAnimation,
-	ViewAnimation,
 } from "../models";
 import { animateSequence } from "../utils";
 
-export const useAnimateSequence = <Styles extends keyof AnimationViewStyle>(
-	styles: ViewAnimation<Styles>,
+export const useAnimateSequence = <Styles extends AnimatableStyleKeys>(
+	styles: AnimationStyle<Styles>,
 	config?: AnimationConfiguration,
 ): ElementAnimation<Styles> => {
 	return useRef(animateSequence(styles, config)).current;
