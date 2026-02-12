@@ -18,16 +18,10 @@ import type {
 	Spacing,
 } from "../../models";
 import {
-	AtomicStyleCache,
-	extractAlignmentProperties,
 	extractAnimationProperties,
-	extractFlexProperties,
-	extractGapProperties,
-	extractPositionProperties,
-	extractSizeProperties,
+	extractSkeletorStyleProperties,
 	isColorValue,
-	normalizeMarginValues,
-	normalizePaddingValues,
+	memoizeStyle,
 } from "../../utils";
 
 type SkeletorProps = Alignment &
@@ -60,14 +54,23 @@ type BlockElementProps = SharedProps & ViewProps;
 
 const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
 	children,
+	background,
+	opacity,
 	...props
 }) => {
 	const { style, animations, ...rest } = props;
 	const animationProps = extractAnimationProperties(animations);
-	const atomicStyles = buildAtomicStyle(rest);
+	const skeletorStyle = extractSkeletorStyleProperties(rest);
+	const elementStyle = memoizeStyle({
+		backgroundColor: typeof background === "string" ? background : undefined,
+		opacity,
+	});
 
 	return (
-		<Animated.View {...rest} style={[atomicStyles, style, animationProps]}>
+		<Animated.View
+			{...rest}
+			style={[skeletorStyle, elementStyle, style, animationProps]}
+		>
 			{children}
 		</Animated.View>
 	);
@@ -142,35 +145,3 @@ export const Block: React.FC<PropsWithChildren<BlockProps>> = ({
 		</ScrollView>
 	);
 };
-
-function buildAtomicStyle(props: BlockElementProps): ViewStyle {
-	const {
-		background,
-		opacity,
-		overflow,
-		margins,
-		paddings,
-		border,
-		flex,
-		gap,
-		...rest
-	} = props;
-
-	const base: Partial<ViewStyle> = {
-		backgroundColor: typeof background === "string" ? background : undefined,
-		opacity,
-		overflow,
-		...normalizeMarginValues(margins),
-		...normalizePaddingValues(paddings),
-		...extractSizeProperties(rest),
-		...extractAlignmentProperties(rest),
-		...extractPositionProperties(rest),
-		...(border ?? {}),
-		...(flex ? extractFlexProperties({ flex }) : {}),
-		...(gap ? extractGapProperties({ gap }) : {}),
-	};
-
-	AtomicStyleCache.cacheStyle(base);
-
-	return AtomicStyleCache.resolveAtomic(base);
-}

@@ -2,19 +2,14 @@ import React, { type PropsWithChildren, useMemo } from "react";
 import {
 	Animated,
 	type TextProps as RNTextProps,
-	StyleSheet,
 	type TextStyle,
 } from "react-native";
 import { useSkeletor } from "../../hooks";
 import type { Animations, Flex, Position, Size, Spacing } from "../../models";
 import {
 	extractAnimationProperties,
-	extractFlexProperties,
-	extractGapProperties,
-	extractPositionProperties,
-	extractSizeProperties,
-	normalizeMarginValues,
-	normalizePaddingValues,
+	extractSkeletorStyleProperties,
+	memoizeStyle,
 } from "../../utils";
 
 interface OwnProps extends RNTextProps {
@@ -49,33 +44,15 @@ export const Text: React.FC<PropsWithChildren<TextProps>> = ({
 	children,
 	textAlign,
 	opacity,
-	margins,
-	paddings,
 	animations,
-	gap,
 	allowFontScaling,
 	maxFontSizeMultiplier,
 	...props
 }) => {
 	const skeletor = useSkeletor();
-	const animationProps = useMemo(
+	const animationStyle = useMemo(
 		() => extractAnimationProperties(animations),
 		[animations],
-	);
-	const positionProps = useMemo(
-		() => extractPositionProperties(props),
-		[props],
-	);
-	const flexProps = useMemo(() => extractFlexProperties(props), [props]);
-	const sizeProps = useMemo(() => extractSizeProperties(props), [props]);
-	const gapProps = useMemo(() => extractGapProperties({ gap }), [gap]);
-	const normalizedPaddings = useMemo(
-		() => normalizePaddingValues(paddings),
-		[paddings],
-	);
-	const normalizedMargins = useMemo(
-		() => normalizeMarginValues(margins),
-		[margins],
 	);
 
 	const textSize = size ?? skeletor.defaultFontSize;
@@ -83,29 +60,21 @@ export const Text: React.FC<PropsWithChildren<TextProps>> = ({
 		? { fontSize: textSize[0], lineHeight: textSize[1] }
 		: { fontSize: textSize, lineHeight: textSize };
 
-	const styles = StyleSheet.flatten([
-		{
-			color: color || skeletor.defaultTextColor,
-			fontFamily: font || skeletor.defaultFont,
-			fontSize,
-			lineHeight,
-			opacity,
-			textAlign,
-			textTransform,
-			letterSpacing,
-		},
-		normalizedMargins,
-		normalizedPaddings,
-		sizeProps,
-		flexProps,
-		positionProps,
-		gapProps,
-		style,
-	]);
+	const skeletorStyle = extractSkeletorStyleProperties(props);
+	const elementStyle = memoizeStyle({
+		color: color || skeletor.defaultTextColor,
+		fontFamily: font || skeletor.defaultFont,
+		fontSize,
+		lineHeight,
+		opacity,
+		textAlign,
+		textTransform,
+		letterSpacing,
+	});
 
 	return (
 		<Animated.Text
-			style={[styles, animationProps]}
+			style={[skeletorStyle, elementStyle, animationStyle]}
 			allowFontScaling={allowFontScaling || skeletor.allowFontScaling}
 			maxFontSizeMultiplier={
 				maxFontSizeMultiplier || skeletor.defaultMaxFontSizeMultiplier
