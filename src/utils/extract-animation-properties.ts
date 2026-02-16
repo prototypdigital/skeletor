@@ -38,43 +38,55 @@ export function extractAnimationProperties(
 ) {
 	if (!props) return undefined;
 
+	const {
+		translateX,
+		translateY,
+		scaleX,
+		scaleY,
+		scale,
+		skewX,
+		skewY,
+		skew,
+		rotation,
+		...rest
+	} = props;
 	const transform: BaseTransformProps[] = [];
 
-	if (props.translateX) {
-		transform.push({ translateX: props.translateX });
+	if (translateX) {
+		transform.push({ translateX: translateX });
 	}
 
-	if (props.translateY) {
-		transform.push({ translateY: props.translateY });
+	if (translateY) {
+		transform.push({ translateY: translateY });
 	}
 
-	if (props.scaleX) {
-		transform.push({ scaleX: props.scaleX });
+	if (scaleX) {
+		transform.push({ scaleX: scaleX });
 	}
 
-	if (props.scaleY) {
-		transform.push({ scaleY: props.scaleY });
+	if (scaleY) {
+		transform.push({ scaleY: scaleY });
 	}
 
-	if (props.scale) {
-		transform.push({ scaleY: props.scale, scaleX: props.scale });
+	if (scale) {
+		transform.push({ scaleY: scale, scaleX: scale });
 	}
 
-	if (props.skewX) {
-		transform.push({ skewX: props.skewX });
+	if (skewX) {
+		transform.push({ skewX: skewX });
 	}
 
-	if (props.skewY) {
-		transform.push({ skewY: props.skewY });
+	if (skewY) {
+		transform.push({ skewY: skewY });
 	}
 
-	if (props.skew) {
-		transform.push({ skewX: props.skew, skewY: props.skewY });
+	if (skew) {
+		transform.push({ skewX: skew, skewY: skewY });
 	}
 
-	if (props.rotation) {
-		transform.push({ rotate: props.rotation });
+	if (rotation) {
+		transform.push({ rotate: rotation });
 	}
 
-	return { ...props, transform };
+	return { ...rest, transform };
 }
