@@ -1,4 +1,15 @@
-import type { Animated, EasingFunction, ViewStyle } from "react-native";
+import type {
+	Animated,
+	EasingFunction,
+	ScaleTransform,
+	ScaleXTransform,
+	ScaleYTransform,
+	SkewXTransform,
+	SkewYTransform,
+	TranslateXTransform,
+	TranslateYTransform,
+	ViewStyle,
+} from "react-native";
 
 export type AnimationConfiguration = {
 	duration?: number;
@@ -15,12 +26,25 @@ export type StaggerAnimationConfiguration = AnimationConfiguration & {
 };
 
 export type AnimationTimelineConfiguration = {
-	// biome-ignore lint/suspicious/noExplicitAny: Too complex of a generic type to write a proper interface. Can be a union of keyof AnimationViewStyle etc. In any case it's a simple timeline that triggers precomposed animations, doesn't really care about the type.
+	// biome-ignore lint/suspicious/noExplicitAny: Too complex of a generic type to write a proper interface. Can be a union of AnimatableStyleKeys etc. In any case it's a simple timeline that triggers precomposed animations, doesn't really care about the type.
 	[ms: number]: Array<ElementAnimation<any>>;
 };
 
-type NonAnimatableKeys =
-	| "rotation"
+type AnimatableValueTypes = string | number;
+
+export type CustomAnimatableProperties = {
+	translateX?: TranslateXTransform["translateX"][];
+	translateY?: TranslateYTransform["translateY"][];
+	scaleX?: ScaleXTransform["scaleX"][];
+	scaleY?: ScaleYTransform["scaleY"][];
+	scale?: ScaleTransform["scale"][];
+	skewX?: SkewXTransform["skewX"][];
+	skewY?: SkewYTransform["skewY"][];
+	skew?: SkewXTransform["skewX"][];
+	rotation?: Array<`${number}deg` | `${number}rad`>;
+};
+
+export type NonAnimatableKeys =
 	| "alignItems"
 	| "alignContent"
 	| "alignSelf"
@@ -34,35 +58,27 @@ type NonAnimatableKeys =
 	| "elevation"
 	| "direction"
 	| "backfaceVisibility"
-	| "borderCurve"
 	| "borderStyle"
+	| "borderCurve"
 	| "pointerEvents"
-	| "overflow"
+	| "shadowOffset"
+	| "textShadowOffset"
+	| "transformMatrix"
 	| "transform";
 
-export type CleanViewStyle = Omit<ViewStyle, NonAnimatableKeys> & {
-	rotation?: `${number}deg` | `${number}rad`;
+export type AnimatableStyleKeys =
+	| keyof Exclude<ViewStyle, NonAnimatableKeys>
+	| keyof CustomAnimatableProperties;
+
+export type AnimationStyle<Keys extends AnimatableStyleKeys> = {
+	[K in Keys]: AnimatableValueTypes[];
 };
 
-export type AnimationViewStyle = {
-	[K in keyof CleanViewStyle]: Exclude<
-		CleanViewStyle[K],
-		Animated.AnimatedNode
-	>;
-};
+export type ComposedAnimationInterpolations<Keys extends AnimatableStyleKeys> =
+	Partial<Record<Keys, Animated.AnimatedInterpolation<string | number>>>;
 
-export type AnimationStyle<Keys extends keyof AnimationViewStyle> = {
-	[K in Keys | keyof AnimationViewStyle]?: AnimationViewStyle[K][];
-};
-
-export type Animation<
-	Keys extends keyof AnimationViewStyle = keyof AnimationViewStyle,
-> = {
-	[K in Keys]: Animated.AnimatedInterpolation<string | number>;
-};
-
-export type ElementAnimation<Keys extends keyof AnimationViewStyle> = {
-	animations: Animation<Keys>;
+export type ElementAnimation<Keys extends AnimatableStyleKeys> = {
+	animations: Required<ComposedAnimationInterpolations<Keys>>;
 	forward: Animated.CompositeAnimation;
 	backward: Animated.CompositeAnimation;
 	/** Start animation with onFinished callback. Using forward.start() */
@@ -73,12 +89,6 @@ export type ElementAnimation<Keys extends keyof AnimationViewStyle> = {
 	reset: Animated.CompositeAnimation["reset"];
 };
 
-export type ViewAnimation<Keys extends keyof AnimationViewStyle> = {
-	[K in Keys | keyof AnimationViewStyle]?:
-		| AnimationViewStyle[K]
-		| Animated.AnimatedInterpolation<string | number>;
+export type Animations = {
+	animations?: ComposedAnimationInterpolations<AnimatableStyleKeys>;
 };
-
-export interface Animations {
-	animations?: ViewAnimation<keyof AnimationViewStyle>;
-}

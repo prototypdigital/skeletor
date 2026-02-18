@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
 	Dimensions,
 	Keyboard,
@@ -11,11 +11,7 @@ import {
 	type TargetedEvent,
 } from "react-native";
 import type { Spacing } from "../../models";
-import {
-	extractGapProperties,
-	normalizeMarginValues,
-	normalizePaddingValues,
-} from "../../utils";
+import { extractSkeletorStyleProperties } from "../../utils";
 
 export interface InputFocusScrollViewProps
 	extends Omit<ScrollViewProps, "children">,
@@ -59,6 +55,7 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
 	showsVerticalScrollIndicator = false,
 	showsHorizontalScrollIndicator = false,
 	bounces = false,
+
 	...rest
 }) => {
 	const ref = useRef<ScrollView>(null);
@@ -119,26 +116,21 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
 		);
 	}, [anchoredToTop]);
 
-	const gapProps = useMemo(() => extractGapProperties({ gap }), [gap]);
-	const normalizedMargins = useMemo(
-		() => normalizeMarginValues(margins),
-		[margins],
-	);
-	const normalizedPaddings = useMemo(
-		() => normalizePaddingValues(paddings),
-		[paddings],
-	);
+	const containerSkeletorStyle = extractSkeletorStyleProperties({ margins });
+	const contentSkeletorStyle = extractSkeletorStyleProperties({
+		paddings,
+		gap,
+	});
 
 	const containerStyles = StyleSheet.flatten([
 		styles[height],
-		normalizedMargins,
+		containerSkeletorStyle,
 		style,
 	]);
 
 	const contentStyles = StyleSheet.flatten([
 		styles.content,
-		normalizedPaddings,
-		gapProps,
+		contentSkeletorStyle,
 		contentContainerStyle,
 	]);
 

@@ -1,13 +1,13 @@
 import { useRef } from "react";
 import type {
+	AnimatableStyleKeys,
 	AnimationConfiguration,
 	AnimationStyle,
-	CleanViewStyle,
 	ElementAnimation,
 } from "../models";
 import { animateParallel } from "../utils";
 
-export const useAnimateParallel = <Styles extends keyof CleanViewStyle>(
+export const useAnimateParallel = <Styles extends AnimatableStyleKeys>(
 	styles: AnimationStyle<Styles>,
 	config?: AnimationConfiguration,
 ): ElementAnimation<Styles> => {

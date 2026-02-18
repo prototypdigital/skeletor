@@ -1,15 +1,15 @@
 import { Animated, Easing } from "react-native";
 import type {
-	Animation,
+	AnimatableStyleKeys,
 	AnimationConfiguration,
 	AnimationStyle,
 	AnimationTimelineConfiguration,
-	CleanViewStyle,
+	ComposedAnimationInterpolations,
 	ElementAnimation,
 	StaggerAnimationConfiguration,
 } from "../models";
 
-function processStyles<Keys extends keyof CleanViewStyle>(
+function processStyles<Keys extends AnimatableStyleKeys>(
 	styles: AnimationStyle<Keys>,
 	{
 		duration = 400,
@@ -22,7 +22,7 @@ function processStyles<Keys extends keyof CleanViewStyle>(
 	const values = keys.map(() => new Animated.Value(0));
 	const compositions: Animated.CompositeAnimation[] = [];
 	const reverseCompositions: Animated.CompositeAnimation[] = [];
-	const animations: Partial<Animation<Keys>> = {};
+	const animations: ComposedAnimationInterpolations<Keys> = {};
 
 	keys.forEach((key, index) => {
 		const value = values[index];
@@ -58,7 +58,7 @@ function processStyles<Keys extends keyof CleanViewStyle>(
 		values,
 		compositions,
 		reverseCompositions: reverseCompositions.reverse(),
-		animations: animations as Animation<Keys>,
+		animations: animations as Required<ComposedAnimationInterpolations<Keys>>,
 	};
 }
 
@@ -84,6 +84,7 @@ function getAnimationTriggers(
 
 	function reset() {
 		forward.reset();
+		backward.reset();
 	}
 
 	return {
@@ -98,7 +99,7 @@ function getAnimationTriggers(
 
 /** Animate styles in parallel.
  * Example: if you define opacity and top styles, this will start the opacity animation and the top animation at the same time. */
-export function animateParallel<Styles extends keyof CleanViewStyle>(
+export function animateParallel<Styles extends AnimatableStyleKeys>(
 	styles: AnimationStyle<Styles>,
 	config?: AnimationConfiguration,
 ): ElementAnimation<Styles> {
@@ -121,26 +122,28 @@ function createStaggerComposition(
 	compositions: Animated.CompositeAnimation[],
 	stagger: number,
 ): Animated.CompositeAnimation {
+	const executor = Animated.parallel(
+		compositions.map((c, i) => {
+			return createSequenceComposition([Animated.delay(stagger * i), c]);
+		}),
+	);
+
 	return {
 		start: (callback?: Animated.EndCallback) => {
-			Animated.parallel(
-				compositions.map((c, i) => {
-					return createSequenceComposition([Animated.delay(stagger * i), c]);
-				}),
-			).start(callback);
+			executor.start(callback);
 		},
 		stop: () => {
-			for (const composition of compositions) composition.stop();
+			executor.stop();
 		},
 		reset: () => {
-			for (const composition of compositions) composition.reset();
+			executor.reset();
 		},
 	};
 }
 
 /** Stagger defined styles animations.
  * Example: if you define opacity and top styles, this will start the opacity animation and stagger the top animation by stagger amount. */
-export function animateStagger<Styles extends keyof CleanViewStyle>(
+export function animateStagger<Styles extends AnimatableStyleKeys>(
 	styles: AnimationStyle<Styles>,
 	config: StaggerAnimationConfiguration,
 ): ElementAnimation<Styles> {
@@ -194,7 +197,7 @@ function createSequenceComposition(
 
 /** This will animate the passed in styles in sequence.
  * Example: if you define opacity and top styles, this will start the opacity animation and then start the top animation when the opacity animation finishes. */
-export function animateSequence<Styles extends keyof CleanViewStyle>(
+export function animateSequence<Styles extends AnimatableStyleKeys>(
 	styles: AnimationStyle<Styles>,
 	config?: AnimationConfiguration,
 ): ElementAnimation<Styles> {
@@ -253,16 +256,14 @@ export function createAnimationTimeline(
 }
 
 export function loopAnimation<
-	Type extends keyof CleanViewStyle = keyof CleanViewStyle,
+	Type extends AnimatableStyleKeys = AnimatableStyleKeys,
 >(animation: ElementAnimation<Type>) {
-	const start = () => {
-		const restart = () => {
-			animation.reset();
-			animation.start(restart);
-		};
-
+	const restart = () => {
+		animation.reset();
 		animation.start(restart);
 	};
+
+	const start = () => animation.start(restart);
 
 	return { ...animation, start };
 }

@@ -12,9 +12,12 @@ import type {
 	TranslateXTransform,
 	TranslateYTransform,
 } from "react-native";
-import type { AnimationViewStyle, ViewAnimation } from "../models";
+import type {
+	ComposedAnimationInterpolations,
+	CustomAnimatableProperties,
+} from "../models";
 
-type BaseTransformStyles =
+type BaseTransformProps =
 	| RotateTransform
 	| RotateXTransform
 	| RotateYTransform
@@ -28,59 +31,62 @@ type BaseTransformStyles =
 	| SkewYTransform
 	| MatrixTransform;
 
-function hasTransformProperties<Keys extends keyof AnimationViewStyle>(
-	props: ViewAnimation<Keys>,
+export function extractAnimationProperties(
+	props:
+		| ComposedAnimationInterpolations<keyof CustomAnimatableProperties>
+		| undefined,
 ) {
-	return (
-		props.translateX ||
-		props.translateY ||
-		props.scaleX ||
-		props.scaleY ||
-		props.scaleY ||
-		props.rotation
-	);
-}
-
-export function extractAnimationProperties<
-	Keys extends keyof AnimationViewStyle,
->(props: ViewAnimation<Keys> | undefined) {
 	if (!props) return undefined;
 
-	const mapped: ViewAnimation<Keys> & {
-		transform: BaseTransformStyles[];
-	} = {
-		...props,
-		transform: [],
-	};
+	const {
+		translateX,
+		translateY,
+		scaleX,
+		scaleY,
+		scale,
+		skewX,
+		skewY,
+		skew,
+		rotation,
+		...rest
+	} = props;
+	const transform: BaseTransformProps[] = [];
 
-	// Map translate
-	if (hasTransformProperties(props)) {
-		mapped.transform = [];
-		if (props.translateX) {
-			mapped.transform.push({ translateX: props.translateX });
-			delete mapped.translateX;
-		}
-
-		if (props.translateY) {
-			mapped.transform.push({ translateY: props.translateY });
-			delete mapped.translateY;
-		}
-
-		if (props.scaleX) {
-			mapped.transform.push({ scaleX: props.scaleX });
-			delete mapped.scaleX;
-		}
-
-		if (props.scaleY) {
-			mapped.transform.push({ scaleY: props.scaleY });
-			delete mapped.scaleY;
-		}
-
-		if (props.rotation) {
-			mapped.transform.push({ rotate: props.rotation });
-			delete mapped.rotation;
-		}
+	if (translateX) {
+		transform.push({ translateX: translateX });
 	}
 
-	return mapped;
+	if (translateY) {
+		transform.push({ translateY: translateY });
+	}
+
+	if (scaleX) {
+		transform.push({ scaleX: scaleX });
+	}
+
+	if (scaleY) {
+		transform.push({ scaleY: scaleY });
+	}
+
+	if (scale) {
+		transform.push({ scaleY: scale, scaleX: scale });
+	}
+
+	if (skewX) {
+		transform.push({ skewX: skewX });
+	}
+
+	if (skewY) {
+		transform.push({ skewY: skewY });
+	}
+
+	if (skew) {
+		transform.push({ skewX: skew, skewY: skewY });
+	}
+
+	if (rotation) {
+		transform.push({ rotate: rotation });
+	}
+
+	return { ...rest, transform };
 }

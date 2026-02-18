@@ -1,10 +1,10 @@
-import React, { type PropsWithChildren, useMemo } from "react";
+import type React from "react";
+import type { PropsWithChildren } from "react";
 import {
 	Animated,
 	type ColorValue,
 	ScrollView,
 	type ScrollViewProps,
-	StyleSheet,
 	type ViewProps,
 	type ViewStyle,
 } from "react-native";
@@ -18,15 +18,10 @@ import type {
 	Spacing,
 } from "../../models";
 import {
-	extractAlignmentProperties,
 	extractAnimationProperties,
-	extractFlexProperties,
-	extractGapProperties,
-	extractPositionProperties,
-	extractSizeProperties,
+	extractSkeletorStyleProperties,
 	isColorValue,
-	normalizeMarginValues,
-	normalizePaddingValues,
+	memoizeStyle,
 } from "../../utils";
 
 type SkeletorProps = Alignment &
@@ -59,59 +54,23 @@ type BlockElementProps = SharedProps & ViewProps;
 
 const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
 	children,
+	background,
+	opacity,
 	...props
 }) => {
-	const {
-		border,
-		paddings,
-		margins,
-		background,
-		style,
-		overflow,
-		animations,
+	const { style, animations, ...rest } = props;
+	const animationProps = extractAnimationProperties(animations);
+	const skeletorStyle = extractSkeletorStyleProperties(rest);
+	const elementStyle = memoizeStyle({
+		backgroundColor: typeof background === "string" ? background : undefined,
 		opacity,
-		flex,
-		gap,
-		...view
-	} = props;
-
-	const sizeProps = extractSizeProperties(props);
-	const positionProps = extractPositionProperties(props);
-	const alignmentProps = extractAlignmentProperties(props);
-	const flexProps = useMemo(() => extractFlexProperties({ flex }), [flex]);
-	const gapProps = useMemo(() => extractGapProperties({ gap }), [gap]);
-	const animationProps = useMemo(
-		() => extractAnimationProperties(animations),
-		[animations],
-	);
-	const normalizedMargins = useMemo(
-		() => normalizeMarginValues(margins),
-		[margins],
-	);
-	const normalizedPaddings = useMemo(
-		() => normalizePaddingValues(paddings),
-		[paddings],
-	);
-
-	const styles = StyleSheet.flatten([
-		{
-			backgroundColor: typeof background === "string" ? background : undefined,
-			overflow,
-			opacity,
-		},
-		alignmentProps,
-		normalizedMargins,
-		normalizedPaddings,
-		border,
-		flexProps,
-		sizeProps,
-		positionProps,
-		gapProps,
-		style,
-	]);
+	});
 
 	return (
-		<Animated.View {...view} style={[styles, animationProps]}>
+		<Animated.View
+			{...rest}
+			style={[skeletorStyle, elementStyle, style, animationProps]}
+		>
 			{children}
 		</Animated.View>
 	);
