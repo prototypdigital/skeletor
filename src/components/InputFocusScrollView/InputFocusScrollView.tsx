@@ -7,7 +7,6 @@ import {
 	Platform,
 	ScrollView,
 	type ScrollViewProps,
-	StyleSheet,
 	type TargetedEvent,
 } from "react-native";
 import type { Spacing } from "../../models";
@@ -122,18 +121,6 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
 		gap,
 	});
 
-	const containerStyles = StyleSheet.flatten([
-		styles[height],
-		containerSkeletorStyle,
-		style,
-	]);
-
-	const contentStyles = StyleSheet.flatten([
-		styles.content,
-		contentSkeletorStyle,
-		contentContainerStyle,
-	]);
-
 	return (
 		<ScrollView
 			ref={ref}
@@ -150,8 +137,12 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
 			showsVerticalScrollIndicator={showsVerticalScrollIndicator}
 			showsHorizontalScrollIndicator={showsHorizontalScrollIndicator}
 			bounces={bounces}
-			style={containerStyles}
-			contentContainerStyle={contentStyles}
+			style={[styles[height], containerSkeletorStyle, style]}
+			contentContainerStyle={[
+				styles.content,
+				contentSkeletorStyle,
+				contentContainerStyle,
+			]}
 			{...rest}
 		>
 			{children(onInputFocus)}
@@ -159,8 +150,8 @@ export const InputFocusScrollView: React.FC<InputFocusScrollViewProps> = ({
 	);
 };
 
-const styles = StyleSheet.create({
-	full: { height: "100%" },
-	auto: { height: "auto" },
+const styles = {
+	full: { height: "100%" as const },
+	auto: { height: "auto" as const },
 	content: { flexGrow: 1 },
-});
+};

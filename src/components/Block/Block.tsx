@@ -52,6 +52,8 @@ export type BlockProps = BlockScrollViewProps | BlockViewProps;
 
 type BlockElementProps = SharedProps & ViewProps;
 
+const BACKGROUND_OFFSETS = { top: 0, bottom: 0, left: 0, right: 0 };
+
 const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
 	children,
 	background,
@@ -62,7 +64,7 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
 	const animationProps = extractAnimationProperties(animations);
 	const skeletorStyle = extractSkeletorStyleProperties(rest);
 	const elementStyle = memoizeStyle({
-		backgroundColor: typeof background === "string" ? background : undefined,
+		backgroundColor: isColorValue(background) ? background : undefined,
 		opacity,
 	});
 
@@ -75,6 +77,8 @@ const BlockElement: React.FC<PropsWithChildren<BlockElementProps>> = ({
 		</Animated.View>
 	);
 };
+
+BlockElement.displayName = "BlockElement";
 
 function isScrollable(props: BlockProps): props is BlockScrollViewProps {
 	return !!props.scrollable;
@@ -94,11 +98,7 @@ export const Block: React.FC<PropsWithChildren<BlockProps>> = ({
 		return (
 			<BlockElement {...props}>
 				{!isColorValue(props.background) && (
-					<BlockElement
-						absolute
-						zIndex={-1}
-						offsets={{ top: 0, bottom: 0, left: 0, right: 0 }}
-					>
+					<BlockElement absolute zIndex={-1} offsets={BACKGROUND_OFFSETS}>
 						{props.background}
 					</BlockElement>
 				)}
@@ -136,7 +136,7 @@ export const Block: React.FC<PropsWithChildren<BlockProps>> = ({
 		>
 			<BlockElement {...rest}>
 				{background && !isColorValue(background) && (
-					<BlockElement absolute zIndex={-1} offsets={[0, 0, 0, 0]}>
+					<BlockElement absolute zIndex={-1} offsets={BACKGROUND_OFFSETS}>
 						{background}
 					</BlockElement>
 				)}

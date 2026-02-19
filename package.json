@@ -6,7 +6,7 @@
 		"Luka Buljan <luka@prototyp.digital>",
 		"Vlatko Vlahek <vlatko@prototyp.digital>"
 	],
-	"version": "1.3.0-beta0",
+	"version": "1.3.0-beta1",
 	"license": "MIT",
 	"main": "./lib/commonjs/index.js",
 	"module": "./lib/module/index.js",

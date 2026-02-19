@@ -29,17 +29,13 @@ export function extractSkeletorStyleProperties<
 	T extends SkeletorStyleProperties,
 >(props: T): Partial<ViewStyle> {
 	const border = props.border || {};
-	const margins = memoizeStyle(normalizeMarginValues(props.margins) || {});
-	const paddings = memoizeStyle(normalizePaddingValues(props.paddings) || {});
-	const size = memoizeStyle(extractSizeProperties(props));
-	const alignment = memoizeStyle(extractAlignmentProperties(props));
-	const position = memoizeStyle(extractPositionProperties(props));
-	const flex = memoizeStyle(
-		props.flex ? extractFlexProperties({ flex: props.flex }) : {},
-	);
-	const gap = memoizeStyle(
-		props.gap ? extractGapProperties({ gap: props.gap }) : {},
-	);
+	const margins = normalizeMarginValues(props.margins) || {};
+	const paddings = normalizePaddingValues(props.paddings) || {};
+	const size = extractSizeProperties(props);
+	const alignment = extractAlignmentProperties(props);
+	const position = extractPositionProperties(props);
+	const flex = props.flex ? extractFlexProperties({ flex: props.flex }) : {};
+	const gap = props.gap ? extractGapProperties({ gap: props.gap }) : {};
 
 	return memoizeStyle({
 		...border,
