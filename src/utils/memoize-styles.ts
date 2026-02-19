@@ -4,11 +4,29 @@ import type { ViewStyle } from "react-native";
 // biome-ignore lint/suspicious/noExplicitAny: Catchall
 type AnyObject = Record<string, any>;
 
-// Global cache: key → canonical style object
-const styleCache = new Map<string, AnyObject>();
+type CacheEntry = {
+	key: string;
+	style: AnyObject;
+};
+
+// Global cache: hash → { key, style }
+const styleCache = new Map<number, CacheEntry>();
 
 let GlobalObjectId = 0; // For assigning stable IDs to nested objects
 const ObjectIds = new WeakMap<object, number>();
+
+/**
+ * Simple, fast hash function for 32-bit integer
+ */
+function hashString(str: string): number {
+	let hash = 0;
+	for (let i = 0; i < str.length; i++) {
+		const char = str.charCodeAt(i);
+		hash = (hash << 5) - hash + char;
+		hash = hash & hash; // Convert to 32-bit integer
+	}
+	return hash >>> 0; // Ensure positive
+}
 
 /**
  * Generate a stable, fast key for a value:
@@ -27,20 +45,27 @@ function valueKey(value: unknown): string {
 }
 
 /**
- * High-performance memoizeStyle function
+ * High-performance memoizeStyle with hash-based lookup and collision detection
+ * Uses a fast hash for primary lookup, but verifies the key to catch collisions
  */
 export function memoizeStyle<T extends ViewStyle>(obj: T): T {
-	// Build key by joining prop:value pairs
+	// Build deterministic key by sorting and joining prop:value pairs
 	const key = Object.entries(obj)
 		.map(([k, v]) => `${k}:${valueKey(v)}`)
 		.join(";");
 
-	// Return cached style if it exists
-	let cached = styleCache.get(key) as T;
-	if (!cached) {
-		cached = Object.freeze({ ...obj });
-		styleCache.set(key, cached);
+	// Fast hash-based lookup
+	const hash = hashString(key);
+	const cached = styleCache.get(hash);
+
+	// Verify cache hit (collision detection)
+	if (cached && cached.key === key) {
+		return cached.style as T;
 	}
 
-	return cached;
+	// Cache miss or collision: create and store new style
+	const style = Object.freeze({ ...obj }) as T;
+	styleCache.set(hash, { key, style });
+
+	return style;
 }

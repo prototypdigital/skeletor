@@ -1,4 +1,5 @@
 import type { PropsWithChildren } from "react";
+import { useMemo } from "react";
 import type { SkeletorConfig } from "../../models";
 import { SkeletorContext, SkeletorDefaults } from "./SkeletorContext";
 
@@ -10,8 +11,10 @@ export const SkeletorProvider: React.FC<PropsWithChildren<Props>> = ({
 	children,
 	...config
 }) => {
+	const value = useMemo(() => ({ ...SkeletorDefaults, ...config }), [config]);
+
 	return (
-		<SkeletorContext.Provider value={{ ...SkeletorDefaults, ...config }}>
+		<SkeletorContext.Provider value={value}>
 			{children}
 		</SkeletorContext.Provider>
 	);

@@ -1,4 +1,5 @@
-import React, { type PropsWithChildren, useMemo } from "react";
+import type React from "react";
+import type { PropsWithChildren } from "react";
 import {
 	Animated,
 	type TextProps as RNTextProps,
@@ -50,10 +51,7 @@ export const Text: React.FC<PropsWithChildren<TextProps>> = ({
 	...props
 }) => {
 	const skeletor = useSkeletor();
-	const animationStyle = useMemo(
-		() => extractAnimationProperties(animations),
-		[animations],
-	);
+	const animationStyle = extractAnimationProperties(animations);
 
 	const textSize = size ?? skeletor.defaultFontSize;
 	const { fontSize, lineHeight } = Array.isArray(textSize)
