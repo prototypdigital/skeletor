@@ -36,8 +36,9 @@ function hashString(str: string): number {
 function valueKey(value: unknown): string {
 	if (value && typeof value === "object") {
 		if (!ObjectIds.has(value as object)) {
-			GlobalObjectId += 1;
+			GlobalObjectId = (GlobalObjectId + 1) % Number.MAX_SAFE_INTEGER;
 			ObjectIds.set(value as object, GlobalObjectId);
+			return `ref#${GlobalObjectId}`;
 		}
 		return `ref#${ObjectIds.get(value as object)}`;
 	}
