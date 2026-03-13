@@ -81,7 +81,7 @@ export function extractAnimationProperties(
 	}
 
 	if (skew) {
-		transform.push({ skewX: skew, skewY: skewY });
+		transform.push({ skewX: skew }, { skewY: skew });
 	}
 
 	if (rotation) {
