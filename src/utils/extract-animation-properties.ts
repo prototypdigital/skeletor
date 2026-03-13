@@ -69,7 +69,7 @@ export function extractAnimationProperties(
 	}
 
 	if (scale) {
-		transform.push({ scaleY: scale, scaleX: scale });
+		transform.push({ scaleY: scale }, { scaleX: scale });
 	}
 
 	if (skewX) {
