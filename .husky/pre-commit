@@ -4,7 +4,7 @@ yarn biome check --write ./src
 
 # Step 2: Stage any modified files
 echo "📦 Staging Biome fixes..."
-git add ./src
+git add -u
 
 # Step 3: Type check
 echo "🧠 Running TypeScript type check..."
