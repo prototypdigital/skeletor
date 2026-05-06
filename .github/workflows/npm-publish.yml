@@ -8,31 +8,32 @@ jobs:
   publish-npm:
     runs-on: ubuntu-latest
     environment: NPM
+    permissions:
+      id-token: write
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: recursive
 
       - name: Enable Corepack
         run: corepack enable
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 23.4.0
           cache: "yarn"
+          registry-url: "https://registry.npmjs.org"
 
       - run: yarn
 
-      - run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_AUTOMATION_TOKEN }}
+      - name: Update npm to Trusted-Publisher-capable version
+        run: npm install -g npm@latest
 
-      # Standard release (no beta or rc)
       - name: Publish standard release
         if: "!(contains(github.event.release.tag_name, 'beta') || contains(github.event.release.tag_name, 'rc'))"
-        run: yarn publish
+        run: npm publish --provenance
 
-      # Pre-release (betaX or rcX)
       - name: Publish pre-release (beta/rc)
         if: "contains(github.event.release.tag_name, 'beta') || contains(github.event.release.tag_name, 'rc')"
-        run: yarn publish --tag next
+        run: npm publish --provenance --tag next
