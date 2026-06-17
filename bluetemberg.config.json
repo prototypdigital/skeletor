@@ -1,0 +1,35 @@
+{
+	"platforms": ["claude", "cursor", "copilot"],
+	"source": "llm",
+	"profile": "frontend",
+	"targets": {
+		"rules": {
+			"claude": {
+				"dir": ".claude/rules",
+				"ext": ".md"
+			},
+			"cursor": {
+				"dir": ".cursor/rules",
+				"ext": ".mdc"
+			}
+		},
+		"agents": {
+			"claude": {
+				"dir": ".claude/agents",
+				"ext": ".md"
+			},
+			"cursor": {
+				"dir": ".cursor/agents",
+				"ext": ".md"
+			}
+		},
+		"skills": {
+			"claude": {
+				"dir": ".claude/skills"
+			},
+			"cursor": {
+				"dir": ".cursor/skills"
+			}
+		}
+	}
+}

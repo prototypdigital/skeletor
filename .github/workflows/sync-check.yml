@@ -1,0 +1,27 @@
+name: AI Config Sync Check
+
+on:
+  pull_request:
+    paths:
+      - 'llm/**'
+      - '.cursor/rules/**'
+      - '.claude/rules/**'
+      - '.claude/agents/**'
+      - '.claude/skills/**'
+      - '.github/instructions/**'
+      - '.github/agents/**'
+      - '.github/skills/**'
+      - '.agents/skills/**'
+      - '.codex/**'
+      - 'AGENTS.md'
+      - 'bluetemberg.config.json'
+
+jobs:
+  sync-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npx -y bluetemberg sync --check

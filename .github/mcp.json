@@ -1,0 +1,24 @@
+{
+  "servers": {
+    "interactive": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@rawwee/interactive-mcp",
+        "-t",
+        "1200",
+        "--disable-tools",
+        "message_complete_notification"
+      ],
+      "type": "stdio"
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "type": "stdio"
+    }
+  }
+}
