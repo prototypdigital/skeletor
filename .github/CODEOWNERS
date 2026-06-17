@@ -1,2 +1,7 @@
-@lbuljan
-@prototypdigital
+# CODEOWNERS
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+# Replace @owner with your GitHub username or team (e.g. @myorg/team-name).
+# Patterns are matched in order — last matching rule wins.
+
+* @owner

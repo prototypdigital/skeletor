@@ -1,0 +1,16 @@
+{
+  "packages": {
+    "bluetemberg-rules-skeletor-authoring": "^0.1.0",
+    "bluetemberg-skills-skeletor-authoring": "^0.1.0",
+    "bluetemberg-agents-skeletor-specialist": "^0.1.0",
+    "bluetemberg-rules-git": "^0.1.0",
+    "bluetemberg-rules-docs": "^0.2.0",
+    "bluetemberg-rules-typescript": "^0.1.0",
+    "bluetemberg-guardrails-git": "^0.1.0",
+    "bluetemberg-skills-code-review": "^0.1.0",
+    "bluetemberg-skills-docs-upkeep": "^0.1.0",
+    "bluetemberg-skills-workspace-hygiene": "^0.1.0",
+    "bluetemberg-agents-code-reviewer": "^0.1.0",
+    "bluetemberg-agents-test-specialist": "^0.1.0"
+  }
+}

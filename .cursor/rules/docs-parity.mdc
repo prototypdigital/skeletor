@@ -1,0 +1,29 @@
+---
+description: Keep documentation in sync with every user-facing change.
+alwaysApply: true
+---
+
+# Docs parity
+
+A PR that changes behavior without updating docs is not done.
+
+## What counts as user-facing
+
+- New or removed CLI flags, commands, or options
+- Changes to user-facing workflows (new prompts, removed choices, changed defaults)
+- New or removed public APIs, config options, or schema fields
+- Changes to output behavior or generated artifacts
+
+## Required behavior
+
+When any of the above change:
+
+1. Update `README.md` if the change affects setup, usage, or the feature overview.
+2. Update the relevant documentation page if one covers the changed area.
+3. Include the doc update in the same commit as the code change — not a follow-up.
+
+## When NOT required
+
+- Internal refactors with no behavior change (renaming a variable, extracting a function)
+- Test-only changes
+- Dependency bumps with no API change

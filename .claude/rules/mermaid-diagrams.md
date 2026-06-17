@@ -1,0 +1,20 @@
+---
+description: Use Mermaid diagrams instead of ASCII art.
+paths:
+  - '**'
+---
+
+# Mermaid diagrams
+
+Prefer Mermaid over ASCII art for all diagrams in documentation.
+
+## When to use
+
+- Architecture and flow diagrams in `docs/wiki/`
+- Any diagram that shows relationships, sequences, or data flow
+
+## Patterns
+
+- Use `flowchart TD` or `flowchart LR` for flow/architecture diagrams
+- Use `sequenceDiagram` for request/response flows
+- Use `classDiagram` for type relationships

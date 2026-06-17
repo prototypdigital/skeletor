@@ -1,0 +1,51 @@
+---
+description: >-
+  Skeletor spacing props (margins/paddings/gap) are polymorphic — scalar, tuple,
+  four-side tuple, or object — and must normalize through the existing
+  normalize-* helpers, never hand-rolled shorthand.
+globs:
+  - 'src/**/*.{ts,tsx}'
+---
+
+# Skeletor polymorphic spacing
+
+`margins`, `paddings`, and `gap` each accept several shapes so consumers can write the terse form that fits. A new primitive that hand-rolls shorthand parsing will diverge from the canonical CSS-like ordering and silently mis-place sides.
+
+## Rules
+
+- Accept the full union for spacing props — do not narrow to a single shape. `MarginStyles`/`PaddingStyles` allow: a scalar (`16`), a tuple, a four-side tuple, or a per-side object (`{ marginTop, marginHorizontal }`). `gap` allows `number`, `[col, row]`, or `{ row, col }`.
+- Normalize **only** through `normalizeMarginValues` / `normalizePaddingValues` / `extractGapProperties` — never write your own array-length switch. `extractSkeletorStyleProperties` already calls them, so most primitives get this for free.
+- Follow the canonical tuple semantics those helpers implement: `[all]`, `[vertical, horizontal]`, `[top, horizontal, bottom]`, `[top, right, bottom, left]`. Do not invent a different order.
+- Document accepted formats in JSDoc on any new spacing-shaped prop, matching the `Spacing` model's existing `@param`/`@example` style.
+
+## Examples
+
+```ts
+// BAD — re-implements shorthand, assumes only the 4-tuple, wrong side order,
+// and ignores the scalar/object shapes the type allows.
+function toPadding(p: number[]) {
+  const [left, top, right, bottom] = p; // wrong order: skeletor is [top, right, bottom, left]
+  return { paddingLeft: left, paddingTop: top, paddingRight: right, paddingBottom: bottom };
+}
+
+// GOOD — defer to the existing normalizer, which handles every shape.
+import { normalizePaddingValues } from "../../utils";
+
+const paddings = normalizePaddingValues(props.paddings) || {};
+// scalar 16 → { padding: 16 }
+// [8, 16] → { paddingVertical: 8, paddingHorizontal: 16 }
+// { paddingTop: 4 } → passed through unchanged
+```
+
+```ts
+// GOOD — JSDoc documents the accepted shapes, matching the Spacing model.
+export interface CardSpacing {
+  /** Possible value formats are { row, col } or [col, row] or just a number applied to both column and row gap. */
+  gap?: { row?: number; col?: number } | [number, number] | number;
+}
+```
+
+## Gotchas
+
+- A bare `number` and a bare `string` are valid spacing values (`16` or `"50%"`) — guard for both before treating the value as a tuple or object, exactly as `normalize-spacing-values.ts` does.
+- The two-element tuple is `[vertical, horizontal]` for margins/paddings but `gap` reads `[col, row]` — they are not the same convention; rely on the helpers rather than memorizing them.

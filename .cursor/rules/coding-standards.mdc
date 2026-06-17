@@ -1,0 +1,21 @@
+---
+description: 'Keep functions and components small, readable, and easy to reason about.'
+alwaysApply: true
+---
+
+# Coding standards
+
+Keep functions and components small, readable, and easy to reason about.
+
+## Function complexity
+
+- Prefer small, single-purpose functions.
+- Keep control flow shallow; avoid deep nesting.
+- Use early returns and guard clauses to reduce `else` blocks.
+- Extract complex logic into well-named helpers.
+
+## Readability
+
+- Favor descriptive names for functions, variables, and components.
+- Avoid magic numbers/strings; use constants where appropriate.
+- Keep conditionals straightforward; prefer `if (!condition) return` patterns.

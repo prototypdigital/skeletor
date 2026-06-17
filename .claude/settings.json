@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "EnterWorktree",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'v=$(cat | jq -r \".$1 // empty\" 2>/dev/null); fail=; if [ -n \"$5\" ] && [ -z \"$v\" ]; then fail=1; fi; if [ -n \"$2\" ] && [[ \"$v\" =~ $2 ]]; then fail=1; fi; if [ -n \"$3\" ] && ! [[ \"$v\" =~ $3 ]]; then fail=1; fi; if [ -n \"$fail\" ]; then printf \"%s\\n\" \"$4\"; exit 2; fi' bluetemberg 'name' '^claude/' '' 'EnterWorktree requires a conventional branch name. Call EnterWorktree again with name=\"type/description\" (e.g. feat/my-feature). Ask the user what the branch should be called if unclear. Types: feat fix chore refactor docs test' '1'"
+          }
+        ]
+      }
+    ]
+  }
+}

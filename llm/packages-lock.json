@@ -1,0 +1,77 @@
+{
+  "lockfileVersion": 1,
+  "packages": {
+    "bluetemberg-rules-skeletor-authoring": {
+      "version": "0.1.0",
+      "resolved": "https://registry.npmjs.org/bluetemberg-rules-skeletor-authoring/-/bluetemberg-rules-skeletor-authoring-0.1.0.tgz",
+      "integrity": "sha512-kLwR1wQ6nY129IE2HVYS8sVecjplQ1U4rXGhZbKMkFox19XZGsMg4GS+v6htLgGx+SbBgXkiCeVZp9M2yUeZmA==",
+      "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+    },
+    "bluetemberg-skills-skeletor-authoring": {
+      "version": "0.1.0",
+      "resolved": "https://registry.npmjs.org/bluetemberg-skills-skeletor-authoring/-/bluetemberg-skills-skeletor-authoring-0.1.0.tgz",
+      "integrity": "sha512-c47Hy259o4CD87dop6ankryZdkWQDz0vnC23ivqqltJhgmClmY/21k5pDmpbSwTGHHMWpmPmANjRsOSUiG1c1g==",
+      "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+    },
+    "bluetemberg-agents-skeletor-specialist": {
+      "version": "0.1.0",
+      "resolved": "https://registry.npmjs.org/bluetemberg-agents-skeletor-specialist/-/bluetemberg-agents-skeletor-specialist-0.1.0.tgz",
+      "integrity": "sha512-QQvBjPVIMw5JqRWqQsRTq7FuNBn6cw0h2xqXmqwdLyWqhmMw8Nj64amCWCzZRwlyuynckhB4rtG8piTUQA3cpQ==",
+      "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+    },
+    "bluetemberg-rules-git": {
+      "version": "0.1.0",
+      "resolved": "https://registry.npmjs.org/bluetemberg-rules-git/-/bluetemberg-rules-git-0.1.0.tgz",
+      "integrity": "sha512-EN5XJXscmAne5cSmqh4ApvSiVBBg4txfGefud2c00aGxl80RxKOfGVEO35FEj/Bi+hNsjJcFUPdyoHShQCfDrQ==",
+      "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+    },
+    "bluetemberg-rules-typescript": {
+      "version": "0.1.0",
+      "resolved": "https://registry.npmjs.org/bluetemberg-rules-typescript/-/bluetemberg-rules-typescript-0.1.0.tgz",
+      "integrity": "sha512-+5yC5qpTnzNrLRvmwKKsPKQmjLsAygwgfiRnmDhBkr8zX5/U9mh4y6Nf3kX6pokYVAnRDDXVyQ5QSiGEdYYqiA==",
+      "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+    },
+    "bluetemberg-guardrails-git": {
+      "version": "0.1.0",
+      "resolved": "https://registry.npmjs.org/bluetemberg-guardrails-git/-/bluetemberg-guardrails-git-0.1.0.tgz",
+      "integrity": "sha512-hloCNbWcDRoDosBqxxe3XFPGmYk+8ZLCD8WeLEMIZUTiCUA8DrGuE8bWUTYUDwXo+JcfwQ2kQz5MqjYOxeMZRg==",
+      "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+    },
+    "bluetemberg-skills-code-review": {
+      "version": "0.1.0",
+      "resolved": "https://registry.npmjs.org/bluetemberg-skills-code-review/-/bluetemberg-skills-code-review-0.1.0.tgz",
+      "integrity": "sha512-IWQg+7olD4abFjzDIDiRt/aX0ubONRvOn186W0dyCY83FxYnqUOqM65NFpFunfnUCJ6T1A/HEt0AzLQLF5Fo0A==",
+      "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+    },
+    "bluetemberg-skills-docs-upkeep": {
+      "version": "0.1.0",
+      "resolved": "https://registry.npmjs.org/bluetemberg-skills-docs-upkeep/-/bluetemberg-skills-docs-upkeep-0.1.0.tgz",
+      "integrity": "sha512-+Bcnh2ZlC6+KMrkhRokhAh2s4/I912q0HkX0SYWOHLzptpK/PmDXZb/A71aA+1MwVHW+lYhyDYuSLufRn6vUgw==",
+      "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+    },
+    "bluetemberg-skills-workspace-hygiene": {
+      "version": "0.1.0",
+      "resolved": "https://registry.npmjs.org/bluetemberg-skills-workspace-hygiene/-/bluetemberg-skills-workspace-hygiene-0.1.0.tgz",
+      "integrity": "sha512-29bnHFEK/0Ewqu7wdEhjSJkq5cSBr8IiPGN2f5RFrlbiJCAod5e5EH8lLz7hPYZksm657fI4umYKIW4Q1uD71g==",
+      "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+    },
+    "bluetemberg-agents-code-reviewer": {
+      "version": "0.1.0",
+      "resolved": "https://registry.npmjs.org/bluetemberg-agents-code-reviewer/-/bluetemberg-agents-code-reviewer-0.1.0.tgz",
+      "integrity": "sha512-EvZLM8liFkEwoQCa7bzyNZp1cka1RxyBNrNbm+LtvWPCN2ApLuIknT+UZS2Q2pZGv2dOpX64JprPNp2Le4s7oQ==",
+      "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+    },
+    "bluetemberg-agents-test-specialist": {
+      "version": "0.1.0",
+      "resolved": "https://registry.npmjs.org/bluetemberg-agents-test-specialist/-/bluetemberg-agents-test-specialist-0.1.0.tgz",
+      "integrity": "sha512-JrLEgINMgQZvoFtnDgDWC1dZWKAR+XpSZB9M99f2EhqZ+2fZzfwCBwb/PClUatLH+AZBjMvKsTmrdFC7dlEvEw==",
+      "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+    },
+    "bluetemberg-rules-docs": {
+      "version": "0.2.0",
+      "resolved": "https://registry.npmjs.org/bluetemberg-rules-docs/-/bluetemberg-rules-docs-0.2.0.tgz",
+      "integrity": "sha512-i4SA30HGj2LLMKV4no/piClWo2AVjlj0auSG5zNYgjiJycglHzhotpckO9jPtrum52omhMPaLHsjMnkCYRPOnQ==",
+      "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+    }
+  }
+}

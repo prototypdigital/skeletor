@@ -15,6 +15,16 @@ Version 1.1.2 introduces a peer dependency to <b>react-native-safe-area-context<
 yarn add react-native-safe-area-context
 ```
 
+## AI tooling (bluetemberg)
+
+This repo uses [bluetemberg](https://github.com/prototypdigital/bluetemberg) for AI tool configuration.
+
+If you are building an app that consumes `@prototyp/skeletor`, install the consumer pack in your project to get AI assistants fluent in the skeletor API:
+
+```sh
+npx bluetemberg install bluetemberg-rules-skeletor-consumer
+```
+
 ## Project setup
 
 Since this is supposed to be as configurable as possible while still maintaining some form and structure with how things should be done, you'll have to set up a couple things first.

@@ -1,0 +1,9 @@
+---
+description: Use git mv for tracked files to preserve history.
+paths:
+  - '**'
+---
+
+# Git move
+
+If moving an existing file that is not `git ignored`, use `git mv {source} {dest}`, as this preserves the git history for the file and shows any new diff.
