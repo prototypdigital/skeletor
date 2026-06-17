@@ -1,6 +1,6 @@
 {
   "packages": {
-    "bluetemberg-rules-skeletor-authoring": "^0.1.0",
+    "bluetemberg-rules-skeletor-authoring": "^0.2.0",
     "bluetemberg-skills-skeletor-authoring": "^0.1.0",
     "bluetemberg-agents-skeletor-specialist": "^0.1.0",
     "bluetemberg-rules-git": "^0.1.0",

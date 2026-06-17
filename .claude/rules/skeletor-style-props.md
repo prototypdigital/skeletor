@@ -18,7 +18,7 @@ Every skeletor primitive (`Block`, `Text`, …) is a thin wrapper over an `Anima
 - Run any element-local style object (color, opacity, background) through `memoizeStyle({...})`. Raw object literals defeat the global style cache and break referential stability.
 - Pull animation styles with `extractAnimationProperties(animations)` and apply them as the **last** entry in the style array.
 - Apply styles in the canonical order `style={[skeletorStyle, elementStyle, style, animationProps]}` so consumer `style` overrides skeletor defaults and animations override everything.
-- Never call `StyleSheet.create` inside a component body — there is no `StyleSheet` import anywhere in `src/components`.
+- Never call `StyleSheet.create` inside a component body. (`StyleSheet` constants like `StyleSheet.absoluteFill` are fine — e.g. `Screen.tsx` uses them; it's `StyleSheet.create` that's banned.)
 
 ## Examples
 
