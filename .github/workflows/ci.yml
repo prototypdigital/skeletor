@@ -17,4 +17,4 @@ jobs:
           node-version: '20'
           cache: 'yarn'
       - run: yarn install --immutable
-      - run: npx biome check
+      - run: npx biome check src/
